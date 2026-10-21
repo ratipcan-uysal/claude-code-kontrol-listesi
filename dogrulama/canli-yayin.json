@@ -1,0 +1,20 @@
+{
+  "checked_at": "2026-10-21T20:35:19.713910+00:00",
+  "content_commit": "d6873cd404cc2edc273e400aca4ba84c1198bf66",
+  "url": "https://ratipcan-uysal.github.io/claude-code-kontrol-listesi/",
+  "authentication": "none; public HTTP requests",
+  "files": [
+    {
+      "path": "index.html",
+      "http": "200",
+      "sha256": "4de36017e0562884b276e849e7229a76ed0aeecf5912a0149fb84d1b57228fce",
+      "matches_local": true
+    },
+    {
+      "path": "claude-code-kontrol-listesi.pdf",
+      "http": "200",
+      "sha256": "8e46d4f8839a6afb5bc1d49a1b411cc87457e371fee8f4144ca1060446368dae",
+      "matches_local": true
+    }
+  ]
+}
