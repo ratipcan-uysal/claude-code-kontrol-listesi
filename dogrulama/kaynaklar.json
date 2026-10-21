@@ -1,0 +1,210 @@
+[
+  {
+    "key": "memory",
+    "url": "https://code.claude.com/docs/en/memory",
+    "status": "PASS",
+    "bytes": 51857,
+    "sha256": "d951a26e6662ef73a97566b7e9bac1d84d477d1a15e0b193148340d05081a88c",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "best-practices",
+    "url": "https://code.claude.com/docs/en/best-practices",
+    "status": "PASS",
+    "bytes": 36231,
+    "sha256": "e3b99b377961bdd071ec6390904dcb319c9d3d3a8f627230642eeb84ad753d2e",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "statusline",
+    "url": "https://code.claude.com/docs/en/statusline",
+    "status": "PASS",
+    "bytes": 65239,
+    "sha256": "0d60891ab06e9b1736d5a9e6e76bc8a60518263b072f90052fdc431f5c61359e",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "commands",
+    "url": "https://code.claude.com/docs/en/commands",
+    "status": "PASS",
+    "bytes": 53666,
+    "sha256": "5648cece19676c18a4df7d783e5f4665b223bd85a6fb70515641f912abe5c0f8",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "sub-agents",
+    "url": "https://code.claude.com/docs/en/sub-agents",
+    "status": "PASS",
+    "bytes": 109993,
+    "sha256": "fe1e138fd6bff2ebaf63366a943637f25fcddac490de879e2f973f00680281e5",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "headless",
+    "url": "https://code.claude.com/docs/en/headless",
+    "status": "PASS",
+    "bytes": 34831,
+    "sha256": "c607c7dac616fd2c55ad0e6d80ddbb4b3452f7ebe312e32f8befa348c8e0a681",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "goal",
+    "url": "https://code.claude.com/docs/en/goal",
+    "status": "PASS",
+    "bytes": 14910,
+    "sha256": "e33f7273e3875996a146945df5b0d1e1f9ad9c82bde9ecd0175ae457169a8654",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "model-config",
+    "url": "https://code.claude.com/docs/en/model-config",
+    "status": "PASS",
+    "bytes": 120934,
+    "sha256": "6bd90f00dffdb848a6c2a9e3c7b9ae3ad3bb39e59914e34b8aeca759b720208b",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "costs",
+    "url": "https://code.claude.com/docs/en/costs",
+    "status": "PASS",
+    "bytes": 44374,
+    "sha256": "9daf33a0e41a0af2a0a5ec91c0c2017b3cec87e836496dd00d3c53576b31ad54",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "advisor",
+    "url": "https://code.claude.com/docs/en/advisor",
+    "status": "PASS",
+    "bytes": 17138,
+    "sha256": "cd7de5d316378677890045b36a585791fd1b60e0a84dcd4e287cc2d9eacfb3d8",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "permissions",
+    "url": "https://code.claude.com/docs/en/permissions",
+    "status": "PASS",
+    "bytes": 86703,
+    "sha256": "b9e93331a3fb9f14cb834300106cc8fc9bb4cd799b0426d20cf0d3707488f724",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "security",
+    "url": "https://code.claude.com/docs/en/security",
+    "status": "PASS",
+    "bytes": 14356,
+    "sha256": "90d88268b970f36359def01e7dd11b86b7bd1209a7f46ad7a57f78a5c668eeba",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "sandboxing",
+    "url": "https://code.claude.com/docs/en/sandboxing",
+    "status": "PASS",
+    "bytes": 95397,
+    "sha256": "b77ce86ffbdb116b82c2a289d6edf1d5e2eb09953cb0f5e6eee1aaca0b1970ea",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "hooks",
+    "url": "https://code.claude.com/docs/en/hooks",
+    "status": "PASS",
+    "bytes": 269876,
+    "sha256": "5a5cc139bc639ced7c328a509c3962da375dfba672dc54713356940a354bd79f",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "settings",
+    "url": "https://code.claude.com/docs/en/settings",
+    "status": "PASS",
+    "bytes": 41771,
+    "sha256": "c7e0316e45fa6307bf4ca57b003033548558e458c5859f223464692529cff4b6",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "skills",
+    "url": "https://code.claude.com/docs/en/skills",
+    "status": "PASS",
+    "bytes": 111106,
+    "sha256": "8f70b9f034eaba99f49608220efd5ccea4f3cf27b6da98531074c93552a0c80a",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "plugins",
+    "url": "https://code.claude.com/docs/en/plugins",
+    "status": "PASS",
+    "bytes": 13310,
+    "sha256": "3d758b5da01f42cf2201c4f4d38a7ac24dbf76e7f31d03cf77632e4d720535cf",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "mcp",
+    "url": "https://code.claude.com/docs/en/mcp",
+    "status": "PASS",
+    "bytes": 123698,
+    "sha256": "af5d6a79fcf2ef8e2d42843606d67354a32905d34dfafa6c43e4603497848a69",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "common-workflows",
+    "url": "https://code.claude.com/docs/en/common-workflows",
+    "status": "PASS",
+    "bytes": 17106,
+    "sha256": "e86258b835af468848af32976cbfe0123aeb635216d9502da323cc2b18953b54",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "git-worktree",
+    "url": "https://git-scm.com/docs/git-worktree",
+    "status": "PASS",
+    "bytes": 99050,
+    "sha256": "008ed08fa9414bbd65f7d47c4b7afb7f9e81d52fabfd5d704ef1e55064a35d0f",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "desktop",
+    "url": "https://code.claude.com/docs/en/desktop",
+    "status": "PASS",
+    "bytes": 163933,
+    "sha256": "b7f7fa05d5f0c5d0154381b3c8f9afd00515246be19c8b95227bcc19f7902924",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "routines",
+    "url": "https://code.claude.com/docs/en/routines",
+    "status": "PASS",
+    "bytes": 40887,
+    "sha256": "66a0b4931d816aee9a1fc8e156f67756b9f3a5ca9ff1f248380d7c7d9889189c",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "scheduled-tasks",
+    "url": "https://code.claude.com/docs/en/scheduled-tasks",
+    "status": "PASS",
+    "bytes": 19118,
+    "sha256": "db0464de04343531977300fd92c688db62101597fa80a148bbb953dada3b6259",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "checkpointing",
+    "url": "https://code.claude.com/docs/en/checkpointing",
+    "status": "PASS",
+    "bytes": 9219,
+    "sha256": "24730ad24547ab8dcc5f389575e93513e3dd2f7a92faeb20a21889e1be9c796f",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "settings-reference",
+    "url": "https://code.claude.com/docs/en/settings-reference",
+    "status": "PASS",
+    "bytes": 404714,
+    "sha256": "dda05451266e1ba084ceccd52b5fc8e6ef6603dbf63e5948dd23f000c31ded40",
+    "checked": "2026-10-21"
+  },
+  {
+    "key": "overview",
+    "url": "https://code.claude.com/docs/en/overview",
+    "status": "PASS",
+    "bytes": 15452,
+    "sha256": "a706f34a6386e51e31389479df863314bad27052f3eef6cbf8ffa577bec17d85",
+    "checked": "2026-10-21"
+  }
+]

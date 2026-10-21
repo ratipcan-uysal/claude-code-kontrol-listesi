@@ -1,3 +1,6 @@
 __pycache__/
+*.pyc
 kaynak/pdf.html
 .DS_Store
+docs/memory/
+work/

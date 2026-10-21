@@ -1,0 +1,127 @@
+{
+  "browser": "155.0.8059.85",
+  "base": "http://127.0.0.1:8770",
+  "results": [
+    {
+      "name": "107 madde",
+      "status": "PASS"
+    },
+    {
+      "name": "İşaret kalıcılığı",
+      "status": "PASS"
+    },
+    {
+      "name": "Temizleme ilk tık filtreyi bozmuyor",
+      "status": "PASS"
+    },
+    {
+      "name": "Temizleme ikinci tık",
+      "status": "PASS"
+    },
+    {
+      "name": "Temel filtre 25",
+      "status": "PASS"
+    },
+    {
+      "name": "İleri filtre 82",
+      "status": "PASS"
+    },
+    {
+      "name": "Yapılmamış filtre 106",
+      "status": "PASS"
+    },
+    {
+      "name": "Türkçe arama",
+      "status": "PASS"
+    },
+    {
+      "name": "Boş sonuç",
+      "status": "PASS"
+    },
+    {
+      "name": "Hash gizli hedefi açar",
+      "status": "PASS"
+    },
+    {
+      "name": "Başlangıç bağlantısı aramayı kaldırır",
+      "status": "PASS"
+    },
+    {
+      "name": "İlk açılış derin bağlantı",
+      "status": "PASS"
+    },
+    {
+      "name": "Kopyalama",
+      "status": "PASS"
+    },
+    {
+      "name": "Dışa aktarılan JSON",
+      "status": "PASS"
+    },
+    {
+      "name": "İçe aktarma iptal korur",
+      "status": "PASS"
+    },
+    {
+      "name": "İçe aktarma onayı",
+      "status": "PASS"
+    },
+    {
+      "name": "Hatalı içe aktarım korunur: null",
+      "status": "PASS"
+    },
+    {
+      "name": "Hatalı içe aktarım korunur: bozuk JSON",
+      "status": "PASS"
+    },
+    {
+      "name": "Hatalı içe aktarım korunur: yabancı kimlik",
+      "status": "PASS"
+    },
+    {
+      "name": "Hatalı içe aktarım korunur: geçersiz değer",
+      "status": "PASS"
+    },
+    {
+      "name": "Hatalı içe aktarım korunur: büyük dosya",
+      "status": "PASS"
+    },
+    {
+      "name": "Bozuk yerel kayıt dayanıklılığı",
+      "status": "PASS"
+    },
+    {
+      "name": "Bozuk kayıt sonrası işaret",
+      "status": "PASS"
+    },
+    {
+      "name": "Açık tema",
+      "status": "PASS"
+    },
+    {
+      "name": "Koyu tema kalıcılığı",
+      "status": "PASS"
+    },
+    {
+      "name": "Klavye sırası",
+      "status": "PASS"
+    },
+    {
+      "name": "Yatay taşma 390",
+      "status": "PASS"
+    },
+    {
+      "name": "Yatay taşma 320",
+      "status": "PASS"
+    },
+    {
+      "name": "Depolama engeli görünür",
+      "status": "PASS"
+    },
+    {
+      "name": "JS konsol hatası yok",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}

@@ -1,8 +1,7 @@
-"""veri.py'den iki çıktı üretir: baskı HTML'i (PDF için) ve web artifact HTML'i.
-Kullanım: python3 v2_yap.py <pdf.html> <web.html> <metin.md>"""
+"""veri.py’den web, baskı HTML’i ve README üretir. Kullanım: python3 kaynak/yap.py"""
 import sys, os, re, html
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from veri import BOLUMLER, ILK10, SAYILAR, SURUM
+from veri import BOLUMLER, ILK10, SAYILAR, SURUM, KAYNAKLAR
 
 esc = html.escape
 N = sum(len(m) for *_, m in BOLUMLER)
@@ -11,16 +10,37 @@ idx = {k: i for i, (k, *_) in enumerate(BOLUMLER, 1)}
 SEV = {"temel": "Temel", "ileri": "İleri"}
 BASLIK = "Claude Code'u iyi kullanmanın kontrol listesi"
 OKUMA = [
- "\"İyi kullanmak\" burada hız ya da çok özellik kullanmak demek değil. Ölçüt üç tane: aynı işi daha az mesajla bitirmek, aynı limitle daha çok iş çıkarmak ve sonucu kanıtla teslim almak. Bilgisayar başında değilken de ayakta kalan bir düzen bu üçünün toplamı.",
- "Her bölüm kısa bir gerekçeyle başlıyor, maddeler getirisi yüksekten düşüğe sıralı. <b>Neden</b> satırı önemini, <b>nasıl</b> satırı komutu ya da ayarı söyler. Örneği olan maddelerde kopyalanabilir bir parça var. <b>Doğrula</b> satırı işin gerçekten olduğunu neye bakarak anlayacağını gösterir. Doğrulanamayan madde yapılmış sayılmaz.",
- f"<b>Temel</b> etiketli {NT} madde her kullanıcı için, ilk haftada yapılabilir. <b>İleri</b> etiketli {N-NT} madde otomasyon, gözetimsiz koşum, ekip ve çok oturumla çalışanlar için.",
- "Belge Claude Code'u (CLI ve masaüstü uygulaması) kapsıyor. API ile uygulama geliştirme ve ücretli araç önerisi kapsam dışında. Özellik adları 16 Ekim 2026'da code.claude.com belgeleriyle doğrulandı. Bir komut ya da ayar çalışmıyorsa sürümünü <code>claude --version</code> ile kontrol et ve güncel belgeye bak.",
+ "Bu liste tekrar işi azaltmak, kapsamı belirlemek ve sonucu kanıtla teslim almak için hazırlanmış bir çalışma rehberidir. Her madde her projeye uygun değildir; kullanımına uygun olanları seç.",
+ "<b>Neden</b> gerekçeyi, <b>nasıl</b> uygulama yolunu, <b>doğrula</b> beklenen kanıtı gösterir. Başlangıç onlusu ve temel/ileri etiketleri editoryal öneridir; ölçülmüş getiri sıralaması değildir.",
+ f"<b>Temel</b> {NT}, <b>ileri</b> {N-NT} madde vardır. Teknik davranışların yanında resmî kaynak bağlantısı bulunur; bağlantısız maddeler iş akışı önerisidir. Örnekler kendi projenin araçlarına ve yetkisine uyarlanmalıdır.",
+ "Kaynaklar 21 Ekim 2026'da kontrol edildi. Yerel CLI 2.1.284 için yalnız sürüm ve yardım çıktısı alındı; listelenen bütün Claude özellikleri canlı çalıştırılmadı. CLI, Desktop, bulut ve sağlayıcı farklarını ilgili belgede kontrol et.",
+ "Bir kutuyu işaretlemek kişisel ilerleme kaydıdır; otomatik doğrulama veya güvenlik garantisi değildir. Tarayıcı verisi temizlenebilir; ilerlemeni JSON olarak dışa aktarabilirsin.",
 ]
-SAYI_GIRIS = "Listenin önceliklerini belirleyen veri: tek bir kullanıcının beş aylık oturum kayıtları. Senin dağılımın farklı olabilir. Bu sayılar sıralamanın gerekçesi, senin için hedef değil."
+SAYI_GIRIS = "Eski sürümün kişisel kullanım sayıları bu denetimde ham kayıtlarla yeniden doğrulanmadığından sıralama kanıtı olarak kullanılmıyor."
+
+def kaynak_html(m):
+    if not m['r']:
+        return 'İş akışı önerisi'
+    return 'Belge: ' + ' · '.join(f'<a href="{KAYNAKLAR[k]["url"]}">{KAYNAKLAR[k]["ad"]}</a>' for k in m['r'])
+
+def validate(bolumler=BOLUMLER):
+    seen=set()
+    for k, _, _, maddeler in bolumler:
+        if k in seen: raise ValueError('Tekrarlanan bölüm kimliği: '+k)
+        seen.add(k)
+        for m in maddeler:
+            if any(not isinstance(m.get(f),str) or not m[f].strip() for f in ['e','n','y','d']):
+                raise ValueError('Eksik madde alanı')
+            if m['s'] not in SEV: raise ValueError('Bilinmeyen seviye')
+            if any(r not in KAYNAKLAR for r in m['r']): raise ValueError('Bilinmeyen kaynak')
+    for k,j,_ in ILK10:
+        match=next((x for x in bolumler if x[0]==k),None)
+        if not match or not 1<=j<=len(match[3]): raise ValueError('Geçersiz başlangıç bağlantısı')
+
 
 def ilk10_satirlari():
     for k, j, kisa in ILK10:
-        i = idx[k]; m = dict(BOLUMLER)[k] if False else BOLUMLER[i-1][3][j-1]
+        i = idx[k]; m = BOLUMLER[i-1][3][j-1]
         yield i, j, kisa, m
 
 # ---------- PDF ----------
@@ -68,16 +88,15 @@ def madde_pdf(i, j, m):
     return (f'<div class="madde"><div class="kutucuk"></div><div><div class="bas">{i}.{j} {m["e"]}<span class="et {m["s"]}">{SEV[m["s"]]}</span></div>'
             f'<div class="satir"><span>Neden</span><span>{m["n"]}</span></div>'
             f'<div class="satir"><span>Nasıl</span><span>{m["y"]}{ornek}</span></div>'
-            f'<div class="satir"><span>Doğrula</span><span>{m["d"]}</span></div></div></div>')
+            f'<div class="satir"><span>Doğrula</span><span>{m["d"]}</span></div><div class="kaynak">{kaynak_html(m)}</div></div></div>')
 
 def pdf():
     o = [f'<!doctype html><html lang="tr"><head><meta charset="utf-8"><title>Claude Code kontrol listesi</title><style>{PCSS}</style></head><body>']
-    o.append(f'<section class="kapak"><div><h1>{BASLIK}</h1><p class="alt">{len(BOLUMLER)} bölüm, {N} madde. İlk sayfada en önemli on madde, her maddede neden, nasıl, kopyalanabilir örnek ve doğrulama.</p></div>'
-             f'<div class="kutu">{SURUM}<br>Beş aylık gerçek kullanım verisinden ve Claude Code belgelerinden (code.claude.com) derlendi.</div></section>')
+    o.append(f'<section class="kapak"><div><h1>{BASLIK}</h1><p class="alt">{len(BOLUMLER)} bölüm, {N} madde. Başlangıç için on madde, her maddede neden, nasıl, kopyalanabilir örnek ve doğrulama.</p></div>'
+             f'<div class="kutu">{SURUM}<br>Claude Code belgelerine dayanan teknik notlar ve editoryal iş akışı önerileri.</div></section>')
     o.append('<section class="okuma"><h2>Nasıl okunur</h2>' + "".join(f"<p>{p}</p>" for p in OKUMA))
-    o.append(f'<h2 style="margin-top:6mm">Gerçek bir kullanımdan sayılar</h2><p class="giris">{SAYI_GIRIS}</p><div class="sayilar">'
-             + "".join(f"<div><b>{a}</b><span>{b}</span></div>" for a, b in SAYILAR) + "</div></section>")
-    o.append('<section class="ilk10"><h2>Önce bu on madde</h2><p class="giris">Bütün listeyi okumaya vaktin yoksa buradan başla. En çok getirisi olanlar, çoğu birkaç dakikalık iş.</p><ol>')
+    o.append('</section>')
+    o.append('<section class="ilk10"><h2>Önce bu on madde</h2><p class="giris">Bütün listeyi okumaya vaktin yoksa buradan başla. Bunlar başlangıç önerileri; işine uymayanı atlayabilirsin.</p><ol>')
     for i, j, kisa, m in ilk10_satirlari():
         o.append(f'<li><div><span class="k">{kisa}</span><span class="r">madde {i}.{j}</span><div class="n">{m["n"]}</div></div></li>')
     o.append("</ol></section>")
@@ -163,51 +182,34 @@ footer{color:var(--soft);font-size:13px;margin-top:48px;border-top:1px solid var
 @media (prefers-reduced-motion:reduce){.ilerleme .dolu{transition:none}}
 """
 
-WJS = r"""
-(function(){
- var ANAHTAR='cc-kontrol-v2';
- var kutular=[].slice.call(document.querySelectorAll('.madde input[type=checkbox]'));
- var durum={};
- try{durum=JSON.parse(localStorage.getItem(ANAHTAR)||'{}')||{}}catch(e){durum={}}
- function kaydet(){try{localStorage.setItem(ANAHTAR,JSON.stringify(durum))}catch(e){}}
- var suz='hepsi';
- function guncelle(){
-  var top=kutular.length,ok=0;
-  kutular.forEach(function(k){
-   var m=k.closest('.madde');var y=!!durum[k.id];k.checked=y;m.classList.toggle('yapildi',y);if(y)ok++;
-   var s=m.getAttribute('data-s');
-   m.hidden=!(suz==='hepsi'||(suz==='acik'&&!y)||suz===s);
-  });
-  document.getElementById('sayac').textContent=ok+' / '+top+' madde işaretlendi';
-  document.getElementById('dolu').style.width=(top?ok*100/top:0)+'%';
-  document.querySelectorAll('section.bolum').forEach(function(b){
-   var g=b.querySelectorAll('.madde:not([hidden])').length;
-   b.querySelector('.bos-durum').hidden=g>0;
-   var t=b.querySelectorAll('.madde').length,y=b.querySelectorAll('.madde.yapildi').length;
-   var a=document.querySelector('nav.dizin a[href="#'+b.id+'"] small');if(a)a.textContent=y+'/'+t;
-  });
- }
- kutular.forEach(function(k){k.addEventListener('change',function(){if(k.checked)durum[k.id]=1;else delete durum[k.id];kaydet();guncelle();});});
- document.querySelectorAll('.suzgec button').forEach(function(b){b.addEventListener('click',function(){
-  suz=b.getAttribute('data-suz');document.querySelectorAll('.suzgec button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});guncelle();});});
- document.getElementById('sifirla').addEventListener('click',function(){
-  var b=this;if(b.getAttribute('data-onay')!=='1'){b.setAttribute('data-onay','1');b.textContent='Emin misin? Tekrar tıkla';setTimeout(function(){b.removeAttribute('data-onay');b.textContent='İşaretleri temizle'},3000);return;}
-  durum={};kaydet();b.removeAttribute('data-onay');b.textContent='İşaretleri temizle';guncelle();});
- document.querySelectorAll('.kopya').forEach(function(b){b.addEventListener('click',function(){
-  var pre=b.parentNode.querySelector('pre');var t=pre.textContent;
-  function sec(){var r=document.createRange();r.selectNodeContents(pre);var s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Seçildi, kopyala';}
-  try{navigator.clipboard.writeText(t).then(function(){b.textContent='Kopyalandı';setTimeout(function(){b.textContent='Kopyala'},1500)},sec)}catch(e){sec()}
- });});
- guncelle();
-})();
+WCSS += """
+a{color:var(--acc)}
+.madde,section.bolum{scroll-margin-top:var(--kaydirma,170px)}
+.kaynak{font-size:12px;color:var(--soft);margin:8px 0 0}
+.araclar{margin:14px 0}.araclar label{font-weight:600;font-size:13px;display:block}
+#ara{width:100%;font:inherit;color:var(--fg);background:var(--yuzey);border:1px solid var(--line);border-radius:8px;padding:10px;margin:5px 0}
+.islemler{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.islemler button,.islemler a{font:inherit;font-size:12px;padding:7px 9px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;cursor:pointer;text-decoration:none}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+#arama-sonuc,#bildirim{font-size:13px;color:var(--soft)}
+.ornek pre{padding-top:40px;white-space:pre-wrap;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+@media(max-width:480px){dl{grid-template-columns:1fr;gap:3px}dt{margin-top:7px}.sar{padding-inline:12px}.madde{gap:4px 6px}.cubuk{position:static}.et{margin-left:4px}nav.dizin{position:static}}
+@media print{.cubuk,.araclar,.dizin,.kopya,.ilk10,details.okuma{display:none!important}.sar{display:block;padding:0}body{background:white;color:#17202c}.madde{break-inside:avoid}.ornek pre{padding:10px}a{color:#1d4f91}}
 """
+PCSS += """
+a{color:#1d4f91;text-decoration:none}.kaynak{font-size:7.5pt;color:#5a6270;margin-top:1mm}
+pre{overflow-wrap:anywhere}
+"""
+
+WJS = open(os.path.join(os.path.dirname(__file__), 'app.js'), encoding='utf-8').read()
 
 def madde_web(i, j, m):
     mid = f"m-{BOLUMLER[i-1][0]}-{j}"
     ornek = (f'<dt>Örnek</dt><dd><div class="ornek"><button type="button" class="kopya">Kopyala</button><pre>{esc(m["o"])}</pre></div></dd>' if m["o"] else "")
     return (f'<div class="madde" data-s="{m["s"]}" id="{mid}-k"><input type="checkbox" id="{mid}" aria-labelledby="{mid}-b">'
             f'<div><label class="bas" id="{mid}-b" for="{mid}"><span class="no2">{i}.{j}</span>{m["e"]}<span class="et {m["s"]}">{SEV[m["s"]]}</span></label>'
-            f'<dl><dt>Neden</dt><dd>{m["n"]}</dd><dt>Nasıl</dt><dd>{m["y"]}</dd>{ornek}<dt>Doğrula</dt><dd>{m["d"]}</dd></dl></div></div>')
+            f'<dl><dt>Neden</dt><dd>{m["n"]}</dd><dt>Nasıl</dt><dd>{m["y"]}</dd>{ornek}<dt>Doğrula</dt><dd>{m["d"]}</dd></dl><p class="kaynak">{kaynak_html(m)}</p></div></div>')
 
 def web():
     o = ['<title>Claude Code kontrol listesi</title>',
@@ -217,14 +219,18 @@ def web():
     for i, (k, b, _, mad) in enumerate(BOLUMLER, 1):
         o.append(f'<a href="#b-{k}"><span>{i}. {b}</span><small>0/{len(mad)}</small></a>')
     o.append('</nav><main>')
-    o.append(f'<header class="ust"><h1>{BASLIK}</h1><p>{len(BOLUMLER)} bölüm, {N} madde. Her maddede neden, nasıl, kopyalanabilir örnek ve doğrulama. İşaretlerin yalnız bu tarayıcıda saklanır.</p><div class="surum">{SURUM}</div></header>')
-    o.append('<div class="cubuk"><div class="ilerleme"><div class="etiket" id="sayac">0 madde işaretlendi</div><div class="yol"><div class="dolu" id="dolu"></div></div></div>'
+    o.append(f'<header class="ust"><h1>{BASLIK}</h1><p>{len(BOLUMLER)} bölüm, {N} madde. Her maddede neden, nasıl, kopyalanabilir örnek ve doğrulama. İşaretler bu tarayıcıda saklanır; JSON olarak yedekleyebilirsin.</p><div class="surum">{SURUM}</div></header>')
+    o.append('<div class="cubuk"><div class="ilerleme"><div class="etiket" id="sayac" role="status" aria-live="polite">0 madde işaretlendi</div><div class="yol"><div class="dolu" id="dolu"></div></div></div>'
              '<div class="suzgec" role="group" aria-label="Süzgeç"><button type="button" data-suz="hepsi" aria-pressed="true">Tümü</button>'
              f'<button type="button" data-suz="temel" aria-pressed="false">Temel ({NT})</button><button type="button" data-suz="ileri" aria-pressed="false">İleri ({N-NT})</button>'
-             '<button type="button" data-suz="acik" aria-pressed="false">Yapılmamış</button><button type="button" id="sifirla">İşaretleri temizle</button></div></div>')
-    o.append('<details class="okuma"><summary>Nasıl okunur ve sıralama nereden geliyor</summary>' + "".join(f"<p>{p}</p>" for p in OKUMA)
-             + f'<p>{SAYI_GIRIS}</p><div class="sayilar">' + "".join(f"<div><b>{a}</b><span>{b}</span></div>" for a, b in SAYILAR) + "</div></details>")
-    o.append('<h2 id="ilk10">Önce bu on madde</h2><p class="giris">Bütün listeyi okumaya vaktin yoksa buradan başla. En çok getirisi olanlar, çoğu birkaç dakikalık iş.</p><ol class="ilk10">')
+             '<button type="button" data-suz="acik" aria-pressed="false">Yapılmamış</button></div></div>')
+    o.append('<div class="araclar"><label for="ara">Listede ara</label><input id="ara" type="search" placeholder="Örn. izin, MCP, bellek" autocomplete="off"><span id="arama-sonuc" role="status"></span>'
+             '<div class="islemler"><button id="tema" type="button">Tema: sistem</button><button id="disa" type="button">İlerlemeyi dışa aktar</button><button id="ice" type="button">İçe aktar</button>'
+             '<button id="sifirla" type="button">İşaretleri temizle</button><a href="claude-code-kontrol-listesi.pdf">PDF indir</a><a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi">GitHub</a></div>'
+             '<input type="file" id="dosya" accept="application/json,.json" hidden><p id="bildirim" role="status" aria-live="polite"></p></div>')
+    o.append('<details class="okuma"><summary>Nasıl okunur ve kaynak kapsamı</summary>' + "".join(f"<p>{p}</p>" for p in OKUMA)
+             + '</details>')
+    o.append('<h2 id="ilk10">Önce bu on madde</h2><p class="giris">Bütün listeyi okumaya vaktin yoksa buradan başla. Bunlar başlangıç önerileri; işine uymayanı atlayabilirsin.</p><ol class="ilk10">')
     for i, j, kisa, m in ilk10_satirlari():
         o.append(f'<li><div><a href="#m-{BOLUMLER[i-1][0]}-{j}-k">{kisa}</a> <span class="no2">· {i}.{j}</span><div class="n">{m["n"]}</div></div></li>')
     o.append("</ol>")
@@ -232,7 +238,7 @@ def web():
         o.append(f'<section class="bolum" id="b-{k}"><h2><span class="no">{i}</span>{b}</h2><p class="giris">{giris}</p>')
         o.extend(madde_web(i, j, m) for j, m in enumerate(mad, 1))
         o.append('<p class="bos-durum" hidden>Bu süzgeçte bu bölümde gösterilecek madde yok.</p></section>')
-    o.append(f'<footer>{SURUM}. Özellik adları 16 Ekim 2026\'da code.claude.com belgeleriyle doğrulandı. Bir komut ya da ayar çalışmıyorsa güncel belgeye bak: <a href="https://code.claude.com/docs" style="color:var(--acc)">code.claude.com/docs</a></footer></main></div>')
+    o.append(f'<footer>{SURUM}. <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/KAYNAKLAR.md">Kaynaklar</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/DOGRULAMA.md">Doğrulama kapsamı</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/GUNCELLEMELER.md">Değişiklikler</a></footer></main></div>')
     o.append(f"<script>{WJS}</script>")
     return "\n".join(o)
 
@@ -265,8 +271,8 @@ def readme():
             if m["o"]:
                 o += ["", "    ```", *["    " + l for l in m["o"].split("\n")], "    ```", ""]
             o.append(f"  - **Doğrula:** {md_satir(m['d'])}")
-    o += ["", "## Gerçek bir kullanımdan sayılar", "", SAYI_GIRIS, ""]
-    o += [f"- **{a}:** {b}" for a, b in SAYILAR]
+            o.append('  - **Dayanak:** ' + (' · '.join(f"[{KAYNAKLAR[r]['ad']}]({KAYNAKLAR[r]['url']})" for r in m['r']) or 'İş akışı önerisi'))
+    o += ["", "## Kaynak ve doğrulama", "", "[Kaynaklar](KAYNAKLAR.md) · [Doğrulama](DOGRULAMA.md) · [Değişiklikler](GUNCELLEMELER.md)", ""]
     o += ["", "## Güncelleme", "", "İçerik tek dosyada: `kaynak/veri.py`. Değiştirdikten sonra:", "", "```sh",
           "python3 kaynak/yap.py",
           "\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --no-pdf-header-footer \\",
@@ -277,10 +283,11 @@ def readme():
 def bagimsiz(w):
     return ('<!doctype html>\n<html lang="tr">\n<head>\n<meta charset="utf-8">\n'
             '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
-            '<meta name="description" content="Claude Code\'u iyi kullanmak için 97 maddelik kontrol listesi: neden, nasıl, örnek ve doğrulama.">\n'
+            f'<meta name="description" content="Claude Code için {N} maddelik kontrol listesi: neden, nasıl, örnek ve doğrulama.">\n'
             + w.replace("</style>", "</style>\n</head>\n<body>", 1) + "\n</body>\n</html>\n")
 
 if __name__ == "__main__":
+    validate()
     kok = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     open(os.path.join(kok, "kaynak", "pdf.html"), "w", encoding="utf-8").write(pdf())
     open(os.path.join(kok, "index.html"), "w", encoding="utf-8").write(bagimsiz(web()))

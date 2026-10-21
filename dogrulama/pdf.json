@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "pages": 28,
+  "item_titles": 107,
+  "missing_titles": [],
+  "text_normalization": "NFKC (PDF font ligatures)",
+  "visual_review": "All 28 pages rendered; desktop/mobile screenshots and sample page at full size inspected."
+}
