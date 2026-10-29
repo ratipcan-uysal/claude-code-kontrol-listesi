@@ -1,5 +1,16 @@
 # Doğrulama kaydı
 
+## 29 Ekim 2026 rehber
+
+| Kontrol | Durum | Kanıt ve sınır |
+|---|---|---|
+| İçerik yapısı | PASS | 14 test. Rehber sayfaları güncel, madde, ek ve bölüm bağlantıları çözülüyor, geçersiz bağlantı reddediliyor |
+| Sayfa işlevleri | PASS | 72 tarayıcı kontrolü. 13 bölüm ve içindekiler 1440 ve 320 px'te taşmıyor |
+| Ürün iddiaları | PASS | Her bölümün iddiaları yazımda resmî belgeyle karşılaştırıldı, sonra 13 bölüm bir tutarlılık okumasından geçti |
+| Alıştırmalar | NOT_RUN | Bölüm 8'deki hook betiği dışında alıştırmalar canlı koşulmadı |
+| PDF | PASS | 92 A4 sayfa |
+| Canlı yayın | NOT_RUN | Yerel commit |
+
 ## 29 Ekim 2026 güncellemesi
 
 | Kontrol | Durum | Kanıt ve sınır |

@@ -34,11 +34,11 @@ Dört aşama var. Her birinde hangi bölümün becerisini kullandığın yazıl�
 
 ### 1. Plan
 
-Claude'a kod yazdırmadan önce işi tanımla. Girdi, çıktı, "bitti" ölçütü ve dokunulmayacak yerler yazılı olsun. İş küçükse plan modunda bir plan iste ve oku. Beğenmediğin yeri değiştirmeden uygulamaya geçme. Becerin burada [Bölüm 2: İş vermek: bitiş çizgisini çizmek](02-is-vermek.md) (bitiş çizgisini çizmek) ve [Bölüm 1: Zihinsel model: döngü, bağlam ve harness](01-zihinsel-model.md) (hangi parçanın neyi yapacağı). Projeye bir `CLAUDE.md` aç ve yalnız bu iş için gerçekten gerekli üç dört satır yaz: nasıl çalıştırılır, nasıl test edilir, neye dokunulmaz. Hangi satırın kural, hangisinin tercih olduğunu [Bölüm 5: Talimat mimarisi: rica ile garanti](05-talimat-mimarisi.md) içindeki ölçütle ayır. İstisnası olmayan bir şey varsa (örneğin "örnek veri dosyasını silme") bunu CLAUDE.md'de değil izin kuralında tut, izin ve güvenlik bölümleri bu konuda yardım eder.
+Claude'a kod yazdırmadan önce işi tanımla. Girdi, çıktı, "bitti" ölçütü ve dokunulmayacak yerler yazılı olsun. İş küçükse plan modunda bir plan iste ve oku. Beğenmediğin yeri değiştirmeden uygulamaya geçme. Becerin burada [Bölüm 2: İş vermek: bitiş çizgisini çizmek](02-is-vermek.md) (bitiş çizgisini çizmek) ve [Bölüm 1: Zihinsel model: döngü, bağlam ve harness](01-zihinsel-model.md) (hangi parçanın neyi yapacağı). Projeye bir `CLAUDE.md` aç ve yalnız bu iş için gerçekten gerekli üç dört satır yaz: nasıl çalıştırılır, nasıl test edilir, neye dokunulmaz. Hangi satırın kural, hangisinin tercih olduğunu [Bölüm 5: Talimat mimarisi: rica ile garanti](05-talimat-mimarisi.md) içindeki ölçütle ayır. İstisnası olmayan bir şey varsa (örneğin "örnek veri dosyasını silme") bunu CLAUDE.md'de değil izin kuralında tut, [Bölüm 6: İzin ve güvenlik: mod, kural, sandbox](06-izin-ve-guvenlik.md) bu konuda yardım eder.
 
 ### 2. Uygulama
 
-İşi küçük adımlarla ilerlet ve her adımdan sonra çalıştır. Oturum uzarsa bağlamı yönet: yeni bir iş için temiz oturum aç, gerekirse özet bırakarak devam et. Bu [Bölüm 3: Oturum: masayı doğru yönetmek](03-oturumu-yonetmek.md) bölümünün becerisidir. Tekrar eden bir adımı fark edersen (aynı komutu üçüncü kez yazıyorsan) onu bir skill ya da betiğe çevir, hook gerektiren bir şey varsa hook bölümüne dön. Projede birbirinden bağımsız iki parça varsa (örneğin betiğin kendisi ve belgesi) bunları ayrı worktree'lerde paralel yaptırabilirsin. Ama önce bağımsız olduklarını kanıtla, [Bölüm 9: Paralel işler: bağımsızlığı ölçmek](09-paralel-isler.md) bölümündeki uyarıyı hatırla: paralel olmak bağımsız olmak demek değildir.
+İşi küçük adımlarla ilerlet ve her adımdan sonra çalıştır. Oturum uzarsa bağlamı yönet: yeni bir iş için temiz oturum aç, gerekirse özet bırakarak devam et. Bu [Bölüm 3: Oturum: masayı doğru yönetmek](03-oturumu-yonetmek.md) bölümünün becerisidir. Tekrar eden bir adımı fark edersen (aynı komutu üçüncü kez yazıyorsan) onu bir skill ya da betiğe çevir, hook gerektiren bir şey varsa [Bölüm 8: Hook ile garanti: olay, çıkış kodu, sınama](08-hook-ile-garanti.md) bölümüne dön. Projede birbirinden bağımsız iki parça varsa (örneğin betiğin kendisi ve belgesi) bunları ayrı worktree'lerde paralel yaptırabilirsin. Ama önce bağımsız olduklarını kanıtla, [Bölüm 9: Paralel işler: bağımsızlığı ölçmek](09-paralel-isler.md) bölümündeki uyarıyı hatırla: paralel olmak bağımsız olmak demek değildir.
 
 ### 3. Doğrulama
 
@@ -86,10 +86,10 @@ Sayısal puan yok. Projeyi bitirdikten sonra aşağıdaki soruları kendine, dü
 - Her "tamamlandı" cümlesinin arkasında senin gördüğün bir çıktı var mı? ([Bölüm 4: Kanıtla teslim: iddiayı sayıya çevir](04-kanitla-teslim.md))
 - Kuralların hangileri Claude'un kararında, hangileri Claude Code'un uyguladığı katmanda? Bunu açıklayabilir misin? ([Bölüm 5: Talimat mimarisi: rica ile garanti](05-talimat-mimarisi.md))
 - Kontrolünü hatayı geri koyup düşürerek sınadın mı, yoksa yalnız geçtiğini mi gördün? ([Bölüm 4: Kanıtla teslim: iddiayı sayıya çevir](04-kanitla-teslim.md))
-- Yarım bıraktığın bir şey bir dosyada yazılı mı, yoksa yalnız aklında mı? ([Bölüm 10: Gözetimsiz iş: sen yokken çalışan sistem](10-gozetimsiz-is.md))
+- Yarım bıraktığın bir şey bir dosyada yazılı mı, yoksa yalnız aklında mı? ([Bölüm 12: Sistemi iyileştirmek: hatayı katmana yazmak](12-sistemi-iyilestirmek.md))
 - Paylaşılan bir kaynağı (dal, index, port, dosya) iki yerden kullandıysan çakışmayı nasıl önledin? ([Bölüm 9: Paralel işler: bağımsızlığı ölçmek](09-paralel-isler.md))
 - Öğrendiğin dersi doğru katmana yazdın mı ve neden orası? ([Bölüm 12: Sistemi iyileştirmek: hatayı katmana yazmak](12-sistemi-iyilestirmek.md))
-- Bu projeyi bir ekip arkadaşına devretsen, `KANIT.md` ve depo yeterli olur muydu? ([Bölüm 11: Ekip ölçeği: ortak ayar, dağıtım ve güven](11-ekip-olcegi.md))
+- Bu projeyi bir ekip arkadaşına devretsen, `KANIT.md` ve depo yeterli olur muydu? ([Bölüm 3: Oturum: masayı doğru yönetmek](03-oturumu-yonetmek.md))
 - Bir şey sana en pahalıya geldiyse, o hata bir şeyin kırılmasından mı, yoksa hiçbir şeye bakmadan başarılı görünmesinden mi çıktı? ([Gerçek deneyimlerden on ders](../ekler/deneyimler.md) sayfasındaki vakalar bu soruya dönüyor.)
 
 Kendini dürüstçe sorguladığında üç şeyi de yaz: neyi kaçırmış olabilirsin, hangi iddian en zayıf, hangi kararının gerekçesi yok. Rehberi bitirmiş olmanın işareti, bu üç cümleyi rahatça yazabilmek.

@@ -28,11 +28,11 @@ Dört aşama var. Her birinde hangi bölümün becerisini kullandığın yazıl�
 
 ### 1. Plan
 
-Claude'a kod yazdırmadan önce işi tanımla. Girdi, çıktı, "bitti" ölçütü ve dokunulmayacak yerler yazılı olsun. İş küçükse plan modunda bir plan iste ve oku. Beğenmediğin yeri değiştirmeden uygulamaya geçme. Becerin burada {{bolum:2}} (bitiş çizgisini çizmek) ve {{bolum:1}} (hangi parçanın neyi yapacağı). Projeye bir `CLAUDE.md` aç ve yalnız bu iş için gerçekten gerekli üç dört satır yaz: nasıl çalıştırılır, nasıl test edilir, neye dokunulmaz. Hangi satırın kural, hangisinin tercih olduğunu {{bolum:5}} içindeki ölçütle ayır. İstisnası olmayan bir şey varsa (örneğin "örnek veri dosyasını silme") bunu CLAUDE.md'de değil izin kuralında tut, izin ve güvenlik bölümleri bu konuda yardım eder.
+Claude'a kod yazdırmadan önce işi tanımla. Girdi, çıktı, "bitti" ölçütü ve dokunulmayacak yerler yazılı olsun. İş küçükse plan modunda bir plan iste ve oku. Beğenmediğin yeri değiştirmeden uygulamaya geçme. Becerin burada {{bolum:2}} (bitiş çizgisini çizmek) ve {{bolum:1}} (hangi parçanın neyi yapacağı). Projeye bir `CLAUDE.md` aç ve yalnız bu iş için gerçekten gerekli üç dört satır yaz: nasıl çalıştırılır, nasıl test edilir, neye dokunulmaz. Hangi satırın kural, hangisinin tercih olduğunu {{bolum:5}} içindeki ölçütle ayır. İstisnası olmayan bir şey varsa (örneğin "örnek veri dosyasını silme") bunu CLAUDE.md'de değil izin kuralında tut, {{bolum:6}} bu konuda yardım eder.
 
 ### 2. Uygulama
 
-İşi küçük adımlarla ilerlet ve her adımdan sonra çalıştır. Oturum uzarsa bağlamı yönet: yeni bir iş için temiz oturum aç, gerekirse özet bırakarak devam et. Bu {{bolum:3}} bölümünün becerisidir. Tekrar eden bir adımı fark edersen (aynı komutu üçüncü kez yazıyorsan) onu bir skill ya da betiğe çevir, hook gerektiren bir şey varsa hook bölümüne dön. Projede birbirinden bağımsız iki parça varsa (örneğin betiğin kendisi ve belgesi) bunları ayrı worktree'lerde paralel yaptırabilirsin. Ama önce bağımsız olduklarını kanıtla, {{bolum:9}} bölümündeki uyarıyı hatırla: paralel olmak bağımsız olmak demek değildir.
+İşi küçük adımlarla ilerlet ve her adımdan sonra çalıştır. Oturum uzarsa bağlamı yönet: yeni bir iş için temiz oturum aç, gerekirse özet bırakarak devam et. Bu {{bolum:3}} bölümünün becerisidir. Tekrar eden bir adımı fark edersen (aynı komutu üçüncü kez yazıyorsan) onu bir skill ya da betiğe çevir, hook gerektiren bir şey varsa {{bolum:8}} bölümüne dön. Projede birbirinden bağımsız iki parça varsa (örneğin betiğin kendisi ve belgesi) bunları ayrı worktree'lerde paralel yaptırabilirsin. Ama önce bağımsız olduklarını kanıtla, {{bolum:9}} bölümündeki uyarıyı hatırla: paralel olmak bağımsız olmak demek değildir.
 
 ### 3. Doğrulama
 
@@ -80,10 +80,10 @@ Sayısal puan yok. Projeyi bitirdikten sonra aşağıdaki soruları kendine, dü
 - Her "tamamlandı" cümlesinin arkasında senin gördüğün bir çıktı var mı? ({{bolum:4}})
 - Kuralların hangileri Claude'un kararında, hangileri Claude Code'un uyguladığı katmanda? Bunu açıklayabilir misin? ({{bolum:5}})
 - Kontrolünü hatayı geri koyup düşürerek sınadın mı, yoksa yalnız geçtiğini mi gördün? ({{bolum:4}})
-- Yarım bıraktığın bir şey bir dosyada yazılı mı, yoksa yalnız aklında mı? ({{bolum:10}})
+- Yarım bıraktığın bir şey bir dosyada yazılı mı, yoksa yalnız aklında mı? ({{bolum:12}})
 - Paylaşılan bir kaynağı (dal, index, port, dosya) iki yerden kullandıysan çakışmayı nasıl önledin? ({{bolum:9}})
 - Öğrendiğin dersi doğru katmana yazdın mı ve neden orası? ({{bolum:12}})
-- Bu projeyi bir ekip arkadaşına devretsen, `KANIT.md` ve depo yeterli olur muydu? ({{bolum:11}})
+- Bu projeyi bir ekip arkadaşına devretsen, `KANIT.md` ve depo yeterli olur muydu? ({{bolum:3}})
 - Bir şey sana en pahalıya geldiyse, o hata bir şeyin kırılmasından mı, yoksa hiçbir şeye bakmadan başarılı görünmesinden mi çıktı? ({{ek:deneyimler}} sayfasındaki vakalar bu soruya dönüyor.)
 
 Kendini dürüstçe sorguladığında üç şeyi de yaz: neyi kaçırmış olabilirsin, hangi iddian en zayıf, hangi kararının gerekçesi yok. Rehberi bitirmiş olmanın işareti, bu üç cümleyi rahatça yazabilmek.

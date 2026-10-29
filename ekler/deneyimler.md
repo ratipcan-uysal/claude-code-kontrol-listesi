@@ -14,7 +14,7 @@ Vakaların ortak dersi şu: en pahalı hatalar bir şeyin kırılmasından deği
 
 **Ayırıcı kanıt:** Oturum kaydındaki etkin mod değeri. Ayar dosyasındaki değer kanıt değildir.
 
-**Sınır:** 29 Ağustos 2026 gözlemi. Davranış sürüme ve yönetilen politikaya göre değişebilir. İlgili maddeler: [6.7](../README.md#6-izin), [13.2](../README.md#13-gozetimsiz).
+**Sınır:** 29 Ağustos 2026 gözlemi. Nedeni o günkü kayıtlardan çıkarıldı. Belge ayrıca proje ya da yerel ayar dosyasına yazılan `bypassPermissions` değerinin etkisiz olduğunu söyler, mod yalnız kullanıcı ayarından gelir. Davranış sürüme ve yönetilen politikaya göre değişebilir. İlgili maddeler: [6.7](../README.md#6-izin), [13.2](../README.md#13-gozetimsiz).
 
 ## D02 · Hiç test koşmayan filtre yeşil döndü
 

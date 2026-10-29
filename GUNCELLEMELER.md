@@ -1,3 +1,13 @@
+# 29 Ekim 2026: Claude Code rehberi
+
+Kontrol listesine üç seviyeli, alıştırmalı bir rehber eklendi: 13 bölüm, yaklaşık 15 bin kelime.
+
+- Temel: zihinsel model, iş vermek, oturumu yönetmek, kanıtla teslim. Orta: talimat mimarisi, izin ve güvenlik, skill/alt ajan/MCP, hook. Uzman: paralel işler, gözetimsiz iş, ekip ölçeği, sistemi iyileştirmek, bitirme projesi.
+- Her bölüm: zihinsel model, karar kuralları, gerçek vaka ve etiketli kurgu senaryo, alıştırma ve "bitti" kanıtı, madde ve ek bağlantıları.
+- Ürün iddiaları resmî belgeyle karşılaştırıldı. Belgede olmayan yöntemler iş akışı önerisi diye işaretlendi.
+- Rehber web, Markdown ve PDF olarak üretiliyor. PDF 92 sayfa.
+- README'de kod içindeki `<ad>` gibi ifadelerin silinmesi düzeltildi.
+
 # 29 Ekim 2026: altı madde ve altı başvuru eki
 
 19 bölüm korundu, 107 madde 113'e çıktı. Mevcut kimlikler ve `cc-kontrol-v2` kaydı değişmedi, yeni maddeler bölüm sonlarına eklendi.

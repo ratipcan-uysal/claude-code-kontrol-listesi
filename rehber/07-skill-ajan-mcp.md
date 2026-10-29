@@ -91,9 +91,9 @@ Temiz bir makinede kurulumdan sonra skill'in listede göründüğünü doğrula.
 
 ## Hata biçimleri
 
-**Kurgu senaryo: tek örnekle sınanan skill.** Ayşe `surum-notu` skill'ini yazar, bir kez çalıştırır, sonuç güzel çıkar. İki hafta sonra ekip arkadaşı "teknik changelog hazırla" der ve Claude yanlışlıkla bu skill'i yükler. Açıklamada "kullanma" sınırı yoktur. Ayşe bir olumsuz örnek (teknik changelog) ve bir hata örneği (hiç etiket olmayan depo) ekleyip yeniden sınar.
+**Kurgu senaryo: tek örnekle sınanan skill.** Zeynep `surum-notu` skill'ini yazar, bir kez çalıştırır, sonuç güzel çıkar. İki hafta sonra ekip arkadaşı "teknik changelog hazırla" der ve Claude yanlışlıkla bu skill'i yükler. Açıklamada "kullanma" sınırı yoktur. Zeynep bir olumsuz örnek (teknik changelog) ve bir hata örneği (hiç etiket olmayan depo) ekleyip yeniden sınar.
 
-**Kurgu senaryo: bağlı ama yanlış hesap.** Emre bir proje yönetimi MCP'si ekler, `/mcp` yeşil gösterir. İlk okuma işlemi başka bir çalışma alanının kayıtlarını döndürür, çünkü sunucu kişisel hesapla giriş yapmıştır. Durum ekranı yalnız bağlantıya bakar, hesabı sınamaz.
+**Kurgu senaryo: bağlı ama yanlış hesap.** Hakan bir proje yönetimi MCP'si ekler, `/mcp` yeşil gösterir. İlk okuma işlemi başka bir çalışma alanının kayıtlarını döndürür, çünkü sunucu kişisel hesapla giriş yapmıştır. Durum ekranı yalnız bağlantıya bakar, hesabı sınamaz.
 
 ## Alıştırma: bir skill yaz ve olumlu, olumsuz örnekle sına
 

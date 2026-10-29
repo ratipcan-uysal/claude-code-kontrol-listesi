@@ -18,13 +18,13 @@ Test aracı "başarılı" der. Bu tek sözcük iki çok farklı durumu örter: 2
 
 Test araçları tek bir testi çalıştırmak için bir filtre kabul eder. Filtre hiçbir testle eşleşmezse bazı araçlar hata vermez ve boş koşuyu başarılı sayar. Süitin okunur adını verirsen eşleşme olmayabilir. Tip ya da fonksiyon adıyla filtrelersen eşleşir ve çıktıda sayı sıfırın üstüne çıkar. Sözdizimi araca göre değişir, ilke değişmez: filtreli koşunun sonunda test sayısı sıfırdan büyük olmalı.
 
-**Gerçek vaka D02.** Test komutuna süitin okunur adı filtre olarak verildi, eşleşen test olmadı ve çıktı "başarılı" dedi. Rapora "test geçiyor" diye girmek üzereydi. Aynı gün iki benzer yeşil daha çıktı: hiçbir dosya bulamadığı için geçen bir lint ve penceresi dar olduğu için körleşen bir lint. Üçünün ortak yanı, durum satırının doğru, kapsamın boş olmasıdır. Ayrıntısı [Gerçek deneyimlerden on ders](../ekler/deneyimler.md) sayfasında D02. [12.1](../README.md#12-dogrulama)
+**Gerçek vaka D02.** Test komutuna süitin okunur adı filtre olarak verildi, eşleşen test olmadı ve çıktı "başarılı" dedi. Rapora "test geçiyor" diye girmek üzereydi. Aynı gün iki benzer yeşil daha çıktı: hiçbir dosya bulamadığı için geçen bir lint ve penceresi dar olduğu için körleşen bir lint (lint, kod stilini ve basit hataları denetleyen araçtır). Üçünün ortak yanı, durum satırının doğru, kapsamın boş olmasıdır. Ayrıntısı [Gerçek deneyimlerden on ders](../ekler/deneyimler.md) sayfasında D02. [12.1](../README.md#12-dogrulama)
 
 ## Yeni kontrolü hatayı geri koyarak sınamak
 
 Claude yeni bir test, lint kuralı ya da doğrulama betiği yazdıysa onun çalıştığını göstermek için bir tek yol var: kontrolün yakalaması gereken hatayı kasten geri koy ve kontrolün düştüğünü gör. Düşmüyorsa kontrol hiçbir şeye bakmıyor demektir. Sonra hatayı çıkar ve kontrolün yeşile döndüğünü gör. Bu üç adımlık döngü (yeşil, kasten kır, kırmızı, düzelt, yeşil) bir kontrolün gerçekten çalıştığının tek kanıtıdır. [12.2](../README.md#12-dogrulama)
 
-**Gerçek vaka D08 (yan örnek).** Ağır komutları reddeden bir hook 16 vakalık bir testle sınandı ve sıfır yanlış verdi. Test gerçekten bakıyor mu diye hafif komut istisnası kasten bozuldu ve test iki yanlış verdi. Düşen test, testin işe yaradığını gösterdi. Ayrıntısı D08.
+**Gerçek vaka D08 (yan örnek).** Ağır komutları reddeden bir hook (araç çalışmadan önce devreye giren betik, ayrıntısı [Bölüm 8: Hook ile garanti: olay, çıkış kodu, sınama](08-hook-ile-garanti.md)) 16 vakalık bir testle sınandı ve sıfır yanlış verdi. Test gerçekten bakıyor mu diye hafif komut istisnası kasten bozuldu ve test iki yanlış verdi. Düşen test, testin işe yaradığını gösterdi. Ayrıntısı D08.
 
 ## Görsel değişikliği önce/sonra görmek
 
@@ -34,7 +34,7 @@ Bir arayüz, bir slayt ya da bir grafik değiştiyse metin raporu yetmez. Claude
 
 Alt ajan kendi penceresinde çalışır ve ana oturuma bir özet döner. Özet, ajanın yaptığı şeyin anlatısıdır. "Dört dosyayı güncelledim ve testler geçti" cümlesini üç şeyle eşleştir: `git diff --stat` gerçekten dört dosya mı gösteriyor, test çıktısında sayı var mı, alt ajanın dokunduğunu söylediği her dosyada değişiklik görünüyor mu? Eşleşmeyen her parça bir soru işaretidir. Bunu kendin yapamıyorsan ayrı bir doğrulayıcı ajana "bu rapordaki her iddiayı kanıtla kontrol et" diye ver, ama yine ondan da çıktı iste. [12.3](../README.md#12-dogrulama)
 
-**Gerçek vaka D10.** Bir denetim notu "uygulama yalnız bir ülkede satışta" diyordu, not oturuma yapıştırıldı ve karar bu cümleye dayandı. Yönetim panelinde uygulama 175 ülkedeydi. Aynı oturumda bir sürüm notundaki "hepsinin görseli var" iddiası da 11 eksik görselle çürüdü. Rapor ne kadar özenli yazılmış olursa olsun, değişebilen bir durumu kaynağında kontrol etmeden aktarma. Ayrıntısı D10. [12.3](../README.md#12-dogrulama)
+**Gerçek vaka D10.** Yapıştırılan bir denetim notundaki "uygulama yalnız bir ülkede satışta" cümlesi kaynağında kontrol edilmedi ([Bölüm 1: Zihinsel model: döngü, bağlam ve harness](01-zihinsel-model.md)). Aynı oturumda bir sürüm notundaki "hepsinin görseli var" iddiası da 11 eksik görselle çürüdü. Rapor ne kadar özenli yazılmış olursa olsun, değişebilen bir durumu kaynağında kontrol etmeden aktarma. Ayrıntısı D10. [12.3](../README.md#12-dogrulama)
 
 ## Bağımsız inceleme ve üç satır
 
@@ -51,7 +51,7 @@ Teslimin üç ayrı aşaması var ve her birini kendi kanıtıyla adlandır:
 | Aşama | Anlamı | Kanıt |
 |---|---|---|
 | Yerel | Değişiklik bu makinede çalışıyor | Test sayısı, çıktı, görüntü |
-| Push | Değişiklik uzak depoda | Dal adı, commit kimliği, CI sonucu |
+| Push | Değişiklik uzak depoda | Dal adı, commit kimliği, CI (her push'ta testleri otomatik koşturan sistem) sonucu |
 | Yayın | Kullanıcı artık görüyor | Yayındaki sürümün kendisine bakılmış olması |
 
 "Bitti" demek bu üçünden hangisini kastettiğini söylemeden anlamsızdır. Push ve deploy yetkisini hedefe ve kapsama bağla: bir dala push izni vermek başka bir dala ya da yayına izin vermek demek değildir. [12.7](../README.md#12-dogrulama) [15.3](../README.md#15-git)

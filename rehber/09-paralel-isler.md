@@ -70,11 +70,11 @@ Makineyi yormadan paralel iş çalıştırmanın bir yolu, işi bulut oturumuna 
 
 ## Hata biçimleri
 
-**Gerçek vaka D06: başka oturumun commit'i değişikliklerimi götürdü.** Değişiklikler stage edildi, ardından üç dakikalık bir derleme koştu. Bu arada aynı repoda çalışan başka bir oturum kendi raporunu commit'ledi ve commit index'in tamamını aldı. Dört dosya başka bir mesajın altına girdi, asıl commit "değişiklik yok" diye boş döndü. İçerik doğruydu, yalnız mesaj yanlıştı. Ders: stage ile commit tek komutta olsun, arada derleme gerekiyorsa ayrı worktree kullan. Ayrıntısı [Gerçek deneyimlerden on ders](../ekler/deneyimler.md) sayfasında D06.
+**Gerçek vaka D06: başka oturumun commit'i değişikliklerimi götürdü.** Ortak index yüzünden dört dosya başka bir mesajın altına girdi ([Bölüm 4: Kanıtla teslim: iddiayı sayıya çevir](04-kanitla-teslim.md)). Ders: stage ile commit tek komutta olsun, arada derleme gerekiyorsa ayrı worktree kullan. Ayrıntısı [Gerçek deneyimlerden on ders](../ekler/deneyimler.md) sayfasında D06.
 
-**Gerçek vaka D08: dört paralel oturum makineyi kilitledi.** Dört alt oturum ayrı worktree'lerde aynı anda derleme ve test koştu, başka projelerin derlemeleri de sürüyordu. Yük ortalaması 720'ye çıktı, sakin makinede 4'tü. Worktree dosyaları ayırmıştı, işlemciyi ayırmamıştı. "Ağır komutu kilitle sar" diye verilen metin talimatı yeni oturumlara ulaşmadı. Çalışan çözüm kesin katmandaydı: ağır komutları iki yuvalı kilitle koşturan bir sarmalayıcı ve sırasız ağır komutu reddeden bir hook. Ayrıntısı D08.
+**Gerçek vaka D08: dört paralel oturum makineyi kilitledi.** Dört alt oturum ayrı worktree'lerde aynı anda derleme ve test koştu, başka projelerin derlemeleri de sürüyordu. Yük ortalaması 720'ye çıktı, sakin makinede 4'tü. Worktree dosyaları ayırmıştı, işlemciyi ayırmamıştı. Çözüm kesin katmandaydı: iki yuvalı kilitle bir sarmalayıcı ve bir hook ([Bölüm 5: Talimat mimarisi: rica ile garanti](05-talimat-mimarisi.md), [Bölüm 8: Hook ile garanti: olay, çıkış kodu, sınama](08-hook-ile-garanti.md)). Ayrıntısı D08.
 
-**Kurgu senaryo: iki özellik, tek ekran.** Ayşe iki ajanı iki worktree'de çalıştırır. Birine "profil ekranına avatar ekle", ötekine "profil ekranının yerleşimini yenile" der. Dosyalar ayrıdır, ama iki iş aynı ekranı yeniden yazıyor. Birleştirirken biri ötekinin işini siler. Sonuçlar bağımsız değildi, yalnız dosya adları ayrıydı.
+**Kurgu senaryo: iki özellik, tek ekran.** Nilay iki ajanı iki worktree'de çalıştırır. Birine "profil ekranına avatar ekle", ötekine "profil ekranının yerleşimini yenile" der. Dosyalar ayrıdır, ama iki iş aynı ekranı yeniden yazıyor. Birleştirirken biri ötekinin işini siler. Sonuçlar bağımsız değildi, yalnız dosya adları ayrıydı.
 
 ## Alıştırma: iki bağımsız işi iki worktree'de bitir
 

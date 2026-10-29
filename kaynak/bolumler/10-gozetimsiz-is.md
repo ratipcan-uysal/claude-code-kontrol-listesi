@@ -1,8 +1,9 @@
 ## Zihinsel model: sen yokken karar veren bir sistem kuruyorsun
 
-Gözetimsiz iş, "Claude'u çalıştırıp uzaklaşmak" değildir. Orada olmadığın sürece her kararı Claude verir, her tıkanıklıkta sana soramaz ve her sessizlik senin için bir sonuç gibi görünür. : **hangi kararı Claude verebilir**, **ne olursa durmalı** ve **bittiğini hangi kanıt gösterir**.
+Gözetimsiz iş, "Claude'u çalıştırıp uzaklaşmak" değildir. Orada olmadığın sürece her kararı Claude verir, her tıkanıklıkta sana soramaz ve her sessizlik senin için bir sonuç gibi görünür. Bu yüzden baştan üç şeyi yazarsın: **hangi kararı Claude verebilir**, **ne olursa durmalı** ve **bittiğini hangi kanıt gösterir**.
 
-Gözetimsiz işin en pahalı hatası iş yapılmaması değil, yapılmadığının fark edilmemesidir. Sabah baktığında log boşsa ve hiçbir hata yoksa, iki ihtimal var: iş sessizce bitti ya da hiç başlamadı. İkisi dışarıdan aynı görünür. 
+Gözetimsiz işin en pahalı hatası iş yapılmaması değil, yapılmadığının fark edilmemesidir. Sabah baktığında log boşsa ve hiçbir hata yoksa, iki ihtimal var: iş sessizce bitti ya da hiç başlamadı. İkisi dışarıdan aynı görünür.
+
 ## Sen yokken hangi karar verilebilir
 
 "Sormadan ilerle" tek başına yetmez. Hangi kararın serbest, hangisinin yasak olduğunu yazmak gerekir. Pratik ölçü geri alınabilirliktir:
@@ -83,7 +84,7 @@ Uyku ya da çökme işi baştan başlatmamalı. Ara çıktıyı diske yaz, her a
 
 ## Hata biçimleri
 
-**Gerçek vaka D01: mod sessizce değişti.** Zamanlanmış oturumların izinsiz ilerlemesi için bir mod ayarlanmıştı. Bir projenin 43 oturum kaydındaki 345 mod değeri tarandı ve bu mod hiç görünmüyordu. Mod ilk kullanımda onay penceresi istiyor, zamanlanmış oturum pencereyi gösteremeyince hata vermeden varsayılan moda düşüyordu. Gözetimsiz koşumu ayakta tutan şey projenin kendi izin listesiydi. Ayrıntısı {{ek:deneyimler}} sayfasında D01.
+**Gerçek vaka D01: mod sessizce değişti.** Ayarlanan `bypassPermissions` modu zamanlanmış oturumda hiç görünmedi, oturum hata vermeden varsayılan moda düştü ve işi projenin kendi izin listesi ayakta tuttu ({{bolum:6}}). Ayrıntısı {{ek:deneyimler}} sayfasında D01.
 
 **Gerçek vaka D03: arka plandaki iş tur bitince öldü.** Zamanlanmış bir görev uzun bir veri çekimini arka planda başlattı ve turu "bekliyorum" diye kapattı. Oturum kapanınca süreç öldü, çıktı dizinle birlikte silindi. 83 dakika boyunca ağa tek istek gitmedi ve geriye tek satır kanıt kalmadı. Aynı iş ön planda ve kalıcı log'la 12 dakikada bitti. Ayrıntısı D03.
 
@@ -91,9 +92,9 @@ Uyku ya da çökme işi baştan başlatmamalı. Ara çıktıyı diske yaz, her a
 
 **Gerçek vaka D05: uyku engelleyici bataryada işe yaramadı.** Gece koşumu bir uyku engelleyiciyle sarılmıştı, makine prizde değildi. 19 saatte süreç 1,2 saniye işlemci zamanı kullandı ve çıktı dosyası boş kaldı. Prize takılınca aynı koşum 20 dakikada bitti. Ayrıntısı D05.
 
-**Gerçek vaka D09: geçici dizin toptan silindi.** Çok günlük bir yazı serisinin kaynakları oturumun geçici çalışma dizinindeydi. Dizin ağacı bir akşam silindi. Metinler alt ajan kayıtlarından geri kuruldu, görsellerin yerel kopyası gelmedi. Ayrıntısı D09.
+**Gerçek vaka D09: geçici dizin toptan silindi.** Çok günlük bir işin kaynakları geçici dizindeydi ve bir akşam silindi ({{bolum:3}}). Kaynağı kalıcı yola yaz. Ayrıntısı D09.
 
-**Kurgu senaryo: sabah boş log.** Deniz her gece yapılan bir raporu `/loop` ile kurar ve ertesi sabah log'un boş olduğunu görür. Sebep, 7 gün dolduğu için görevin kendini silmesidir. Hata yoktu, çünkü koşum hiç tetiklenmemişti. Kalıcı zamanlamayı bulut rutinine ya da masaüstü göreve taşır ve yanına son başarılı koşumu kontrol eden bir nöbet ekler.
+**Kurgu senaryo: sabah boş log.** Okan her gece yapılan bir raporu `/loop` ile kurar ve ertesi sabah log'un boş olduğunu görür. Sebep, 7 gün dolduğu için görevin kendini silmesidir. Hata yoktu, çünkü koşum hiç tetiklenmemişti. Kalıcı zamanlamayı bulut rutinine ya da masaüstü göreve taşır ve yanına son başarılı koşumu kontrol eden bir nöbet ekler.
 
 ## Alıştırma: bir gece koşumu kur, sabah kanıtla oku
 

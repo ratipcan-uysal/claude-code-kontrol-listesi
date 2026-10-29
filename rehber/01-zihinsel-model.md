@@ -14,6 +14,8 @@ Döngüyü üç parça yürütür:
 - **Araçlar** iş yapar: dosya okur ve düzenler, arama yapar, kabuk komutu çalıştırır, web'e çıkar, alt ajan başlatır.
 - **Harness** modeli saran düzendir. Hangi aracın izinli olduğunu, bağlama neyin gireceğini, hangi hook'un çalışacağını o belirler. Claude Code'un kendisi bir harness'tır.
 
+Rehberde sık geçen üç terim: **hook**, bir olay olunca kendiliğinden çalışan küçük bir betiktir. **Skill**, Claude'a bir işin nasıl yapılacağını anlatan, yeniden kullanılabilir bir tarif dosyasıdır. **MCP**, Claude'u dış bir sisteme araç olarak bağlayan sunucudur.
+
 Bu ayrım ilk bakışta akademik görünür. Ama Claude Code'la yaşadığın hemen her sürprizin açıklaması bu üç parçadan birindedir. "Claude kuralımı unuttu" bir bağlam sorunudur. "Claude bu komutu çalıştırmadı" bir izin sorunudur. "Claude yanlış dosyayı düzenledi" bir model kararıdır. Uzman, sonucu gördüğünde önce hangi parçadan geldiğini sorar.
 
 ## Bağlam penceresi: modelin gördüğü tek şey
@@ -29,7 +31,7 @@ Bir kısmı oturum başında yüklenir, bir kısmı gerektiğinde:
 
 Her yeni oturum boş bir pencereyle başlar. Oturumdan oturuma taşınan yalnız diskte duran şeylerdir: CLAUDE.md her seferinde yeniden okunur, otomatik bellek yeniden yüklenir, dosyalar yerinde durur. Konuşmanın kendisi taşınmaz. Aynı konuşmaya dönmenin tek yolu `--continue` ya da `--resume` ile o oturumu açmaktır.
 
-Pencere dolunca Claude Code konuşmayı özetler. Pencerenin boyutu modele ve plana göre değişir. 1 milyon token'lık pencerede sıkıştırma varsayılan olarak 967 bin civarında tetiklenir, 200 bin token'lık pencerede sınıra gelince. Belge sıkıştırmanın bedelini açıkça yazar: konuşmanın başındaki ayrıntılı talimatlar kaybolabilir. Proje kökündeki CLAUDE.md ve otomatik bellek sıkıştırmadan sonra diskten yeniden eklenir. Sohbette verdiğin bir talimat ise özetin insafına kalır.
+Pencere dolunca Claude Code konuşmayı özetler. Pencerenin boyutu modele ve plana göre değişir. Sıkıştırma, yerel 1 milyon token'lık pencereli modellerde varsayılan olarak 967 bin civarında tetiklenir, 200 bin token'lık pencerede sınıra gelince. Belge sıkıştırmanın bedelini açıkça yazar: konuşmanın başındaki ayrıntılı talimatlar kaybolabilir. Proje kökündeki CLAUDE.md ve otomatik bellek sıkıştırmadan sonra diskten yeniden eklenir. Sohbette verdiğin bir talimat ise özetin insafına kalır.
 
 ## Neyi kim yapar
 
@@ -40,7 +42,7 @@ Pencere dolunca Claude Code konuşmayı özetler. Pencerenin boyutu modele ve pl
 | Yapmasına izin var mı? | Harness: izin kuralları, mod, hook | `/permissions`, `/hooks`, `/status` |
 | Yaptığı şey doğru mu? | Kimse kendiliğinden söylemez | Test, ekran, diff: senin kanıtın |
 
-Son satır bilerek boş bırakıldı. Döngünün "doğrula" evresi modelin kendi kontrolüdür. Senin kontrolünün yerini tutmaz. Bunu [Bölüm 5: Talimat mimarisi: rica ile garanti](05-talimat-mimarisi.md) ve kontrol listesinin doğrulama bölümü ayrıntılandırıyor.
+Son satır bilerek boş bırakıldı. Döngünün "doğrula" evresi modelin kendi kontrolüdür. Senin kontrolünün yerini tutmaz. Bunu [Bölüm 4: Kanıtla teslim: iddiayı sayıya çevir](04-kanitla-teslim.md) ve kontrol listesinin doğrulama bölümü ayrıntılandırıyor.
 
 ## Alt ajan: ayrı bir pencere
 
@@ -57,7 +59,7 @@ Alt ajan kendi bağlam penceresinde çalışır ve ana oturuma yalnız bir özet
 
 ## Hata biçimleri
 
-**Gerçek vaka: kural vardı, model görmedi.** Ortak kurallar bir dosyaya taşınıp dört projenin CLAUDE.md'sine import edildi. Etkileşimli oturumda her şey yolundaydı. Headless koşumda model yalnız import satırını gördü, dosyanın içeriğini görmedi, çünkü proje dışı import onayı o koşumda hiç sorulmamıştı. Model kuralı "çiğnemedi", kural hiç bağlama girmedi. Ayrıntısı [Gerçek deneyimlerden on ders](../ekler/deneyimler.md) sayfasında D07.
+**Gerçek vaka: kural vardı, model görmedi.** Ortak kurallar bir dosyaya taşınıp dört projenin CLAUDE.md'sine import edildi. `claude -p` ile koşan, ekransız ve soru sormayan headless oturumda model yalnız import satırını gördü, dosyanın içeriğini görmedi, çünkü proje dışı import onayı o koşumda hiç sorulmamıştı. Model kuralı "çiğnemedi", kural hiç bağlama girmedi. Ayrıntısı [Gerçek deneyimlerden on ders](../ekler/deneyimler.md) sayfasında D07.
 
 **Gerçek vaka: bağlamdaki eski bilgi, model için gerçektir.** On gün önceki bir rapor "uygulama yalnız bir ülkede satışta" diyordu ve bu cümle oturuma yapıştırıldı. Model buna dayanarak öneri yaptı. Gerçekte uygulama 175 ülkede satıştaydı. Pencereye giren her cümle, kaynağına bakılmadıkça doğru kabul edilir. Ayrıntısı D10.
 

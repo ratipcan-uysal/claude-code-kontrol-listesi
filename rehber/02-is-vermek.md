@@ -65,9 +65,9 @@ Aynı bilgi bir mühendise yazılan commit mesajında, bir yöneticiye giden öz
 
 ## Hata biçimleri
 
-**Gerçek vaka: ölçüt yoktu, yeşil yanıltıcıydı.** Bir test komutuna süitin okunur adı filtre olarak verildi. Eşleşen test çıkmadı, sıfır test koştu ve çıktı "başarılı" dedi. İstekte yalnız "testler geçsin" yazıyorsa bu yeşil kabul edilir. "En az şu kadar test koşsun ve geçsin" yazıyorsa sıfır hemen göze çarpar. Ayrıntısı [Gerçek deneyimlerden on ders](../ekler/deneyimler.md) sayfasında D02. [Bölüm 4: Kanıtla teslim: iddiayı sayıya çevir](04-kanitla-teslim.md) bölümü bu vakayı kanıt açısından işler.
+**Gerçek vaka: ölçüt yoktu, yeşil yanıltıcıydı.** Sıfır test koşan bir komut "başarılı" dedi (D02, [Gerçek deneyimlerden on ders](../ekler/deneyimler.md)). İstekte yalnız "testler geçsin" yazıyorsa bu yeşil kabul edilir. "En az şu kadar test koşsun ve geçsin" yazıyorsa sıfır hemen göze çarpar. Vakanın ayrıntısı [Bölüm 4: Kanıtla teslim: iddiayı sayıya çevir](04-kanitla-teslim.md) bölümünde.
 
-**Gerçek vaka: olgu, eski rapordan geldi.** On gün önceki bir denetim notu "uygulama yalnız bir ülkede satışta" diyordu. Not oturuma girdi ve öneri ona dayandı. Yönetim panelinde uygulama 175 ülkedeydi. İsteğin içine yapıştırdığın her olgu, ölçütün bir parçası olur. Yanlış olgu yanlış ölçüt doğurur. Ayrıntısı D10.
+**Gerçek vaka: olgu, eski rapordan geldi.** İsteğin içine yapıştırdığın her olgu ölçütün bir parçası olur, yanlış olgu yanlış ölçüt doğurur. Eski bir raporun cümlesinin oturuma girip öneriyi nasıl bozduğunu [Bölüm 1: Zihinsel model: döngü, bağlam ve harness](01-zihinsel-model.md) bölümünde gördün (D10).
 
 **Kurgu senaryo: kısıtsız düzeltme.** Kaan bir sipariş toplamı hatasını düzelttirir. Claude hatayı düzeltir, ayrıca yakındaki üç fonksiyonun adını "daha okunur" olacak şekilde değiştirir. Diff 40 satıra çıkar, Kaan dört fonksiyonun hangisinin gerçekten gerektiğini ayıklayamaz ve hepsini geri alır. "Yalnız `toplam.py`, başka dosya ve ad değişikliği yok" kısıtı bunu önlerdi.
 

@@ -24,7 +24,7 @@ Konuşma taşınmaz, dosya taşınır. İş yarım kalacaksa oturumu kapatmadan 
 
 ## /compact: ne kaybolur
 
-`/compact` konuşmayı özetleyip sürdürür. Belgeye göre sıkıştırmadan sonra şu şeyler diskten geri gelir: proje kökündeki CLAUDE.md, kapsamsız kurallar, otomatik bellek ve plan modunda yazılan plan. Son okunan ya da düzenlenen dosyalardan en çok beşi yeniden okunur ve 5.000 token'dan büyük dosya yalnız yol olarak döner.
+`/compact` konuşmayı özetleyip sürdürür. Belgeye göre sıkıştırmadan sonra şu şeyler diskten geri gelir: proje kökündeki CLAUDE.md, kapsamsız kurallar, otomatik bellek ve plan modunda yazılan plan. Çağırdığın skill'lerin gövdesi de geri gelir (skill başına 5.000, toplam 25.000 token, eskiler düşer). Son okunan ya da düzenlenen dosyalardan en çok beşi yeniden okunur ve 5.000 token'dan büyük dosya yalnız yol olarak döner.
 
 Şunlar özetin insafına kalır: sohbette verdiğin talimatlar, `paths` alanıyla yüklenen kurallar ve alt dizin CLAUDE.md dosyaları (bunlar ilgili dosyaya yeniden dokunulunca geri yüklenir), hook'ların eklediği bağlam ve araç çıktılarının ayrıntısı. Bu yüzden `/compact` kullanırken neyin korunacağını yaz: `/compact API değişikliklerini ve test komutlarını koru`. Önemli bir talimat sohbetteyse önce dosyaya taşı. [2.6](../README.md#2-baglam)
 

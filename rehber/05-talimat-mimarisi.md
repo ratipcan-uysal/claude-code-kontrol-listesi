@@ -38,7 +38,7 @@ Belgenin hook ile skill karşılaştırmasındaki iki cümle bütün bölümü �
 
 **Her hook kesin değildir.** `command` ve `http` tipindeki hook kesindir. `prompt` ve `agent` tipindeki hook kararı başka bir modele bırakır, belgeye göre bunlar da kesin değildir. Hook'un kendisi çökerse eylemi de durdurmak istiyorsan hata politikasını buna göre seç. [8.5](../README.md#8-hook)
 
-**Deny kuralı bir güvenlik sınırı değildir.** Bash kuralları komutun metnini eşler, niyetini değil. `Bash(rm *)` kuralı `/bin/rm` ya da `bash -c 'rm ...'` biçimini durdurmaz. Bir dosyaya okuma yasağı `cat .env`'i yakalar ama dosyayı açan bir betiği yakalamaz. Gerçek sınır işletim sistemi düzeyindeki sandbox'tır. O da yalnız kabuk komutlarını sarar. Dosya okuma ve düzenleme araçları, web araçları ve hook'lar sandbox dışında çalışır, onları izin kuralları yönetir. Belge ikisini birlikte kullanmayı önerir. [6.2](../README.md#6-izin) [7.5](../README.md#7-guvenlik)
+**Deny kuralı bir güvenlik sınırı değildir.** Bash kuralları komutun metnini eşler, niyetini değil: `Bash(rm *)` kuralı `/bin/rm` biçimini durdurmaz. Gerçek sınır işletim sistemi düzeyindeki sandbox'tır ve o da yalnız kabuk komutlarını sarar. İkisinin ayrıntısı [Bölüm 6: İzin ve güvenlik: mod, kural, sandbox](06-izin-ve-guvenlik.md) bölümünde. [6.2](../README.md#6-izin) [7.5](../README.md#7-guvenlik)
 
 ## Bir kuralın yerini bulmak
 
@@ -57,7 +57,7 @@ Belgenin önerdiği tetikler kısa bir karar listesi verir:
 
 **Gerçek vaka: metin kuralı yeni oturuma ulaşmadı.** Dört paralel oturum aynı anda derleme koştu, makinenin yükü 720'ye çıktı. Oturumlara "ağır komutu kilitle sar" diye talimat verildi. Bir oturum kilitsiz bir derleme başlattı ve sonradan durdurmak zorunda kaldı. Metin kuralı o anki oturumlara ulaştı, yenilerine ve başka projelere ulaşmadı. Çalışan çözüm kesin katmandaydı: ağır komutları kilitle koşturan bir sarmalayıcı ve sırasız ağır komutu reddeden bir PreToolUse hook'u. Hook 16 vakalık bir testle sınandı. Ayrıntısı [Gerçek deneyimlerden on ders](../ekler/deneyimler.md) sayfasında D08.
 
-**Gerçek vaka: kesin sandığın katman hiç yüklenmedi.** Proje dışı bir dosyayı import eden CLAUDE.md, headless koşumda içeriği yüklemedi. Çözüm aynı bilgiyi her oturumda bağlama koyan bir SessionStart hook'u oldu. Burada hook kuralı uygulatmadı, yalnız bağlama girmesini garanti etti. Kuralın kendisi yine Claude'un kararındaydı. Ayrıntısı D07.
+**Gerçek vaka: kesin sandığın katman hiç yüklenmedi.** Proje dışı bir dosyayı import eden CLAUDE.md headless koşumda içeriği yüklemedi (D07, [Bölüm 1: Zihinsel model: döngü, bağlam ve harness](01-zihinsel-model.md) ve [Bölüm 8: Hook ile garanti: olay, çıkış kodu, sınama](08-hook-ile-garanti.md)). Çözüm olan SessionStart hook'u kuralı uygulatmadı, yalnız bağlama girmesini garanti etti. Kuralın kendisi yine Claude'un kararındaydı.
 
 **Kurgu senaryo: çoğu zaman tutan kural.** Mert'in ekibi CLAUDE.md'ye "commit'ten önce tip kontrolünü çalıştır" yazar. Haftalarca sorun çıkmaz. Bir gün uzun bir oturumun sonunda Claude tip kontrolünü atlayıp commit atar, kırık kod ana dala girer. Belge tam bu satırı örnek verir: çoğu zaman çalışır, her zaman değil. Ekip kuralı bir hook'a taşır. Artık tip kontrolü geçmeyen commit hiç oluşmaz.
 
@@ -75,7 +75,7 @@ Bunu gerçek bir iş deposunda değil, bu iş için açtığın bir deneme depos
 
 ## Bağlantılar
 
-Kontrol listesi: [1.1](../README.md#1-talimat) [1.2](../README.md#1-talimat) [1.4](../README.md#1-talimat) [6.2](../README.md#6-izin) [7.1](../README.md#7-guvenlik) [7.5](../README.md#7-guvenlik) [7.6](../README.md#7-guvenlik) [8.4](../README.md#8-hook) [8.5](../README.md#8-hook) [9.3](../README.md#9-yeniden) [9.4](../README.md#9-yeniden). Önceki bölüm: [Bölüm 1: Zihinsel model: döngü, bağlam ve harness](01-zihinsel-model.md). Ekler: [İpuçları ve püf noktaları](../ekler/ipuclari.md), [Dosya konumları](../ekler/dosyalar.md).
+Kontrol listesi: [1.1](../README.md#1-talimat) [1.2](../README.md#1-talimat) [1.4](../README.md#1-talimat) [6.2](../README.md#6-izin) [7.1](../README.md#7-guvenlik) [7.5](../README.md#7-guvenlik) [7.6](../README.md#7-guvenlik) [8.4](../README.md#8-hook) [8.5](../README.md#8-hook) [9.3](../README.md#9-yeniden) [9.4](../README.md#9-yeniden). Önceki bölüm: [Bölüm 4: Kanıtla teslim: iddiayı sayıya çevir](04-kanitla-teslim.md). Ekler: [İpuçları ve püf noktaları](../ekler/ipuclari.md), [Dosya konumları](../ekler/dosyalar.md).
 
 ---
 
