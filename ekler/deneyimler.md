@@ -108,4 +108,4 @@ Vakaların ortak dersi şu: en pahalı hatalar bir şeyin kırılmasından deği
 
 ---
 
-[Kontrol listesi](../README.md) · [Komutlar ve kısayollar](komutlar.md) · [Sorun giderme](sorun-giderme.md) · [Dosya konumları](dosyalar.md) · [İpuçları ve püf noktaları](ipuclari.md) · [Terimler sözlüğü](sozluk.md)
+[Kontrol listesi](../README.md) · [Rehber](../rehber/README.md) · [Komutlar ve kısayollar](komutlar.md) · [Sorun giderme](sorun-giderme.md) · [Dosya konumları](dosyalar.md) · [İpuçları ve püf noktaları](ipuclari.md) · [Terimler sözlüğü](sozluk.md)

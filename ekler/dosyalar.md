@@ -107,4 +107,4 @@ Bir projenin bütün yerel izini `claude purge` siler: kayıtlar, bellek, dosya 
 
 ---
 
-[Kontrol listesi](../README.md) · [Komutlar ve kısayollar](komutlar.md) · [Sorun giderme](sorun-giderme.md) · [İpuçları ve püf noktaları](ipuclari.md) · [Gerçek deneyimlerden on ders](deneyimler.md) · [Terimler sözlüğü](sozluk.md)
+[Kontrol listesi](../README.md) · [Rehber](../rehber/README.md) · [Komutlar ve kısayollar](komutlar.md) · [Sorun giderme](sorun-giderme.md) · [İpuçları ve püf noktaları](ipuclari.md) · [Gerçek deneyimlerden on ders](deneyimler.md) · [Terimler sözlüğü](sozluk.md)

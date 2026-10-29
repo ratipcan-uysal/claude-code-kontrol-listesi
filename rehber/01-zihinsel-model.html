@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Claude Code&#x27;la yaşanan her sürprizin açıklaması üç parçadan birindedir: model, araç ya da harness. Bağlam penceresi modelin gördüğü tek şeydir.">
+<title>Zihinsel model: döngü, bağlam ve harness · Claude Code kontrol listesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Düzen: tek sütun okuma alanı, üstte yapışkan ilerleme ve süzgeç çubuğu, geniş ekranda solda bölüm dizini */
+:root{
+ --bg:#f6f7f9;--yuzey:#ffffff;--fg:#17202c;--soft:#5b6472;--line:#e1e5eb;--kod:#eef1f5;
+ --acc:#1d4f91;--accbg:#e6eef9;--ile:#6a4a9c;--ilebg:#f0eaf8;--ok:#1f7a4d;
+ --f-baslik:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+ --f-govde:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+ --f-kod:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-govde);font-size:15px;line-height:1.55;margin:0}
+.sar{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;grid-template-columns:1fr;gap:32px}
+@media (min-width:980px){.sar{grid-template-columns:230px minmax(0,1fr)}}
+nav.dizin{display:none}
+@media (min-width:980px){nav.dizin{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);align-self:start;max-height:calc(100vh - 120px);overflow:auto;font-size:13px}}
+nav.dizin a{display:flex;justify-content:space-between;gap:8px;color:var(--soft);text-decoration:none;padding:4px 8px;border-radius:6px}
+nav.dizin a:hover,nav.dizin a:focus-visible{background:var(--accbg);color:var(--fg);outline:none}
+nav.dizin small{font-variant-numeric:tabular-nums}
+main{min-width:0}
+header.ust h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+header.ust p{color:var(--soft);max-width:65ch;margin:0 0 6px}
+.surum{font-family:var(--f-kod);font-size:12px;color:var(--soft)}
+.cubuk{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0;margin:20px 0 8px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.ilerleme{flex:1 1 220px;min-width:0}
+.ilerleme .etiket{font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
+.ilerleme .yol{height:6px;background:var(--line);border-radius:3px;margin-top:5px;overflow:hidden}
+.ilerleme .dolu{height:100%;width:0;background:var(--ok);transition:width .25s}
+.suzgec{display:flex;flex-wrap:wrap;gap:6px}
+.suzgec button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--yuzey);color:var(--fg);padding:5px 11px;border-radius:999px;cursor:pointer}
+.suzgec button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.suzgec button:focus-visible,.kopya:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+h2{font-family:var(--f-baslik);font-size:24px;letter-spacing:-.01em;margin:44px 0 6px;text-wrap:balance;scroll-margin-top:90px}
+h2 .no{color:var(--acc);margin-right:10px;font-variant-numeric:tabular-nums}
+.giris{color:var(--soft);max-width:68ch;margin:0 0 10px}
+details.okuma{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:8px}
+details.okuma summary{cursor:pointer;font-weight:600}
+details.okuma p{max-width:68ch}
+.sayilar{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.sayilar div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
+.sayilar b{display:block;font-family:var(--f-baslik);font-size:18px}
+.sayilar span{color:var(--soft);font-size:13px}
+.ilk10{list-style:none;padding:0;margin:8px 0 0;counter-reset:s;display:grid;gap:8px}
+.ilk10 li{counter-increment:s;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px;background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.ilk10 li::before{content:counter(s);font-family:var(--f-baslik);font-size:24px;font-weight:700;color:var(--acc);line-height:1}
+.ilk10 a{color:var(--fg);font-weight:600;text-decoration:none}.ilk10 a:hover{text-decoration:underline}
+.ilk10 .n{color:var(--soft);font-size:14px}
+.madde{display:grid;grid-template-columns:28px minmax(0,1fr);gap:4px 10px;padding:16px 0;border-top:1px solid var(--line)}
+.madde[hidden]{display:none}
+.madde input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--ok);cursor:pointer}
+.madde.yapildi .bas{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--line)}
+.bas{font-weight:600;font-size:16px;cursor:pointer}
+.no2{font-variant-numeric:tabular-nums;color:var(--soft);font-weight:500;margin-right:6px}
+.et{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:4px;margin-left:8px;vertical-align:2px}
+.temel{color:var(--acc);background:var(--accbg)}.ileri{color:var(--ile);background:var(--ilebg)}
+dl{display:grid;grid-template-columns:76px minmax(0,1fr);gap:4px 10px;margin:8px 0 0;font-size:14.5px}
+dt{color:var(--soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
+dd{margin:0;min-width:0}
+code{font-family:var(--f-kod);font-size:.88em;background:var(--kod);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.ornek{position:relative;margin-top:8px}
+.ornek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:0;overflow-x:auto;white-space:pre}
+.kopya{position:absolute;top:6px;right:6px;font:inherit;font-size:12px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:2px 9px;cursor:pointer}
+.bos-durum{color:var(--soft);padding:12px 0}
+footer{color:var(--soft);font-size:13px;margin-top:48px;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.ilerleme .dolu{transition:none}}
+
+a{color:var(--acc)}
+.madde,section.bolum{scroll-margin-top:var(--kaydirma,170px)}
+.kaynak{font-size:12px;color:var(--soft);margin:8px 0 0}
+.araclar{margin:14px 0}.araclar label{font-weight:600;font-size:13px;display:block}
+#ara{width:100%;font:inherit;color:var(--fg);background:var(--yuzey);border:1px solid var(--line);border-radius:8px;padding:10px;margin:5px 0}
+.islemler{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.islemler button,.islemler a{font:inherit;font-size:12px;padding:7px 9px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;cursor:pointer;text-decoration:none}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+#arama-sonuc,#bildirim{font-size:13px;color:var(--soft)}
+.ornek pre{padding-top:40px;white-space:pre-wrap;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+@media(max-width:480px){dl{grid-template-columns:1fr;gap:3px}dt{margin-top:7px}.sar{padding-inline:12px}.madde{gap:4px 6px}.cubuk{position:static}.et{margin-left:4px}nav.dizin{position:static}}
+@media print{.cubuk,.araclar,.dizin,.kopya,.ilk10,details.okuma{display:none!important}.sar{display:block;padding:0}body{background:white;color:#17202c}.madde{break-inside:avoid}.ornek pre{padding:10px}a{color:#1d4f91}}
+
+main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
+.ek .ust-bag{font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:18px}
+.ek h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+.ek h2{scroll-margin-top:16px}.ek h3{font-size:17px;margin:26px 0 4px}
+.ek p,.ek li{max-width:72ch}
+.ek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.tablo{overflow-x:auto;margin:10px 0 18px;border:1px solid var(--line);border-radius:8px}
+.tablo table{border-collapse:collapse;width:100%;font-size:14px;background:var(--yuzey)}
+.tablo th,.tablo td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
+.tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
+@media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
+ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
+ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+ul.ekler a{font-weight:600}
+ul.ekler span{display:block;color:var(--soft);font-size:14px}
+</style>
+<script>try{var t=localStorage.getItem("cc-kontrol-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main class="ek"><nav class="ust-bag" aria-label="Gezinme"><a href="../index.html">← Kontrol listesi</a><a href="index.html">Rehber içindekiler</a><a href="../index.html#ekler">Ekler</a></nav><p class="surum">Temel · Bölüm 1</p><h1>Zihinsel model: döngü, bağlam ve harness</h1><p class="giris">Claude Code&#x27;la yaşanan her sürprizin açıklaması üç parçadan birindedir: model, araç ya da harness. Bağlam penceresi modelin gördüğü tek şeydir.</p><p class="surum">Belge kontrolü: 29 Ekim 2026</p>
+<h2 id="zihinsel-model-bir-dongu-uc-parca">Zihinsel model: bir döngü, üç parça</h2>
+<p>Claude Code'a bir iş verdiğinde arka planda bir döngü döner. Belge bu döngüyü üç evreyle anlatır: bağlam toplamak, harekete geçmek ve sonucu doğrulamak. Evreler iç içe geçer. Claude bir dosyayı okur, bir şey dener, sonucu görür, yeniden okur. Sen de döngünün herhangi bir anında araya girebilirsin.</p>
+<p>Döngüyü üç parça yürütür:</p>
+<ul><li><b>Model</b> karar verir: hangi dosyayı okuyacağına, hangi komutu deneyeceğine, ne zaman duracağına.</li><li><b>Araçlar</b> iş yapar: dosya okur ve düzenler, arama yapar, kabuk komutu çalıştırır, web'e çıkar, alt ajan başlatır.</li><li><b>Harness</b> modeli saran düzendir. Hangi aracın izinli olduğunu, bağlama neyin gireceğini, hangi hook'un çalışacağını o belirler. Claude Code'un kendisi bir harness'tır.</li></ul>
+<p>Bu ayrım ilk bakışta akademik görünür. Ama Claude Code'la yaşadığın hemen her sürprizin açıklaması bu üç parçadan birindedir. "Claude kuralımı unuttu" bir bağlam sorunudur. "Claude bu komutu çalıştırmadı" bir izin sorunudur. "Claude yanlış dosyayı düzenledi" bir model kararıdır. Uzman, sonucu gördüğünde önce hangi parçadan geldiğini sorar.</p>
+<h2 id="baglam-penceresi-modelin-gordugu-tek-sey">Bağlam penceresi: modelin gördüğü tek şey</h2>
+<p>Model yalnız bağlam penceresinde olanı görür. Diskteki dosyaları, dünkü konuşmayı, senin aklındaki niyeti görmez. Pencerede konuşma geçmişi, okunan dosyaların içeriği, komut çıktıları, CLAUDE.md, otomatik bellek, yüklenmiş skill'ler ve sistem talimatları durur.</p>
+<p>Bir kısmı oturum başında yüklenir, bir kısmı gerektiğinde:</p>
+<div class="tablo"><table><thead><tr><th>Ne zaman</th><th>Ne yüklenir</th></tr></thead><tbody><tr><td data-e="Ne zaman">Oturum başında</td><td data-e="Ne yüklenir">CLAUDE.md dosyaları, otomatik belleğin dizin dosyası, skill açıklamaları, MCP araçlarının adları</td></tr><tr><td data-e="Ne zaman">Gerektiğinde</td><td data-e="Ne yüklenir">Okunan dosyalar, araç çıktıları, çağrılan skill'in gövdesi, eşleşen dosyaya dokununca yol kuralları, alt dizin CLAUDE.md'leri</td></tr></tbody></table></div>
+<p>Her yeni oturum boş bir pencereyle başlar. Oturumdan oturuma taşınan yalnız diskte duran şeylerdir: CLAUDE.md her seferinde yeniden okunur, otomatik bellek yeniden yüklenir, dosyalar yerinde durur. Konuşmanın kendisi taşınmaz. Aynı konuşmaya dönmenin tek yolu <code>--continue</code> ya da <code>--resume</code> ile o oturumu açmaktır.</p>
+<p>Pencere dolunca Claude Code konuşmayı özetler. Pencerenin boyutu modele ve plana göre değişir. 1 milyon token'lık pencerede sıkıştırma varsayılan olarak 967 bin civarında tetiklenir, 200 bin token'lık pencerede sınıra gelince. Belge sıkıştırmanın bedelini açıkça yazar: konuşmanın başındaki ayrıntılı talimatlar kaybolabilir. Proje kökündeki CLAUDE.md ve otomatik bellek sıkıştırmadan sonra diskten yeniden eklenir. Sohbette verdiğin bir talimat ise özetin insafına kalır.</p>
+<h2 id="neyi-kim-yapar">Neyi kim yapar</h2>
+<div class="tablo"><table><thead><tr><th>Soru</th><th>Cevabı veren</th><th>Nereden görürsün</th></tr></thead><tbody><tr><td data-e="Soru">Claude bunu biliyor mu?</td><td data-e="Cevabı veren">Bağlam penceresi</td><td data-e="Nereden görürsün"><code>/context</code>, <code>/memory</code></td></tr><tr><td data-e="Soru">Bunu yapmaya karar verecek mi?</td><td data-e="Cevabı veren">Model</td><td data-e="Nereden görürsün">Konuşmanın kendisi, <code>Ctrl+O</code> transkript</td></tr><tr><td data-e="Soru">Yapmasına izin var mı?</td><td data-e="Cevabı veren">Harness: izin kuralları, mod, hook</td><td data-e="Nereden görürsün"><code>/permissions</code>, <code>/hooks</code>, <code>/status</code></td></tr><tr><td data-e="Soru">Yaptığı şey doğru mu?</td><td data-e="Cevabı veren">Kimse kendiliğinden söylemez</td><td data-e="Nereden görürsün">Test, ekran, diff: senin kanıtın</td></tr></tbody></table></div>
+<p>Son satır bilerek boş bırakıldı. Döngünün "doğrula" evresi modelin kendi kontrolüdür. Senin kontrolünün yerini tutmaz. Bunu <a href="05-talimat-mimarisi.html">Bölüm 5: Talimat mimarisi: rica ile garanti</a> ve kontrol listesinin doğrulama bölümü ayrıntılandırıyor.</p>
+<h2 id="alt-ajan-ayri-bir-pencere">Alt ajan: ayrı bir pencere</h2>
+<p>Alt ajan kendi bağlam penceresinde çalışır ve ana oturuma yalnız bir özet döndürür. Konuşma geçmişini, okunmuş dosyaları ve çağrılmış skill'leri görmez. Ana oturum ona görevi anlatan bir devir mesajı yazar, alt ajan oradan başlar. Bu iki sonuç doğurur. Geniş bir aramayı alt ajana vermek ana pencereyi temiz tutar. Ama alt ajan, senin oturumda söylediğin bir şeyi ancak devir mesajına girdiyse bilir. Bir istisna var: fork, ana konuşmanın kopyasıyla başlar.</p>
+<h2 id="karar-kurallari">Karar kuralları</h2>
+<ul><li><b>Claude bir şeyi "bilmiyorsa" önce bağlama bak.</b> Bilgi pencerede yoksa model için yoktur. <code>/context</code> neyin yüklendiğini, <code>/memory</code> hangi talimat dosyalarının okunduğunu gösterir. <a href="../index.html#m-baglam-2-k">2.2</a></li><li><b>Oturum boyunca geçerli olması gereken talimatı sohbete değil dosyaya yaz.</b> Sıkıştırmadan sonra dosya geri gelir, sohbet gelmez. <a href="../index.html#m-baglam-6-k">2.6</a></li><li><b>Konu değişince yeni oturum aç.</b> Eski işin dosyaları ve kararları penceredeyse yeni işi de etkiler. <a href="../index.html#m-baglam-3-k">2.3</a></li><li><b>Çok dosya okuyacak bir araştırmayı alt ajana ver.</b> Ana pencereye yalnız sonuç girer. <a href="../index.html#m-baglam-4-k">2.4</a></li><li><b>Büyük çıktıyı pencereye değil dosyaya aldır.</b> Uzun bir log'un yüzde birlik kısmı gerekiyorsa geri kalanı yer kaplamasın. <a href="../index.html#m-baglam-5-k">2.5</a></li><li><b>Bir sürprizi açıklarken üç soruyu sırayla sor:</b> Bağlamda var mıydı? Model ne karar verdi? Harness izin verdi mi?</li></ul>
+<h2 id="hata-bicimleri">Hata biçimleri</h2>
+<p><b>Gerçek vaka: kural vardı, model görmedi.</b> Ortak kurallar bir dosyaya taşınıp dört projenin CLAUDE.md'sine import edildi. Etkileşimli oturumda her şey yolundaydı. Headless koşumda model yalnız import satırını gördü, dosyanın içeriğini görmedi, çünkü proje dışı import onayı o koşumda hiç sorulmamıştı. Model kuralı "çiğnemedi", kural hiç bağlama girmedi. Ayrıntısı <a href="../ekler/deneyimler.html">Gerçek deneyimlerden on ders</a> sayfasında D07.</p>
+<p><b>Gerçek vaka: bağlamdaki eski bilgi, model için gerçektir.</b> On gün önceki bir rapor "uygulama yalnız bir ülkede satışta" diyordu ve bu cümle oturuma yapıştırıldı. Model buna dayanarak öneri yaptı. Gerçekte uygulama 175 ülkede satıştaydı. Pencereye giren her cümle, kaynağına bakılmadıkça doğru kabul edilir. Ayrıntısı D10.</p>
+<p><b>Kurgu senaryo: "Dün söylediğimi unuttu."</b> Elif bir gün boyunca Claude'la bir rapor betiği üzerinde çalışır ve tarih biçiminin gün/ay/yıl olacağını sohbette söyler. Ertesi gün yeni bir oturum açar, betik ay/gün/yıl üretir. Model unutmadı, o bilgi yeni pencerede hiç yoktu. Kural CLAUDE.md'ye yazılınca sorun bir daha çıkmaz.</p>
+<h2 id="alistirma-baglami-olc">Alıştırma: bağlamı ölç</h2>
+<p>Herhangi bir git deposunda yap.</p>
+<p>1. Yeni bir oturum aç. Hiçbir şey sormadan <code>/context</code> yaz, çıktıyı bir dosyaya kaydet. 2. Depodaki en büyük kaynak dosyalardan birini Claude'a okut ve ne yaptığını özetlemesini iste. <code>/context</code> çıktısını yeniden kaydet. 3. <code>/memory</code> ile hangi talimat dosyalarının yüklendiğine bak. Listede beklemediğin ya da eksik bulduğun bir dosya var mı? 4. CLAUDE.md'ye geçici bir satır ekle, ör. "Bu projede tarih biçimi gün/ay/yıl." Yeni bir oturum aç ve Claude'a dosya okutmadan tarih biçimini sor. Sonra satırı sil.</p>
+<p><b>Bitti sayılması için:</b> iki <code>/context</code> çıktısı ve üç cümle. Hangi kategori ne kadar büyüdü, neden büyüdü, 4. adımda Claude bilgiyi nereden aldı.</p>
+<h2 id="baglantilar">Bağlantılar</h2>
+<p>Kontrol listesi: <a href="../index.html#m-baglam-1-k">2.1</a> <a href="../index.html#m-baglam-2-k">2.2</a> <a href="../index.html#m-baglam-3-k">2.3</a> <a href="../index.html#m-baglam-4-k">2.4</a> <a href="../index.html#m-baglam-5-k">2.5</a> <a href="../index.html#m-baglam-6-k">2.6</a> <a href="../index.html#m-talimat-5-k">1.5</a> <a href="../index.html#m-talimat-7-k">1.7</a>. Ekler: <a href="../ekler/komutlar.html">Komutlar ve kısayollar</a>, <a href="../ekler/dosyalar.html">Dosya konumları</a>.</p>
+<footer><a href="05-talimat-mimarisi.html">Bölüm 5: Talimat mimarisi: rica ile garanti →</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/rehber/01-zihinsel-model.md">Markdown sürümü</a></footer></main>
+</body>
+</html>

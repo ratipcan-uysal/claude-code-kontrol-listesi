@@ -175,6 +175,30 @@
       "status": "PASS"
     },
     {
+      "name": "Rehber yatay taşma 01-zihinsel-model.html 1440",
+      "status": "PASS"
+    },
+    {
+      "name": "Rehber yatay taşma 01-zihinsel-model.html 320",
+      "status": "PASS"
+    },
+    {
+      "name": "Rehber yatay taşma 05-talimat-mimarisi.html 1440",
+      "status": "PASS"
+    },
+    {
+      "name": "Rehber yatay taşma 05-talimat-mimarisi.html 320",
+      "status": "PASS"
+    },
+    {
+      "name": "Rehber yatay taşma index.html 1440",
+      "status": "PASS"
+    },
+    {
+      "name": "Rehber yatay taşma index.html 320",
+      "status": "PASS"
+    },
+    {
       "name": "JS konsol hatası yok",
       "status": "PASS"
     }

@@ -43,6 +43,21 @@ class Tests(unittest.TestCase):
   ids=set(re.findall(r'id="([^"]+)"',yap.web()))
   for e in yap.EKLER:
    for hedef in re.findall(r'href="\.\./index\.html#([^"]+)"',yap.ek_html(e)):self.assertIn(hedef,ids)
+ def test_rehber_current_and_linked(self):
+  root=Path(__file__).resolve().parent.parent
+  for b in yap.REHBER:
+   self.assertEqual((root/'rehber'/(b['ad']+'.html')).read_text(),yap.bolum_html(b))
+   self.assertEqual((root/'rehber'/(b['ad']+'.md')).read_text(),yap.bolum_md(b))
+   self.assertNotRegex(yap.bolum_html(b)+yap.bolum_md(b),r'\[\[|\{\{')
+   self.assertIn(f'href="{b["ad"]}.html"',yap.rehber_index())
+  self.assertEqual((root/'rehber'/'index.html').read_text(),yap.rehber_index())
+  self.assertIn('href="rehber/index.html"',yap.web())
+ def test_bad_rehber_link_fails(self):
+  import copy
+  r=copy.deepcopy(yap.REHBER);r[0]['md']+='{{ek:yok}}'
+  with self.assertRaisesRegex(ValueError,'Geçersiz rehber bağlantısı'):yap.validate_rehber(r)
+  r[0]['md']=r[0]['md'].replace('{{ek:yok}}','{{bolum:99}}')
+  with self.assertRaisesRegex(ValueError,'Geçersiz rehber bağlantısı'):yap.validate_rehber(r)
  def test_bad_ek_reference_fails(self):
   ek=[{'ad':'x','md':'Bak: [[3.99]]'}]
   with self.assertRaisesRegex(ValueError,'Geçersiz madde bağlantısı'):yap.validate_ekler(ek)

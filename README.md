@@ -54,6 +54,10 @@ Bir kutuyu işaretlemek kişisel ilerleme kaydıdır; otomatik doğrulama veya g
 18. [Bilgi birikimi](#18-bilgi) (4)
 19. [Bakım ritmi](#19-bakim) (6)
 
+## Rehber
+
+[Claude Code rehberi](rehber/README.md): zihinsel modeller, karar kuralları ve alıştırmalarla üç seviyeli öğrenme yolu.
+
 ## Ekler
 
 - [Komutlar ve kısayollar](ekler/komutlar.md): Slash komutları işe göre, en çok işe yarayan CLI bayrakları, klavye kısayolları ve sık karıştırılan çiftler.

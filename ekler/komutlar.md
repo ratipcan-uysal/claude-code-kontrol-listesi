@@ -137,4 +137,4 @@ macOS'ta `Option` kısayolları için terminalde Option tuşunu Meta olarak ayar
 
 ---
 
-[Kontrol listesi](../README.md) · [Sorun giderme](sorun-giderme.md) · [Dosya konumları](dosyalar.md) · [İpuçları ve püf noktaları](ipuclari.md) · [Gerçek deneyimlerden on ders](deneyimler.md) · [Terimler sözlüğü](sozluk.md)
+[Kontrol listesi](../README.md) · [Rehber](../rehber/README.md) · [Sorun giderme](sorun-giderme.md) · [Dosya konumları](dosyalar.md) · [İpuçları ve püf noktaları](ipuclari.md) · [Gerçek deneyimlerden on ders](deneyimler.md) · [Terimler sözlüğü](sozluk.md)

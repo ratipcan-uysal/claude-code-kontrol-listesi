@@ -3,6 +3,7 @@ import sys, os, re, html
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from veri import BOLUMLER, ILK10, SAYILAR, SURUM, KAYNAKLAR
 from ekler import EKLER, EK_TARIH
+from rehber import REHBER, REHBER_TARIH, REHBER_GIRIS, SEVIYELER
 
 esc = html.escape
 N = sum(len(m) for *_, m in BOLUMLER)
@@ -38,6 +39,7 @@ def validate(bolumler=BOLUMLER):
         match=next((x for x in bolumler if x[0]==k),None)
         if not match or not 1<=j<=len(match[3]): raise ValueError('Geçersiz başlangıç bağlantısı')
     validate_ekler(EKLER, bolumler)
+    if bolumler is BOLUMLER: validate_rehber()
 
 # ---------- EKLER ----------
 # Ek metinleri Markdown alt kümesiyle yazılır: ##/###, paragraf, "- " liste, | tablo |, ``` kod.
@@ -292,22 +294,86 @@ ul.ekler a{font-weight:600}
 ul.ekler span{display:block;color:var(--soft);font-size:14px}
 """
 
-def ek_html(ek):
-    bag = "".join(f'<a href="{e["ad"]}.html">{e["baslik"]}</a>' for e in EKLER if e is not ek)
+def sayfa(baslik, ozet, nav, govde, footer):
     return ('<!doctype html>\n<html lang="tr">\n<head>\n<meta charset="utf-8">\n'
             '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
-            f'<meta name="description" content="{esc(ek["ozet"])}">\n<title>{ek["baslik"]} · Claude Code kontrol listesi</title>\n'
+            f'<meta name="description" content="{esc(ozet)}">\n<title>{baslik} · Claude Code kontrol listesi</title>\n'
             '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
             '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">\n'
             f'<style>{WCSS}{ECSS}</style>\n<script>try{{var t=localStorage.getItem("cc-kontrol-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}}catch(e){{}}</script>\n</head>\n<body>\n<main class="ek">'
-            f'<nav class="ust-bag" aria-label="Ekler"><a href="../index.html">← Kontrol listesi</a>{bag}</nav>'
-            f'<h1>{ek["baslik"]}</h1><p class="surum">Belge kontrolü: {EK_TARIH}</p>\n{md_html(ref_html(ek["md"]))}\n'
-            f'<footer><a href="../index.html#ekler">Bütün ekler</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/ekler/{ek["ad"]}.md">Markdown sürümü</a></footer>'
-            '</main>\n</body>\n</html>\n')
+            f'<nav class="ust-bag" aria-label="Gezinme">{nav}</nav>{govde}\n<footer>{footer}</footer></main>\n</body>\n</html>\n')
+
+def ek_html(ek):
+    bag = "".join(f'<a href="{e["ad"]}.html">{e["baslik"]}</a>' for e in EKLER if e is not ek)
+    return sayfa(ek["baslik"], ek["ozet"], f'<a href="../index.html">← Kontrol listesi</a><a href="../rehber/index.html">Rehber</a>{bag}',
+                 f'<h1>{ek["baslik"]}</h1><p class="surum">Belge kontrolü: {EK_TARIH}</p>\n{md_html(ref_html(ek["md"]))}',
+                 f'<a href="../index.html#ekler">Bütün ekler</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/ekler/{ek["ad"]}.md">Markdown sürümü</a>')
 
 def ek_md(ek):
     diger = " · ".join(f'[{e["baslik"]}]({e["ad"]}.md)' for e in EKLER if e is not ek)
-    return f'# {ek["baslik"]}\n\n_Belge kontrolü: {EK_TARIH}_\n\n{ref_md(ek["md"]).strip()}\n\n---\n\n[Kontrol listesi](../README.md) · {diger}\n'
+    return f'# {ek["baslik"]}\n\n_Belge kontrolü: {EK_TARIH}_\n\n{ref_md(ek["md"]).strip()}\n\n---\n\n[Kontrol listesi](../README.md) · [Rehber](../rehber/README.md) · {diger}\n'
+
+# ---------- REHBER ----------
+# Bölüm metninde {{ek:komutlar}} eke, {{bolum:5}} başka bölüme bağlanır.
+IC = re.compile(r"\{\{(ek|bolum):([a-z0-9-]+)\}\}")
+
+def validate_rehber(rehber=REHBER):
+    nolar = {str(b["no"]) for b in rehber}
+    for b in rehber:
+        for tur, ad in IC.findall(b["md"]):
+            if (tur == "ek" and ad not in {e["ad"] for e in EKLER}) or (tur == "bolum" and ad not in nolar):
+                raise ValueError(f"Geçersiz rehber bağlantısı: {tur}:{ad} ({b['ad']})")
+    validate_ekler(rehber)
+
+def ic_bag(md, uzanti):
+    def bag(m):
+        if m[1] == "ek":
+            e = next(e for e in EKLER if e["ad"] == m[2])
+            return f"[{e['baslik']}](../ekler/{e['ad']}.{uzanti})"
+        b = next(b for b in REHBER if str(b["no"]) == m[2])
+        return f"[Bölüm {b['no']}: {b['baslik']}]({b['ad']}.{uzanti})"
+    return IC.sub(bag, md)
+
+def komsu(b):
+    i = REHBER.index(b)
+    return (REHBER[i-1] if i > 0 else None), (REHBER[i+1] if i < len(REHBER)-1 else None)
+
+def bolum_html(b):
+    once, sonra = komsu(b)
+    alt = " · ".join(x for x in [
+        f'<a href="{once["ad"]}.html">← Bölüm {once["no"]}: {once["baslik"]}</a>' if once else "",
+        f'<a href="{sonra["ad"]}.html">Bölüm {sonra["no"]}: {sonra["baslik"]} →</a>' if sonra else "",
+        f'<a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/rehber/{b["ad"]}.md">Markdown sürümü</a>'] if x)
+    return sayfa(b["baslik"], b["ozet"], '<a href="../index.html">← Kontrol listesi</a><a href="index.html">Rehber içindekiler</a><a href="../index.html#ekler">Ekler</a>',
+                 f'<p class="surum">{SEVIYELER[b["seviye"]]} · Bölüm {b["no"]}</p><h1>{b["baslik"]}</h1><p class="giris">{esc(b["ozet"])}</p><p class="surum">Belge kontrolü: {REHBER_TARIH}</p>\n'
+                 + md_html(ref_html(ic_bag(b["md"], "html"))), alt)
+
+def bolum_md(b):
+    once, sonra = komsu(b)
+    alt = " · ".join(x for x in [f'[← Bölüm {once["no"]}]({once["ad"]}.md)' if once else "", "[İçindekiler](README.md)",
+                                 f'[Bölüm {sonra["no"]} →]({sonra["ad"]}.md)' if sonra else ""] if x)
+    return (f'# {b["no"]}. {b["baslik"]}\n\n_{SEVIYELER[b["seviye"]]} · Belge kontrolü: {REHBER_TARIH}_\n\n{b["ozet"]}\n\n'
+            f'{ref_md(ic_bag(b["md"], "md")).strip()}\n\n---\n\n{alt}\n')
+
+def rehber_listesi():
+    for s, ad in SEVIYELER.items():
+        bs = [b for b in REHBER if b["seviye"] == s]
+        if bs: yield ad, bs
+
+def rehber_index():
+    govde = f'<h1>Claude Code rehberi</h1><p class="surum">Belge kontrolü: {REHBER_TARIH}</p>\n' + md_html(ref_html(ic_bag(REHBER_GIRIS, "html")))
+    for ad, bs in rehber_listesi():
+        govde += f'<h2>{ad}</h2><ul class="ekler">' + "".join(f'<li><a href="{b["ad"]}.html">{b["no"]}. {b["baslik"]}</a><span>{esc(b["ozet"])}</span></li>' for b in bs) + "</ul>"
+    return sayfa("Claude Code rehberi", "Claude Code'u uzman düzeyinde kullanmak için alıştırmalı rehber.",
+                 '<a href="../index.html">← Kontrol listesi</a><a href="../index.html#ekler">Ekler</a>', govde,
+                 '<a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/rehber/README.md">Markdown sürümü</a>')
+
+def rehber_readme():
+    o = [f"# Claude Code rehberi\n\n_Belge kontrolü: {REHBER_TARIH}_\n", ref_md(ic_bag(REHBER_GIRIS, "md")).strip(), ""]
+    for ad, bs in rehber_listesi():
+        o += [f"## {ad}", ""] + [f"- [{b['no']}. {b['baslik']}]({b['ad']}.md): {b['ozet']}" for b in bs] + [""]
+    o += ["---", "", "[Kontrol listesi](../README.md)", ""]
+    return "\n".join(o)
 
 def madde_web(i, j, m):
     mid = f"m-{BOLUMLER[i-1][0]}-{j}"
@@ -323,7 +389,7 @@ def web():
          f'<style>{WCSS}{ECSS}</style>', '<div class="sar"><nav class="dizin" aria-label="Bölümler"><a href="#ilk10"><span>Önce bu on madde</span></a>']
     for i, (k, b, _, mad) in enumerate(BOLUMLER, 1):
         o.append(f'<a href="#b-{k}"><span>{i}. {b}</span><small>0/{len(mad)}</small></a>')
-    o.append(f'<a href="#ekler"><span>Ekler</span><small>{len(EKLER)}</small></a></nav><main>')
+    o.append(f'<a href="rehber/index.html"><span>Rehber</span><small>{len(REHBER)}</small></a><a href="#ekler"><span>Ekler</span><small>{len(EKLER)}</small></a></nav><main>')
     o.append(f'<header class="ust"><h1>{BASLIK}</h1><p>{len(BOLUMLER)} bölüm, {N} madde. Her maddede neden, nasıl, kopyalanabilir örnek ve doğrulama. İşaretler bu tarayıcıda saklanır; JSON olarak yedekleyebilirsin.</p><div class="surum">{SURUM}</div></header>')
     o.append('<div class="cubuk"><div class="ilerleme"><div class="etiket" id="sayac" role="status" aria-live="polite">0 madde işaretlendi</div><div class="yol"><div class="dolu" id="dolu"></div></div></div>'
              '<div class="suzgec" role="group" aria-label="Süzgeç"><button type="button" data-suz="hepsi" aria-pressed="true">Tümü</button>'
@@ -343,6 +409,8 @@ def web():
         o.append(f'<section class="bolum" id="b-{k}"><h2><span class="no">{i}</span>{b}</h2><p class="giris">{giris}</p>')
         o.extend(madde_web(i, j, m) for j, m in enumerate(mad, 1))
         o.append('<p class="bos-durum" hidden>Bu süzgeçte bu bölümde gösterilecek madde yok.</p></section>')
+    o.append('<section id="rehber"><h2>Rehber</h2><p class="giris">Kontrol listesi neyin yapılacağını söyler. Rehber nedenini ve nasıl öğrenileceğini anlatır: üç seviye, her bölümde bir alıştırma.</p>'
+             '<ul class="ekler"><li><a href="rehber/index.html">Claude Code rehberi</a><span>Zihinsel modeller, karar kuralları, gerçek vakalar ve alıştırmalar.</span></li></ul></section>')
     o.append('<section id="ekler"><h2>Ekler</h2><p class="giris">Maddeleri günlük işe taşıyan başvuru sayfaları. Her ek ilgili maddelere bağlanır.</p><ul class="ekler">'
              + "".join(f'<li><a href="ekler/{e["ad"]}.html">{e["baslik"]}</a><span>{e["ozet"]}</span></li>' for e in EKLER) + '</ul></section>')
     o.append(f'<footer>{SURUM}. <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/KAYNAKLAR.md">Kaynaklar</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/DOGRULAMA.md">Doğrulama kapsamı</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/GUNCELLEMELER.md">Değişiklikler</a></footer></main></div>')
@@ -369,6 +437,7 @@ def readme():
         o.append(f"{n}. **{kisa}** ([{i}.{j}](#{i}-{BOLUMLER[i-1][0]})): {md_satir(m['n'])}")
     o += ["", "## Bölümler", ""]
     o += [f"{i}. [{b}](#{i}-{k}) ({len(m)})" for i, (k, b, _, m) in enumerate(BOLUMLER, 1)]
+    o += ["", "## Rehber", "", "[Claude Code rehberi](rehber/README.md): zihinsel modeller, karar kuralları ve alıştırmalarla üç seviyeli öğrenme yolu."]
     o += ["", "## Ekler", ""] + [f"- [{e['baslik']}](ekler/{e['ad']}.md): {e['ozet']}" for e in EKLER]
     for i, (k, b, giris, mad) in enumerate(BOLUMLER, 1):
         o += ["", f'<a id="{i}-{k}"></a>', f"## {i}. {b}", "", md_satir(giris), ""]
@@ -404,4 +473,10 @@ if __name__ == "__main__":
     for e in EKLER:
         open(os.path.join(kok, "ekler", e["ad"] + ".html"), "w", encoding="utf-8").write(ek_html(e))
         open(os.path.join(kok, "ekler", e["ad"] + ".md"), "w", encoding="utf-8").write(ek_md(e))
+    os.makedirs(os.path.join(kok, "rehber"), exist_ok=True)
+    for b in REHBER:
+        open(os.path.join(kok, "rehber", b["ad"] + ".html"), "w", encoding="utf-8").write(bolum_html(b))
+        open(os.path.join(kok, "rehber", b["ad"] + ".md"), "w", encoding="utf-8").write(bolum_md(b))
+    open(os.path.join(kok, "rehber", "index.html"), "w", encoding="utf-8").write(rehber_index())
+    open(os.path.join(kok, "rehber", "README.md"), "w", encoding="utf-8").write(rehber_readme())
     print(len(BOLUMLER), "bölüm", N, "madde", NT, "temel")
