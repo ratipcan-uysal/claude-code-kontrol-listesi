@@ -99,7 +99,7 @@ main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
 .tablo th,.tablo td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
 .tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
 .tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
-@media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td:first-child code{white-space:normal}}
+@media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
 ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
 ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
 ul.ekler a{font-weight:600}
@@ -108,7 +108,7 @@ ul.ekler span{display:block;color:var(--soft);font-size:14px}
 <script>try{var t=localStorage.getItem("cc-kontrol-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body>
-<main class="ek"><nav class="ust-bag" aria-label="Ekler"><a href="../index.html">← Kontrol listesi</a><a href="sorun-giderme.html">Sorun giderme</a><a href="deneyimler.html">Gerçek deneyimlerden on ders</a><a href="sozluk.html">Terimler sözlüğü</a></nav><h1>Komutlar ve kısayollar</h1><p class="surum">Belge kontrolü: 29 Ekim 2026</p>
+<main class="ek"><nav class="ust-bag" aria-label="Ekler"><a href="../index.html">← Kontrol listesi</a><a href="sorun-giderme.html">Sorun giderme</a><a href="dosyalar.html">Dosya konumları</a><a href="ipuclari.html">İpuçları ve püf noktaları</a><a href="deneyimler.html">Gerçek deneyimlerden on ders</a><a href="sozluk.html">Terimler sözlüğü</a></nav><h1>Komutlar ve kısayollar</h1><p class="surum">Belge kontrolü: 29 Ekim 2026</p>
 <p>Claude Code'a üç yoldan komut verilir. Oturumun içinde <code>/</code> ile başlayan <b>slash komutu</b>, kabukta <code>claude</code> ile başlayan <b>CLI bayrağı</b> ve <b>klavye kısayolu</b>. Aynı iş çoğu zaman üçünden biriyle yapılır: geçmiş oturuma <code>/resume</code> ile oturumun içinden, <code>claude --resume</code> ile kabuktan dönülür.</p>
 <p>Bu sayfa günlük işte fark yaratan komutları işe göre gruplar. Belgedeki komut tablosu 120 satırdan uzun, hepsi burada yok. Belge yerel CLI 2.1.284'ten yeni, bazı komutlar senin sürümünde görünmeyebilir. Emin olmak için oturumda <code>/help</code> yaz ya da <code>claude --version</code> ile sürümü gör. Kaynaklar: <a href="https://code.claude.com/docs/en/commands">komutlar</a>, <a href="https://code.claude.com/docs/en/cli-reference">CLI referansı</a>, <a href="https://code.claude.com/docs/en/interactive-mode">etkileşimli mod</a>.</p>
 <h2 id="slash-komutlari-ise-gore">Slash komutları, işe göre</h2>

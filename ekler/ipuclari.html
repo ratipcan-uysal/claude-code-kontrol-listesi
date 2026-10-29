@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Gözden kaçan ayarlar ve tuzaklar: commit imzası, talimat budama, prompt-audit, safe-mode, hook if alanı.">
+<title>İpuçları ve püf noktaları · Claude Code kontrol listesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Düzen: tek sütun okuma alanı, üstte yapışkan ilerleme ve süzgeç çubuğu, geniş ekranda solda bölüm dizini */
+:root{
+ --bg:#f6f7f9;--yuzey:#ffffff;--fg:#17202c;--soft:#5b6472;--line:#e1e5eb;--kod:#eef1f5;
+ --acc:#1d4f91;--accbg:#e6eef9;--ile:#6a4a9c;--ilebg:#f0eaf8;--ok:#1f7a4d;
+ --f-baslik:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+ --f-govde:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+ --f-kod:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-govde);font-size:15px;line-height:1.55;margin:0}
+.sar{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;grid-template-columns:1fr;gap:32px}
+@media (min-width:980px){.sar{grid-template-columns:230px minmax(0,1fr)}}
+nav.dizin{display:none}
+@media (min-width:980px){nav.dizin{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);align-self:start;max-height:calc(100vh - 120px);overflow:auto;font-size:13px}}
+nav.dizin a{display:flex;justify-content:space-between;gap:8px;color:var(--soft);text-decoration:none;padding:4px 8px;border-radius:6px}
+nav.dizin a:hover,nav.dizin a:focus-visible{background:var(--accbg);color:var(--fg);outline:none}
+nav.dizin small{font-variant-numeric:tabular-nums}
+main{min-width:0}
+header.ust h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+header.ust p{color:var(--soft);max-width:65ch;margin:0 0 6px}
+.surum{font-family:var(--f-kod);font-size:12px;color:var(--soft)}
+.cubuk{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0;margin:20px 0 8px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.ilerleme{flex:1 1 220px;min-width:0}
+.ilerleme .etiket{font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
+.ilerleme .yol{height:6px;background:var(--line);border-radius:3px;margin-top:5px;overflow:hidden}
+.ilerleme .dolu{height:100%;width:0;background:var(--ok);transition:width .25s}
+.suzgec{display:flex;flex-wrap:wrap;gap:6px}
+.suzgec button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--yuzey);color:var(--fg);padding:5px 11px;border-radius:999px;cursor:pointer}
+.suzgec button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.suzgec button:focus-visible,.kopya:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+h2{font-family:var(--f-baslik);font-size:24px;letter-spacing:-.01em;margin:44px 0 6px;text-wrap:balance;scroll-margin-top:90px}
+h2 .no{color:var(--acc);margin-right:10px;font-variant-numeric:tabular-nums}
+.giris{color:var(--soft);max-width:68ch;margin:0 0 10px}
+details.okuma{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:8px}
+details.okuma summary{cursor:pointer;font-weight:600}
+details.okuma p{max-width:68ch}
+.sayilar{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.sayilar div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
+.sayilar b{display:block;font-family:var(--f-baslik);font-size:18px}
+.sayilar span{color:var(--soft);font-size:13px}
+.ilk10{list-style:none;padding:0;margin:8px 0 0;counter-reset:s;display:grid;gap:8px}
+.ilk10 li{counter-increment:s;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px;background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.ilk10 li::before{content:counter(s);font-family:var(--f-baslik);font-size:24px;font-weight:700;color:var(--acc);line-height:1}
+.ilk10 a{color:var(--fg);font-weight:600;text-decoration:none}.ilk10 a:hover{text-decoration:underline}
+.ilk10 .n{color:var(--soft);font-size:14px}
+.madde{display:grid;grid-template-columns:28px minmax(0,1fr);gap:4px 10px;padding:16px 0;border-top:1px solid var(--line)}
+.madde[hidden]{display:none}
+.madde input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--ok);cursor:pointer}
+.madde.yapildi .bas{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--line)}
+.bas{font-weight:600;font-size:16px;cursor:pointer}
+.no2{font-variant-numeric:tabular-nums;color:var(--soft);font-weight:500;margin-right:6px}
+.et{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:4px;margin-left:8px;vertical-align:2px}
+.temel{color:var(--acc);background:var(--accbg)}.ileri{color:var(--ile);background:var(--ilebg)}
+dl{display:grid;grid-template-columns:76px minmax(0,1fr);gap:4px 10px;margin:8px 0 0;font-size:14.5px}
+dt{color:var(--soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
+dd{margin:0;min-width:0}
+code{font-family:var(--f-kod);font-size:.88em;background:var(--kod);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.ornek{position:relative;margin-top:8px}
+.ornek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:0;overflow-x:auto;white-space:pre}
+.kopya{position:absolute;top:6px;right:6px;font:inherit;font-size:12px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:2px 9px;cursor:pointer}
+.bos-durum{color:var(--soft);padding:12px 0}
+footer{color:var(--soft);font-size:13px;margin-top:48px;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.ilerleme .dolu{transition:none}}
+
+a{color:var(--acc)}
+.madde,section.bolum{scroll-margin-top:var(--kaydirma,170px)}
+.kaynak{font-size:12px;color:var(--soft);margin:8px 0 0}
+.araclar{margin:14px 0}.araclar label{font-weight:600;font-size:13px;display:block}
+#ara{width:100%;font:inherit;color:var(--fg);background:var(--yuzey);border:1px solid var(--line);border-radius:8px;padding:10px;margin:5px 0}
+.islemler{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.islemler button,.islemler a{font:inherit;font-size:12px;padding:7px 9px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;cursor:pointer;text-decoration:none}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+#arama-sonuc,#bildirim{font-size:13px;color:var(--soft)}
+.ornek pre{padding-top:40px;white-space:pre-wrap;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+@media(max-width:480px){dl{grid-template-columns:1fr;gap:3px}dt{margin-top:7px}.sar{padding-inline:12px}.madde{gap:4px 6px}.cubuk{position:static}.et{margin-left:4px}nav.dizin{position:static}}
+@media print{.cubuk,.araclar,.dizin,.kopya,.ilk10,details.okuma{display:none!important}.sar{display:block;padding:0}body{background:white;color:#17202c}.madde{break-inside:avoid}.ornek pre{padding:10px}a{color:#1d4f91}}
+
+main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
+.ek .ust-bag{font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:18px}
+.ek h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+.ek h2{scroll-margin-top:16px}.ek h3{font-size:17px;margin:26px 0 4px}
+.ek p,.ek li{max-width:72ch}
+.ek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.tablo{overflow-x:auto;margin:10px 0 18px;border:1px solid var(--line);border-radius:8px}
+.tablo table{border-collapse:collapse;width:100%;font-size:14px;background:var(--yuzey)}
+.tablo th,.tablo td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
+.tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
+@media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
+ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
+ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+ul.ekler a{font-weight:600}
+ul.ekler span{display:block;color:var(--soft);font-size:14px}
+</style>
+<script>try{var t=localStorage.getItem("cc-kontrol-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main class="ek"><nav class="ust-bag" aria-label="Ekler"><a href="../index.html">← Kontrol listesi</a><a href="komutlar.html">Komutlar ve kısayollar</a><a href="sorun-giderme.html">Sorun giderme</a><a href="dosyalar.html">Dosya konumları</a><a href="deneyimler.html">Gerçek deneyimlerden on ders</a><a href="sozluk.html">Terimler sözlüğü</a></nav><h1>İpuçları ve püf noktaları</h1><p class="surum">Belge kontrolü: 29 Ekim 2026</p>
+<p>Bu sayfa belgede yazan ama gözden kaçan ayarları, kısayolları ve tuzakları toplar. Her ipucu resmî belgeyle karşılaştırıldı. Belgede olmayan bir yöntem önerildiğinde bu açıkça yazıldı. Bazı ayarlar yeni sürüm ister. Sürüm şartı belgede yazıyorsa burada da yazıyor. Kendi sürümünü <code>claude --version</code> ile gör.</p>
+<h2 id="ayarlar">Ayarlar</h2>
+<h3 id="commit-ve-pr-imzasini-kaldir">Commit ve PR imzasını kaldır</h3>
+<p>Claude Code commit'lere varsayılan olarak <code>Co-Authored-By</code> satırı, PR gövdesine "Generated with Claude Code" satırı ekler. İkisini de <code>~/.claude/settings.json</code> içinden kapat:</p>
+<pre>{
+  &quot;attribution&quot;: {
+    &quot;commit&quot;: &quot;&quot;,
+    &quot;pr&quot;: &quot;&quot;,
+    &quot;sessionUrl&quot;: false
+  }
+}</pre>
+<p>Boş metin o atfı gizler. <code>sessionUrl: false</code> bulut oturumlarındaki oturum bağlantısını da kaldırır. İnternette dolaşan <code>"includeCoAuthoredBy": false</code> satırı kullanımdan kalktı. Hâlâ okunuyor ama <code>attribution</code> ayarlanınca yok sayılıyor, yani yukarıdaki blokla birlikte yazmanın etkisi yok. Kısa yol <code>"attribution": false</code> 2.1.281 ve sonrasını ister. Daha eski sürüm bu değeri reddeder ve ayar dosyasının <b>tamamını</b> atlar. CLAUDE.md'ye "kendini imzalama" yazmak da işe yarar, ama kalıcı çözüm ayardır. <a href="../index.html#m-git-4-k">15.4</a></p>
+<h3 id="konusma-kayitlarinin-omrunu-ayarla">Konuşma kayıtlarının ömrünü ayarla</h3>
+<p><code>cleanupPeriodDays</code> kayıtların kaç gün tutulacağını belirler. Varsayılan 30. Eski bir oturuma aylar sonra dönmek istiyorsan büyüt, gizlilik için küçült. <code>0</code> geçersizdir, en az 1. Bu süre dolunca <code>/rewind</code> ve <code>/resume</code> de o oturumu bulamaz.</p>
+<pre>{ &quot;cleanupPeriodDays&quot;: 90 }</pre>
+<h3 id="auto-ve-bypasspermissions-yalniz-kullanici-dosyasinda-calisir"><code>auto</code> ve <code>bypassPermissions</code> yalnız kullanıcı dosyasında çalışır</h3>
+<p><code>permissions.defaultMode</code> için bu iki değer proje ya da yerel ayara yazılırsa etki etmez. <code>~/.claude/settings.json</code> dosyasına yaz. Böylece klonladığın bir depo seni sessizce izinsiz moda sokamaz. <a href="../index.html#m-izin-7-k">6.7</a></p>
+<h3 id="ortam-degiskenini-ayar-dosyasina-koy">Ortam değişkenini ayar dosyasına koy</h3>
+<p><code>settings.json</code> içindeki <code>env</code> alanı her oturuma ve alt süreçlere ortam değişkeni verir. Kabuk profilini kirletmeden, projeye özel değer tanımlamak için kullanılır.</p>
+<pre>{ &quot;env&quot;: { &quot;BASH_DEFAULT_TIMEOUT_MS&quot;: &quot;300000&quot; } }</pre>
+<p>Bash komutlarının varsayılan zaman aşımı 120 saniye, üst sınırı 600 saniyedir. Uzun derleme ya da test koşuyorsan bu iki değeri büyütmek, komutun yarıda kesilmesini önler. <a href="../index.html#m-gozetimsiz-4-k">13.4</a></p>
+<h3 id="kendi-git-kurallarini-kullaniyorsan-yerlesiklerini-kapat">Kendi git kurallarını kullanıyorsan yerleşiklerini kapat</h3>
+<p><code>includeGitInstructions: false</code> Claude'un bağlamından yerleşik commit ve PR talimatlarını ve git durum özetini çıkarır. Kendi commit skill'in ya da CLAUDE.md kuralların varsa çatışmayı önler.</p>
+<h3 id="i-ki-hesap-iki-yapilandirma">İki hesap, iki yapılandırma</h3>
+<p><code>CLAUDE_CONFIG_DIR</code> bütün ayarları, kayıtları ve plugin'leri başka bir dizine taşır. İş ve kişisel hesabı ayırmak için:</p>
+<pre>alias claude-is=&#x27;CLAUDE_CONFIG_DIR=~/.claude-is claude&#x27;</pre>
+<h3 id="telemetriyi-kapatirken-dikkat">Telemetriyi kapatırken dikkat</h3>
+<p><code>DISABLE_TELEMETRY</code> değişkeni tanımlı olduğu sürece, değeri <code>0</code> ya da <code>false</code> olsa bile telemetri kapalı kalır. Yeniden açmak için değişkeni kaldırmak gerekir. Bu değişken <code>/skill-doctor</code> gibi bazı özellikleri de kapatır.</p>
+<h2 id="talimatlar">Talimatlar</h2>
+<h3 id="yeni-model-cikinca-talimatlarini-buda">Yeni model çıkınca talimatlarını buda</h3>
+<p>Talimatların bir kısmı eski bir modelin eksiğini kapatmak için yazılmıştır. Yeni model o eksiği taşımıyorsa bu satırlar işe yaramaz, hatta zarar verir. Belge iki şey söylüyor. Büyük harfli vurgu ve "CRITICAL: You MUST" tarzı dil güncel modellerde kuralı aşırı uygulatabilir, düz bir cümle yeterli. Yeni model varsayılan haliyle daha iyi sonuç veriyorsa eski talimatları kaldırmayı değerlendir.</p>
+<p>Bundan bir deneme yöntemi çıkar. Belgede bu döngü olarak yazmıyor, bir iş akışı önerisidir: şüphelendiğin talimatları kaldır, temsilî birkaç işi yeni modelle koş, yalnız modelin gerçekten kaçırdığı kuralları geri ekle. <a href="../index.html#m-model-6-k">5.6</a> <a href="../index.html#m-bakim-3-k">19.3</a></p>
+<h3 id="doctor-prompt-audit-eski-talimatlari-isaretler"><code>/doctor prompt-audit</code> eski talimatları işaretler</h3>
+<p><code>/doctor prompt-audit</code> talimat dosyalarını tarar. Eski modeller için yazılmış talimatları, artık var olmayan dosya ya da komuta işaret eden satırları ve birbiriyle çelişen dosyaları raporlar. Sen onaylamadan hiçbir dosyaya dokunmaz. Varsayılan kapsam CLAUDE.md, CLAUDE.local.md, AGENTS.md ve <code>.claude/</code> ile <code>~/.claude/</code> altındaki kurallar, skill'ler, komutlar, alt ajanlar ve stillerdir. Tek dosya ya da dizin için yol ver. 2.1.283 ve sonrasında var.</p>
+<pre>/doctor prompt-audit
+/doctor prompt-audit .claude/skills/deploy</pre>
+<h3 id="claude-md-ye-baglam-harcamayan-not-yaz">CLAUDE.md'ye bağlam harcamayan not yaz</h3>
+<p>CLAUDE.md içindeki <code>&lt;!-- ... --&gt;</code> blok yorumları bağlama girmeden silinir. Bakımcıya not, kuralın gerekçesi ya da tarih bırakmak için kullanılır, modelin dikkatini dağıtmaz. <a href="../index.html#m-bilgi-4-k">18.4</a></p>
+<h3 id="sikistirmadan-sonra-ne-kalir">Sıkıştırmadan sonra ne kalır</h3>
+<p><code>/compact</code> sonrasında proje kökündeki CLAUDE.md diskten yeniden yüklenir. Kaybolan yalnız konuşmada verdiğin talimattır. Oturum boyunca geçerli kalması gereken bir kuralı sohbete değil dosyaya yaz. <a href="../index.html#m-baglam-6-k">2.6</a></p>
+<h2 id="oturum">Oturum</h2>
+<h3 id="oturumlara-ad-ver">Oturumlara ad ver</h3>
+<p><code>claude -n odeme-refactor</code> ya da oturum içinde <code>/rename odeme-refactor</code>. Sonra <code>claude --resume odeme-refactor</code> ile adıyla dönersin. Uzun kimlik aramak gerekmez. <a href="../index.html#m-baglam-7-k">2.7</a></p>
+<h3 id="uzun-prompt-u-editorde-yaz">Uzun prompt'u editörde yaz</h3>
+<p><code>Ctrl+G</code> girdiyi varsayılan metin editöründe açar. Çok paragraflı bir brief'i terminal satırında yazmaktan kolaydır. <code>/config</code> içinden Claude'un son cevabını da editöre yorum olarak getirebilirsin.</p>
+<h3 id="ana-isi-bolmeden-soru-sor">Ana işi bölmeden soru sor</h3>
+<p><code>/btw neden bu kütüphaneyi seçtin?</code> cevabı gösterir ama konuşmaya eklemez. Bağlam büyümez, ana iş yön değiştirmez.</p>
+<h3 id="kod-blogunu-tek-tusla-al">Kod bloğunu tek tuşla al</h3>
+<p><code>/copy</code> son cevabı panoya kopyalar. Cevapta birden çok kod bloğu varsa seçici açılır, <code>w</code> ile seçtiğini dosyaya yazar. SSH üzerinden pano çalışmıyorsa işe yarar.</p>
+<h3 id="bitis-kosulu-olan-is-icin-goal">Bitiş koşulu olan iş için <code>/goal</code></h3>
+<p><code>/goal bütün testler geçiyor ve lint temiz</code> Claude'u koşul sağlanana kadar turdan tura çalıştırır. Her turdan sonra ayrı bir model koşulu değerlendirir. Koşul doğrulanabilir olmalı. <a href="../index.html#m-gorev-1-k">3.1</a></p>
+<h2 id="hata-ayiklama">Hata ayıklama</h2>
+<h3 id="safe-mode-ile-bare-farkli-isler"><code>--safe-mode</code> ile <code>--bare</code> farklı işler</h3>
+<p><code>claude --safe-mode</code> bütün özelleştirmeleri kapatır: CLAUDE.md, skill, plugin, hook, MCP, bellek. Giriş, model ve izinler normal kalır. Bir sorunun senin yapılandırmandan gelip gelmediğini ayırmanın en hızlı yolu budur. <code>--bare</code> ise betikler içindir: keşfi atlar, OAuth'u da okumaz, kimlik <code>ANTHROPIC_API_KEY</code> ile gelmelidir.</p>
+<h3 id="ayarin-neden-etki-etmedigini-bul">Ayarın neden etki etmediğini bul</h3>
+<p>Üç kontrol yeter. <code>/status</code> içindeki <code>Setting sources</code> yüklenen dosyaları gösterir. <code>/doctor</code> ayrıştırılamayan ayar dosyasını bulur. <code>/context</code> bağlamda gerçekte nelerin durduğunu gösterir. <a href="../index.html#m-talimat-8-k">1.8</a></p>
+<h2 id="genisletme">Genişletme</h2>
+<h3 id="hook-un-if-alani-her-olayda-calismaz">Hook'un <code>if</code> alanı her olayda çalışmaz</h3>
+<p><code>if</code> alanı hook'u araç adı ve argümanıyla süzer: <code>"Bash(git *)"</code>, <code>"Edit(*.ts)"</code>. Eşleşmeyince süreç hiç başlamaz, başlatma maliyeti de olmaz. Ama <code>if</code> yalnız araç olaylarında değerlendirilir: PreToolUse, PostToolUse, PostToolUseFailure, PermissionRequest ve PermissionDenied. Başka bir olaya <code>if</code> konmuş hook <b>hiç çalışmaz</b>. Tek kural alır, <code>&amp;&amp;</code> ya da liste kabul etmez. <a href="../index.html#m-hook-2-k">8.2</a> <a href="../index.html#m-hook-4-k">8.4</a></p>
+<h3 id="yan-etkili-skill-i-otomatik-cagriya-kapat">Yan etkili skill'i otomatik çağrıya kapat</h3>
+<p>Skill frontmatter'ında <code>disable-model-invocation: true</code> olan skill'i Claude kendi başına yüklemez. Yalnız sen <code>/ad</code> yazınca çalışır. Yayın, silme ya da mesaj gönderme gibi işler için. <code>context: fork</code> skill'i ayrı bir alt ajan bağlamında çalıştırır, ana bağlamı doldurmaz. <code>allowed-tools</code> yalnız o turda izinsiz kullanılacak araçları açar. <a href="../index.html#m-yeniden-4-k">9.4</a></p>
+<h3 id="worktree-li-alt-ajan-nereden-dallanir">Worktree'li alt ajan nereden dallanır</h3>
+<p>Alt ajan tanımında <code>isolation: worktree</code> onu geçici bir worktree'de çalıştırır. Bu worktree senin o anki dalından değil, deponun varsayılan dalından açılır. Commit'lenmemiş değişikliklerin ve dalındaki yeni commit'ler alt ajanda görünmez. Değişiklik yoksa worktree kendiliğinden temizlenir. <a href="../index.html#m-paralel-1-k">11.1</a></p>
+<h3 id="kullanilmayan-skill-leri-bul">Kullanılmayan skill'leri bul</h3>
+<p><code>/skill-doctor</code> her skill'in bağlamda ne kadar yer tuttuğunu ve ne sıklıkla kullanıldığını gösterir. Hiç çağrılmayan ama açıklaması her oturumda bağlamda duran skill'i kapatmak için. 2.1.252 ve sonrasında var.</p>
+<h3 id="baska-aractan-gec">Başka araçtan geç</h3>
+<p><code>/import codex</code>, <code>/import gemini</code> ve <code>/import cursor</code> o aracın talimatlarını, MCP sunucularını, komutlarını, ajanlarını ve skill'lerini getirir. Önce <code>--dry-run</code> ile ne geleceğini gör.</p>
+<h3 id="kendi-kullanimini-gor">Kendi kullanımını gör</h3>
+<p><code>/insights</code> son oturumlarından bir rapor üretir: hangi projelerde ne yaptığın, nerede takıldığın, hangi özellikleri denemediğin. Rapor <code>~/.claude/usage-data/report.html</code> dosyasına yazılır. <a href="../index.html#m-bakim-5-k">19.5</a></p>
+<footer><a href="../index.html#ekler">Bütün ekler</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/ekler/ipuclari.md">Markdown sürümü</a></footer></main>
+</body>
+</html>

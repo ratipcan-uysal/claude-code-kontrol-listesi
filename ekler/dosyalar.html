@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Ayar, talimat, bellek, skill, MCP, plugin ve oturum verisi nerede durur, ne işe yarar, git&#x27;e girer mi.">
+<title>Dosya konumları · Claude Code kontrol listesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Düzen: tek sütun okuma alanı, üstte yapışkan ilerleme ve süzgeç çubuğu, geniş ekranda solda bölüm dizini */
+:root{
+ --bg:#f6f7f9;--yuzey:#ffffff;--fg:#17202c;--soft:#5b6472;--line:#e1e5eb;--kod:#eef1f5;
+ --acc:#1d4f91;--accbg:#e6eef9;--ile:#6a4a9c;--ilebg:#f0eaf8;--ok:#1f7a4d;
+ --f-baslik:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+ --f-govde:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+ --f-kod:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-govde);font-size:15px;line-height:1.55;margin:0}
+.sar{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;grid-template-columns:1fr;gap:32px}
+@media (min-width:980px){.sar{grid-template-columns:230px minmax(0,1fr)}}
+nav.dizin{display:none}
+@media (min-width:980px){nav.dizin{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);align-self:start;max-height:calc(100vh - 120px);overflow:auto;font-size:13px}}
+nav.dizin a{display:flex;justify-content:space-between;gap:8px;color:var(--soft);text-decoration:none;padding:4px 8px;border-radius:6px}
+nav.dizin a:hover,nav.dizin a:focus-visible{background:var(--accbg);color:var(--fg);outline:none}
+nav.dizin small{font-variant-numeric:tabular-nums}
+main{min-width:0}
+header.ust h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+header.ust p{color:var(--soft);max-width:65ch;margin:0 0 6px}
+.surum{font-family:var(--f-kod);font-size:12px;color:var(--soft)}
+.cubuk{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0;margin:20px 0 8px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.ilerleme{flex:1 1 220px;min-width:0}
+.ilerleme .etiket{font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
+.ilerleme .yol{height:6px;background:var(--line);border-radius:3px;margin-top:5px;overflow:hidden}
+.ilerleme .dolu{height:100%;width:0;background:var(--ok);transition:width .25s}
+.suzgec{display:flex;flex-wrap:wrap;gap:6px}
+.suzgec button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--yuzey);color:var(--fg);padding:5px 11px;border-radius:999px;cursor:pointer}
+.suzgec button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.suzgec button:focus-visible,.kopya:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+h2{font-family:var(--f-baslik);font-size:24px;letter-spacing:-.01em;margin:44px 0 6px;text-wrap:balance;scroll-margin-top:90px}
+h2 .no{color:var(--acc);margin-right:10px;font-variant-numeric:tabular-nums}
+.giris{color:var(--soft);max-width:68ch;margin:0 0 10px}
+details.okuma{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:8px}
+details.okuma summary{cursor:pointer;font-weight:600}
+details.okuma p{max-width:68ch}
+.sayilar{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.sayilar div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
+.sayilar b{display:block;font-family:var(--f-baslik);font-size:18px}
+.sayilar span{color:var(--soft);font-size:13px}
+.ilk10{list-style:none;padding:0;margin:8px 0 0;counter-reset:s;display:grid;gap:8px}
+.ilk10 li{counter-increment:s;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px;background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.ilk10 li::before{content:counter(s);font-family:var(--f-baslik);font-size:24px;font-weight:700;color:var(--acc);line-height:1}
+.ilk10 a{color:var(--fg);font-weight:600;text-decoration:none}.ilk10 a:hover{text-decoration:underline}
+.ilk10 .n{color:var(--soft);font-size:14px}
+.madde{display:grid;grid-template-columns:28px minmax(0,1fr);gap:4px 10px;padding:16px 0;border-top:1px solid var(--line)}
+.madde[hidden]{display:none}
+.madde input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--ok);cursor:pointer}
+.madde.yapildi .bas{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--line)}
+.bas{font-weight:600;font-size:16px;cursor:pointer}
+.no2{font-variant-numeric:tabular-nums;color:var(--soft);font-weight:500;margin-right:6px}
+.et{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:4px;margin-left:8px;vertical-align:2px}
+.temel{color:var(--acc);background:var(--accbg)}.ileri{color:var(--ile);background:var(--ilebg)}
+dl{display:grid;grid-template-columns:76px minmax(0,1fr);gap:4px 10px;margin:8px 0 0;font-size:14.5px}
+dt{color:var(--soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
+dd{margin:0;min-width:0}
+code{font-family:var(--f-kod);font-size:.88em;background:var(--kod);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.ornek{position:relative;margin-top:8px}
+.ornek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:0;overflow-x:auto;white-space:pre}
+.kopya{position:absolute;top:6px;right:6px;font:inherit;font-size:12px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:2px 9px;cursor:pointer}
+.bos-durum{color:var(--soft);padding:12px 0}
+footer{color:var(--soft);font-size:13px;margin-top:48px;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.ilerleme .dolu{transition:none}}
+
+a{color:var(--acc)}
+.madde,section.bolum{scroll-margin-top:var(--kaydirma,170px)}
+.kaynak{font-size:12px;color:var(--soft);margin:8px 0 0}
+.araclar{margin:14px 0}.araclar label{font-weight:600;font-size:13px;display:block}
+#ara{width:100%;font:inherit;color:var(--fg);background:var(--yuzey);border:1px solid var(--line);border-radius:8px;padding:10px;margin:5px 0}
+.islemler{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.islemler button,.islemler a{font:inherit;font-size:12px;padding:7px 9px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;cursor:pointer;text-decoration:none}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+#arama-sonuc,#bildirim{font-size:13px;color:var(--soft)}
+.ornek pre{padding-top:40px;white-space:pre-wrap;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+@media(max-width:480px){dl{grid-template-columns:1fr;gap:3px}dt{margin-top:7px}.sar{padding-inline:12px}.madde{gap:4px 6px}.cubuk{position:static}.et{margin-left:4px}nav.dizin{position:static}}
+@media print{.cubuk,.araclar,.dizin,.kopya,.ilk10,details.okuma{display:none!important}.sar{display:block;padding:0}body{background:white;color:#17202c}.madde{break-inside:avoid}.ornek pre{padding:10px}a{color:#1d4f91}}
+
+main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
+.ek .ust-bag{font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:18px}
+.ek h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+.ek h2{scroll-margin-top:16px}.ek h3{font-size:17px;margin:26px 0 4px}
+.ek p,.ek li{max-width:72ch}
+.ek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.tablo{overflow-x:auto;margin:10px 0 18px;border:1px solid var(--line);border-radius:8px}
+.tablo table{border-collapse:collapse;width:100%;font-size:14px;background:var(--yuzey)}
+.tablo th,.tablo td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
+.tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
+@media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
+ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
+ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+ul.ekler a{font-weight:600}
+ul.ekler span{display:block;color:var(--soft);font-size:14px}
+</style>
+<script>try{var t=localStorage.getItem("cc-kontrol-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main class="ek"><nav class="ust-bag" aria-label="Ekler"><a href="../index.html">← Kontrol listesi</a><a href="komutlar.html">Komutlar ve kısayollar</a><a href="sorun-giderme.html">Sorun giderme</a><a href="ipuclari.html">İpuçları ve püf noktaları</a><a href="deneyimler.html">Gerçek deneyimlerden on ders</a><a href="sozluk.html">Terimler sözlüğü</a></nav><h1>Dosya konumları</h1><p class="surum">Belge kontrolü: 29 Ekim 2026</p>
+<p>Claude Code davranışını birkaç düzine dosyadan alır ve yaptığı işi de dosyalara yazar. Bir ayar beklediğin gibi çalışmıyorsa, bir bilgi bir oturumda var ötekinde yoksa ya da disk doluyorsa cevap çoğu zaman bu sayfadaki bir yoldadır.</p>
+<p>Yollar macOS ve Linux içindir. Windows'ta <code>~/.claude</code>, <code>%USERPROFILE%\.claude</code> olur. <code>CLAUDE_CONFIG_DIR</code> ortam değişkeni verilirse <code>~/.claude</code> altındaki her şey, <code>~/.claude.json</code> ve kimlik dosyası da o dizine taşınır. Kaynaklar: <a href="https://code.claude.com/docs/en/settings">ayarlar</a>, <a href="https://code.claude.com/docs/en/claude-directory">.claude dizini</a>, <a href="https://code.claude.com/docs/en/memory">bellek</a>, <a href="https://code.claude.com/docs/en/mcp">MCP</a>.</p>
+<h2 id="ayar-dosyalari">Ayar dosyaları</h2>
+<p>Öncelik yüksekten düşüğe: yönetilen, komut satırı, proje yerel, paylaşılan proje, kullanıcı. İzin listeleri katmanlar arasında birleşir. Hangi dosyaların yüklendiğini <code>/status</code> içindeki <code>Setting sources</code> satırı gösterir. <a href="../index.html#m-talimat-8-k">1.8</a></p>
+<div class="tablo"><table><thead><tr><th>Yol</th><th>Kapsam</th><th>Ne için</th><th>Git</th></tr></thead><tbody><tr><td data-e="Yol"><code>~/.claude/settings.json</code></td><td data-e="Kapsam">Kullanıcı, bütün projeler</td><td data-e="Ne için">Kişisel izinler, hook'lar, <code>env</code>, model, atıf</td><td data-e="Git">Girmez</td></tr><tr><td data-e="Yol"><code>.claude/settings.json</code></td><td data-e="Kapsam">Proje, ekip</td><td data-e="Ne için">Ekibin ortak izinleri, hook'ları, plugin'leri</td><td data-e="Git">Girer <a href="../index.html#m-ekip-1-k">10.1</a></td></tr><tr><td data-e="Yol"><code>.claude/settings.local.json</code></td><td data-e="Kapsam">Proje, yalnız sen</td><td data-e="Ne için">Bu projede kişisel ayar. "Bir daha sorma" dediğin izinler buraya yazılır</td><td data-e="Git">Girmez. Claude Code dosyayı yaratırken global git excludes'a ekler</td></tr><tr><td data-e="Yol"><code>/Library/Application Support/ClaudeCode/managed-settings.json</code></td><td data-e="Kapsam">Yönetilen (macOS)</td><td data-e="Ne için">Kurum politikası. Kullanıcı ve proje ayarları bunu ezemez</td><td data-e="Git">Girmez. IT dağıtır</td></tr><tr><td data-e="Yol"><code>/etc/claude-code/managed-settings.json</code></td><td data-e="Kapsam">Yönetilen (Linux, WSL)</td><td data-e="Ne için">Aynı</td><td data-e="Git">Girmez</td></tr><tr><td data-e="Yol"><code>C:\Program Files\ClaudeCode\managed-settings.json</code></td><td data-e="Kapsam">Yönetilen (Windows)</td><td data-e="Ne için">Aynı. Eski <code>ProgramData</code> yolu artık okunmaz</td><td data-e="Git">Girmez</td></tr><tr><td data-e="Yol"><code>managed-settings.d/*.json</code></td><td data-e="Kapsam">Yönetilen, parçalı</td><td data-e="Ne için">Politikayı ekipler arasında bölmek. Dosyalar alfabetik sırayla birleşir</td><td data-e="Git">Girmez</td></tr><tr><td data-e="Yol"><code>managed-mcp.json</code></td><td data-e="Kapsam">Yönetilen</td><td data-e="Ne için">Kurumun sabit MCP sunucu seti</td><td data-e="Git">Girmez</td></tr></tbody></table></div>
+<p>Bozuk bir ayar dosyası bütünüyle atlanır, tek satır bile uygulanmaz. Bir ayar hiç etki etmiyorsa önce <code>/doctor</code> ile dosyanın ayrıştırılıp ayrıştırılmadığına bak.</p>
+<h2 id="claude-json"><code>~/.claude.json</code></h2>
+<p>Claude Code'un kendi durum dosyası. Elle düzenlemen gerekmez. İçinde hesap bilgisi, kullanıcı ve local kapsamlı MCP sunucuları, proje başına güven kararları ve <code>/config</code> ekranının yazdığı genel ayarlar durur. Giriş anahtarı bu dosyada değildir: macOS'ta Keychain'de, Linux ve Windows'ta <code>~/.claude/.credentials.json</code> dosyasındadır.</p>
+<p>Dosya her yeniden yazımda eski kopyasını <code>~/.claude/backups/</code> altına bırakır, en yeni beşi tutulur.</p>
+<h2 id="talimat-dosyalari">Talimat dosyaları</h2>
+<div class="tablo"><table><thead><tr><th>Yol</th><th>Ne zaman yüklenir</th><th>Git</th></tr></thead><tbody><tr><td data-e="Yol"><code>~/.claude/CLAUDE.md</code></td><td data-e="Ne zaman yüklenir">Her oturumda, bütün projelerde</td><td data-e="Git">Girmez <a href="../index.html#m-talimat-1-k">1.1</a></td></tr><tr><td data-e="Yol"><code>./CLAUDE.md</code> ya da <code>./.claude/CLAUDE.md</code></td><td data-e="Ne zaman yüklenir">Projede her oturumda</td><td data-e="Git">Girer <a href="../index.html#m-talimat-2-k">1.2</a></td></tr><tr><td data-e="Yol"><code>./CLAUDE.local.md</code></td><td data-e="Ne zaman yüklenir">Projede her oturumda, yalnız bu makinede</td><td data-e="Git">Girmez, <code>.gitignore</code>'a sen eklersin <a href="../index.html#m-talimat-3-k">1.3</a></td></tr><tr><td data-e="Yol">Alt dizindeki <code>CLAUDE.md</code></td><td data-e="Ne zaman yüklenir">Claude o dizinde bir dosyaya dokununca. Çalışma dizininin üstündekiler açılışta yüklenir</td><td data-e="Git">Girer</td></tr><tr><td data-e="Yol"><code>.claude/rules/*.md</code></td><td data-e="Ne zaman yüklenir"><code>paths</code> deseniyle eşleşen dosyaya dokununca</td><td data-e="Git">Girer <a href="../index.html#m-talimat-4-k">1.4</a></td></tr><tr><td data-e="Yol"><code>~/.claude/rules/*.md</code></td><td data-e="Ne zaman yüklenir">Aynı, bütün projelerde</td><td data-e="Git">Girmez</td></tr><tr><td data-e="Yol"><code>AGENTS.md</code></td><td data-e="Ne zaman yüklenir">Çalışma dizininde ve üstünde hiç CLAUDE dosyası yoksa</td><td data-e="Git">Girer <a href="../index.html#m-talimat-6-k">1.6</a></td></tr><tr><td data-e="Yol">Yönetilen <code>CLAUDE.md</code></td><td data-e="Ne zaman yüklenir">Her oturumda. Kullanıcı dışlayamaz</td><td data-e="Git">Girmez</td></tr></tbody></table></div>
+<p>İki ince nokta var. Birincisi, <code>CLAUDE.local.md</code> eklemek de <code>AGENTS.md</code>'nin okunmasını durdurur. İkisini birlikte istiyorsan <code>CLAUDE.md</code> içine <code>@AGENTS.md</code> yaz. İkincisi, <code>--add-dir</code> ile eklenen dizinin <code>CLAUDE.md</code>'si varsayılan olarak yüklenmez.</p>
+<h2 id="otomatik-bellek">Otomatik bellek</h2>
+<p>Claude'un kendi tuttuğu notlar <code>~/.claude/projects/&lt;proje&gt;/memory/</code> altında durur. <code>MEMORY.md</code> bir dizindir ve her oturumda ilk 200 satırı ya da ilk 25 KB'ı yüklenir. Konu dosyaları açılışta yüklenmez, Claude gerektiğinde okur. Aynı deponun bütün worktree'leri tek bellek dizinini paylaşır. Bellek makineye yereldir, başka makineye ve buluta gitmez. <a href="../index.html#m-talimat-7-k">1.7</a></p>
+<p>Kapatmak için <code>/memory</code> ekranı, ayarda <code>autoMemoryEnabled: false</code> ya da <code>CLAUDE_CODE_DISABLE_AUTO_MEMORY=1</code>. Yerini <code>autoMemoryDirectory</code> değiştirir. Alt ajanların kalıcı belleği ayrı tutulur: <code>agent-memory/&lt;ad&gt;/</code>.</p>
+<h2 id="skill-ajan-komut-ve-stil">Skill, ajan, komut ve stil</h2>
+<div class="tablo"><table><thead><tr><th>Yol</th><th>Ne</th><th>Git</th></tr></thead><tbody><tr><td data-e="Yol"><code>~/.claude/skills/&lt;ad&gt;/SKILL.md</code></td><td data-e="Ne">Kişisel skill, bütün projelerde</td><td data-e="Git">Girmez</td></tr><tr><td data-e="Yol"><code>.claude/skills/&lt;ad&gt;/SKILL.md</code></td><td data-e="Ne">Proje skill'i</td><td data-e="Git">Girer <a href="../index.html#m-yeniden-2-k">9.2</a></td></tr><tr><td data-e="Yol"><code>~/.claude/agents/*.md</code>, <code>.claude/agents/*.md</code></td><td data-e="Ne">Alt ajan tanımları</td><td data-e="Git">Proje olan girer</td></tr><tr><td data-e="Yol"><code>~/.claude/commands/*.md</code>, <code>.claude/commands/*.md</code></td><td data-e="Ne">Eski biçim özel komut. Hâlâ çalışır, aynı adlı skill varsa skill kazanır. Yeni iş için skill tercih et</td><td data-e="Git">Proje olan girer</td></tr><tr><td data-e="Yol"><code>~/.claude/output-styles/</code>, <code>.claude/output-styles/</code></td><td data-e="Ne">Cevap üslubu tanımları</td><td data-e="Git">Proje olan girer</td></tr><tr><td data-e="Yol"><code>~/.claude/keybindings.json</code></td><td data-e="Ne">Klavye kısayolu değişiklikleri. <code>/keybindings</code> açar</td><td data-e="Git">Girmez</td></tr><tr><td data-e="Yol"><code>~/.claude/statusline.sh</code></td><td data-e="Ne">Durum satırı betiği. Yolu <code>settings.json</code> içindeki <code>statusLine</code> alanında</td><td data-e="Git">Girmez <a href="../index.html#m-hook-3-k">8.3</a></td></tr><tr><td data-e="Yol"><code>.worktreeinclude</code></td><td data-e="Ne">Git'in yok saydığı dosyalardan hangilerinin yeni worktree'ye kopyalanacağı</td><td data-e="Git">Girer <a href="../index.html#m-paralel-1-k">11.1</a></td></tr></tbody></table></div>
+<h2 id="mcp">MCP</h2>
+<div class="tablo"><table><thead><tr><th>Kapsam</th><th>Nerede durur</th><th>Kimle paylaşılır</th></tr></thead><tbody><tr><td data-e="Kapsam">local (varsayılan)</td><td data-e="Nerede durur"><code>~/.claude.json</code> içinde bu projenin altında</td><td data-e="Kimle paylaşılır">Kimseyle</td></tr><tr><td data-e="Kapsam">project</td><td data-e="Nerede durur">Proje kökünde <code>.mcp.json</code></td><td data-e="Kimle paylaşılır">Ekiple, git üzerinden</td></tr><tr><td data-e="Kapsam">user</td><td data-e="Nerede durur"><code>~/.claude.json</code></td><td data-e="Kimle paylaşılır">Kimseyle, bütün projelerinde açık</td></tr><tr><td data-e="Kapsam">managed</td><td data-e="Nerede durur">Sistem dizininde <code>managed-mcp.json</code></td><td data-e="Kimle paylaşılır">Kurum</td></tr></tbody></table></div>
+<p>İsim karışıklığına dikkat: MCP'nin "local" kapsamı <code>~/.claude.json</code> içindedir, <code>settings.local.json</code> ile ilgisi yoktur. <code>.mcp.json</code> ilk kullanımda onay ister. Headless koşumda soru sormadan yüklenir. <a href="../index.html#m-yeniden-7-k">9.7</a></p>
+<h2 id="hook-ve-plugin">Hook ve plugin</h2>
+<p>Hook'lar ayrı bir dosyada değil, ayar dosyalarının <code>hooks</code> alanında tanımlanır: kullanıcı, proje, yerel ve yönetilen katman. Bunlara ek olarak plugin içindeki <code>hooks/hooks.json</code>, skill ve alt ajan frontmatter'ı da hook taşıyabilir. Bulut oturumları yerel <code>~/.claude/settings.json</code> dosyasını okumaz. <a href="../index.html#m-hook-1-k">8.1</a></p>
+<p>Plugin'ler <code>~/.claude/plugins/</code> altında durur. Burada sürüm başına önbellek (<code>cache/</code>), plugin'in güncellemelerde korunan verisi (<code>data/</code>) ve marketplace kopyaları (<code>marketplaces/</code>) vardır. Bir plugin'in kendi yapısında yalnız <code>.claude-plugin/plugin.json</code> manifest dizinindedir. <code>skills/</code>, <code>agents/</code>, <code>hooks/</code> ve <code>.mcp.json</code> plugin kökünde durur. <a href="../index.html#m-yeniden-6-k">9.6</a></p>
+<h2 id="oturum-verisi">Oturum verisi</h2>
+<p>Hepsi <code>~/.claude/</code> altındadır. Çoğu <code>cleanupPeriodDays</code> ayarına göre silinir, varsayılan 30 gündür.</p>
+<div class="tablo"><table><thead><tr><th>Yol</th><th>İçerik</th><th>Silinir mi</th></tr></thead><tbody><tr><td data-e="Yol"><code>projects/&lt;proje&gt;/&lt;oturum&gt;.jsonl</code></td><td data-e="İçerik">Konuşma kaydı: mesajlar, araç çağrıları ve sonuçları</td><td data-e="Silinir mi">Süre dolunca. Silinen oturum <code>/resume</code> listesinden de kalkar</td></tr><tr><td data-e="Yol"><code>projects/&lt;proje&gt;/&lt;oturum&gt;/subagents/</code>, <code>tool-results/</code></td><td data-e="İçerik">Alt ajan kayıtları, taşan büyük araç çıktıları</td><td data-e="Silinir mi">Aynı</td></tr><tr><td data-e="Yol"><code>file-history/&lt;oturum&gt;/</code></td><td data-e="İçerik">Claude'un düzenlediği dosyaların önceki hali. <code>/rewind</code> buradan geri yükler</td><td data-e="Silinir mi">Aynı. Silinmişse rewind dosya geri getiremez</td></tr><tr><td data-e="Yol"><code>plans/</code></td><td data-e="İçerik">Plan modu dosyaları. Yeri <code>plansDirectory</code> ile değişir</td><td data-e="Silinir mi">Aynı</td></tr><tr><td data-e="Yol"><code>debug/</code></td><td data-e="İçerik"><code>--debug</code> ya da <code>/debug</code> açıkken oturum günlükleri</td><td data-e="Silinir mi">Aynı</td></tr><tr><td data-e="Yol"><code>shell-snapshots/</code></td><td data-e="İçerik">Açılışta alınan kabuk alias ve fonksiyonları</td><td data-e="Silinir mi">Temiz çıkışta</td></tr><tr><td data-e="Yol"><code>usage-data/report.html</code></td><td data-e="İçerik"><code>/insights</code> raporu</td><td data-e="Silinir mi">Aynı süreyle</td></tr><tr><td data-e="Yol"><code>history.jsonl</code></td><td data-e="İçerik">Yazdığın prompt'lar. Yukarı ok ve <code>Ctrl+R</code> buradan okur</td><td data-e="Silinir mi">Sen silene kadar kalır</td></tr><tr><td data-e="Yol"><code>todos/</code>, <code>statsig/</code>, <code>logs/</code></td><td data-e="İçerik">Eski sürümlerin dizinleri. Artık yazılmaz</td><td data-e="Silinir mi">Temizlik içini boşaltır</td></tr><tr><td data-e="Yol"><code>.credentials.json</code>, <code>agent-memory/</code>, <code>jobs/</code>, <code>daemon/</code></td><td data-e="İçerik">Saklanması gereken durum</td><td data-e="Silinir mi">Silme</td></tr></tbody></table></div>
+<p>Oturumun geçici çalışma dizini macOS'ta <code>/private/tmp/claude-&lt;uid&gt;/&lt;proje&gt;/&lt;oturum&gt;/scratchpad/</code> altındadır. Kayıtla birlikte silinir, işletim sistemi de silebilir. Birden çok gün sürecek işi oraya koyma. <a href="../index.html#m-gozetimsiz-3-k">13.3</a></p>
+<h2 id="mahremiyet">Mahremiyet</h2>
+<p>Konuşma kayıtları ve <code>history.jsonl</code> şifrelenmez. Claude'un okuduğu her şey, bir <code>.env</code> dosyasının içeriği dahil, düz metin olarak diske yazılır. Azaltmanın yolları: <code>cleanupPeriodDays</code> değerini düşürmek, <code>CLAUDE_CODE_SKIP_PROMPT_HISTORY=1</code> ile kayıt tutmamak, headless koşumda <code>--no-session-persistence</code>, gizli dosyaya okuma yasağı. <a href="../index.html#m-guvenlik-1-k">7.1</a></p>
+<p>Bir projenin bütün yerel izini <code>claude purge</code> siler: kayıtlar, bellek, dosya geçmişi ve <code>~/.claude.json</code> içindeki proje girdisi. Önce <code>--dry-run</code> ile ne gideceğini gör. 2.1.288'den önceki sürümlerde komutun adı <code>claude project purge</code>.</p>
+<footer><a href="../index.html#ekler">Bütün ekler</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/ekler/dosyalar.md">Markdown sürümü</a></footer></main>
+</body>
+</html>

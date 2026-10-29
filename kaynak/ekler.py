@@ -374,11 +374,263 @@ Son değişiklik: hook'a async: true eklendi.
 ```
 """
 
+DOSYALAR = r"""
+Claude Code davranışını birkaç düzine dosyadan alır ve yaptığı işi de dosyalara yazar. Bir ayar beklediğin gibi çalışmıyorsa, bir bilgi bir oturumda var ötekinde yoksa ya da disk doluyorsa cevap çoğu zaman bu sayfadaki bir yoldadır.
+
+Yollar macOS ve Linux içindir. Windows'ta `~/.claude`, `%USERPROFILE%\.claude` olur. `CLAUDE_CONFIG_DIR` ortam değişkeni verilirse `~/.claude` altındaki her şey, `~/.claude.json` ve kimlik dosyası da o dizine taşınır. Kaynaklar: [ayarlar](https://code.claude.com/docs/en/settings), [.claude dizini](https://code.claude.com/docs/en/claude-directory), [bellek](https://code.claude.com/docs/en/memory), [MCP](https://code.claude.com/docs/en/mcp).
+
+## Ayar dosyaları
+
+Öncelik yüksekten düşüğe: yönetilen, komut satırı, proje yerel, paylaşılan proje, kullanıcı. İzin listeleri katmanlar arasında birleşir. Hangi dosyaların yüklendiğini `/status` içindeki `Setting sources` satırı gösterir. [[1.8]]
+
+| Yol | Kapsam | Ne için | Git |
+|---|---|---|---|
+| `~/.claude/settings.json` | Kullanıcı, bütün projeler | Kişisel izinler, hook'lar, `env`, model, atıf | Girmez |
+| `.claude/settings.json` | Proje, ekip | Ekibin ortak izinleri, hook'ları, plugin'leri | Girer [[10.1]] |
+| `.claude/settings.local.json` | Proje, yalnız sen | Bu projede kişisel ayar. "Bir daha sorma" dediğin izinler buraya yazılır | Girmez. Claude Code dosyayı yaratırken global git excludes'a ekler |
+| `/Library/Application Support/ClaudeCode/managed-settings.json` | Yönetilen (macOS) | Kurum politikası. Kullanıcı ve proje ayarları bunu ezemez | Girmez. IT dağıtır |
+| `/etc/claude-code/managed-settings.json` | Yönetilen (Linux, WSL) | Aynı | Girmez |
+| `C:\Program Files\ClaudeCode\managed-settings.json` | Yönetilen (Windows) | Aynı. Eski `ProgramData` yolu artık okunmaz | Girmez |
+| `managed-settings.d/*.json` | Yönetilen, parçalı | Politikayı ekipler arasında bölmek. Dosyalar alfabetik sırayla birleşir | Girmez |
+| `managed-mcp.json` | Yönetilen | Kurumun sabit MCP sunucu seti | Girmez |
+
+Bozuk bir ayar dosyası bütünüyle atlanır, tek satır bile uygulanmaz. Bir ayar hiç etki etmiyorsa önce `/doctor` ile dosyanın ayrıştırılıp ayrıştırılmadığına bak.
+
+## `~/.claude.json`
+
+Claude Code'un kendi durum dosyası. Elle düzenlemen gerekmez. İçinde hesap bilgisi, kullanıcı ve local kapsamlı MCP sunucuları, proje başına güven kararları ve `/config` ekranının yazdığı genel ayarlar durur. Giriş anahtarı bu dosyada değildir: macOS'ta Keychain'de, Linux ve Windows'ta `~/.claude/.credentials.json` dosyasındadır.
+
+Dosya her yeniden yazımda eski kopyasını `~/.claude/backups/` altına bırakır, en yeni beşi tutulur.
+
+## Talimat dosyaları
+
+| Yol | Ne zaman yüklenir | Git |
+|---|---|---|
+| `~/.claude/CLAUDE.md` | Her oturumda, bütün projelerde | Girmez [[1.1]] |
+| `./CLAUDE.md` ya da `./.claude/CLAUDE.md` | Projede her oturumda | Girer [[1.2]] |
+| `./CLAUDE.local.md` | Projede her oturumda, yalnız bu makinede | Girmez, `.gitignore`'a sen eklersin [[1.3]] |
+| Alt dizindeki `CLAUDE.md` | Claude o dizinde bir dosyaya dokununca. Çalışma dizininin üstündekiler açılışta yüklenir | Girer |
+| `.claude/rules/*.md` | `paths` deseniyle eşleşen dosyaya dokununca | Girer [[1.4]] |
+| `~/.claude/rules/*.md` | Aynı, bütün projelerde | Girmez |
+| `AGENTS.md` | Çalışma dizininde ve üstünde hiç CLAUDE dosyası yoksa | Girer [[1.6]] |
+| Yönetilen `CLAUDE.md` | Her oturumda. Kullanıcı dışlayamaz | Girmez |
+
+İki ince nokta var. Birincisi, `CLAUDE.local.md` eklemek de `AGENTS.md`'nin okunmasını durdurur. İkisini birlikte istiyorsan `CLAUDE.md` içine `@AGENTS.md` yaz. İkincisi, `--add-dir` ile eklenen dizinin `CLAUDE.md`'si varsayılan olarak yüklenmez.
+
+## Otomatik bellek
+
+Claude'un kendi tuttuğu notlar `~/.claude/projects/<proje>/memory/` altında durur. `MEMORY.md` bir dizindir ve her oturumda ilk 200 satırı ya da ilk 25 KB'ı yüklenir. Konu dosyaları açılışta yüklenmez, Claude gerektiğinde okur. Aynı deponun bütün worktree'leri tek bellek dizinini paylaşır. Bellek makineye yereldir, başka makineye ve buluta gitmez. [[1.7]]
+
+Kapatmak için `/memory` ekranı, ayarda `autoMemoryEnabled: false` ya da `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1`. Yerini `autoMemoryDirectory` değiştirir. Alt ajanların kalıcı belleği ayrı tutulur: `agent-memory/<ad>/`.
+
+## Skill, ajan, komut ve stil
+
+| Yol | Ne | Git |
+|---|---|---|
+| `~/.claude/skills/<ad>/SKILL.md` | Kişisel skill, bütün projelerde | Girmez |
+| `.claude/skills/<ad>/SKILL.md` | Proje skill'i | Girer [[9.2]] |
+| `~/.claude/agents/*.md`, `.claude/agents/*.md` | Alt ajan tanımları | Proje olan girer |
+| `~/.claude/commands/*.md`, `.claude/commands/*.md` | Eski biçim özel komut. Hâlâ çalışır, aynı adlı skill varsa skill kazanır. Yeni iş için skill tercih et | Proje olan girer |
+| `~/.claude/output-styles/`, `.claude/output-styles/` | Cevap üslubu tanımları | Proje olan girer |
+| `~/.claude/keybindings.json` | Klavye kısayolu değişiklikleri. `/keybindings` açar | Girmez |
+| `~/.claude/statusline.sh` | Durum satırı betiği. Yolu `settings.json` içindeki `statusLine` alanında | Girmez [[8.3]] |
+| `.worktreeinclude` | Git'in yok saydığı dosyalardan hangilerinin yeni worktree'ye kopyalanacağı | Girer [[11.1]] |
+
+## MCP
+
+| Kapsam | Nerede durur | Kimle paylaşılır |
+|---|---|---|
+| local (varsayılan) | `~/.claude.json` içinde bu projenin altında | Kimseyle |
+| project | Proje kökünde `.mcp.json` | Ekiple, git üzerinden |
+| user | `~/.claude.json` | Kimseyle, bütün projelerinde açık |
+| managed | Sistem dizininde `managed-mcp.json` | Kurum |
+
+İsim karışıklığına dikkat: MCP'nin "local" kapsamı `~/.claude.json` içindedir, `settings.local.json` ile ilgisi yoktur. `.mcp.json` ilk kullanımda onay ister. Headless koşumda soru sormadan yüklenir. [[9.7]]
+
+## Hook ve plugin
+
+Hook'lar ayrı bir dosyada değil, ayar dosyalarının `hooks` alanında tanımlanır: kullanıcı, proje, yerel ve yönetilen katman. Bunlara ek olarak plugin içindeki `hooks/hooks.json`, skill ve alt ajan frontmatter'ı da hook taşıyabilir. Bulut oturumları yerel `~/.claude/settings.json` dosyasını okumaz. [[8.1]]
+
+Plugin'ler `~/.claude/plugins/` altında durur. Burada sürüm başına önbellek (`cache/`), plugin'in güncellemelerde korunan verisi (`data/`) ve marketplace kopyaları (`marketplaces/`) vardır. Bir plugin'in kendi yapısında yalnız `.claude-plugin/plugin.json` manifest dizinindedir. `skills/`, `agents/`, `hooks/` ve `.mcp.json` plugin kökünde durur. [[9.6]]
+
+## Oturum verisi
+
+Hepsi `~/.claude/` altındadır. Çoğu `cleanupPeriodDays` ayarına göre silinir, varsayılan 30 gündür.
+
+| Yol | İçerik | Silinir mi |
+|---|---|---|
+| `projects/<proje>/<oturum>.jsonl` | Konuşma kaydı: mesajlar, araç çağrıları ve sonuçları | Süre dolunca. Silinen oturum `/resume` listesinden de kalkar |
+| `projects/<proje>/<oturum>/subagents/`, `tool-results/` | Alt ajan kayıtları, taşan büyük araç çıktıları | Aynı |
+| `file-history/<oturum>/` | Claude'un düzenlediği dosyaların önceki hali. `/rewind` buradan geri yükler | Aynı. Silinmişse rewind dosya geri getiremez |
+| `plans/` | Plan modu dosyaları. Yeri `plansDirectory` ile değişir | Aynı |
+| `debug/` | `--debug` ya da `/debug` açıkken oturum günlükleri | Aynı |
+| `shell-snapshots/` | Açılışta alınan kabuk alias ve fonksiyonları | Temiz çıkışta |
+| `usage-data/report.html` | `/insights` raporu | Aynı süreyle |
+| `history.jsonl` | Yazdığın prompt'lar. Yukarı ok ve `Ctrl+R` buradan okur | Sen silene kadar kalır |
+| `todos/`, `statsig/`, `logs/` | Eski sürümlerin dizinleri. Artık yazılmaz | Temizlik içini boşaltır |
+| `.credentials.json`, `agent-memory/`, `jobs/`, `daemon/` | Saklanması gereken durum | Silme |
+
+Oturumun geçici çalışma dizini macOS'ta `/private/tmp/claude-<uid>/<proje>/<oturum>/scratchpad/` altındadır. Kayıtla birlikte silinir, işletim sistemi de silebilir. Birden çok gün sürecek işi oraya koyma. [[13.3]]
+
+## Mahremiyet
+
+Konuşma kayıtları ve `history.jsonl` şifrelenmez. Claude'un okuduğu her şey, bir `.env` dosyasının içeriği dahil, düz metin olarak diske yazılır. Azaltmanın yolları: `cleanupPeriodDays` değerini düşürmek, `CLAUDE_CODE_SKIP_PROMPT_HISTORY=1` ile kayıt tutmamak, headless koşumda `--no-session-persistence`, gizli dosyaya okuma yasağı. [[7.1]]
+
+Bir projenin bütün yerel izini `claude purge` siler: kayıtlar, bellek, dosya geçmişi ve `~/.claude.json` içindeki proje girdisi. Önce `--dry-run` ile ne gideceğini gör. 2.1.288'den önceki sürümlerde komutun adı `claude project purge`.
+"""
+
+IPUCLARI = r"""
+Bu sayfa belgede yazan ama gözden kaçan ayarları, kısayolları ve tuzakları toplar. Her ipucu resmî belgeyle karşılaştırıldı. Belgede olmayan bir yöntem önerildiğinde bu açıkça yazıldı. Bazı ayarlar yeni sürüm ister. Sürüm şartı belgede yazıyorsa burada da yazıyor. Kendi sürümünü `claude --version` ile gör.
+
+## Ayarlar
+
+### Commit ve PR imzasını kaldır
+
+Claude Code commit'lere varsayılan olarak `Co-Authored-By` satırı, PR gövdesine "Generated with Claude Code" satırı ekler. İkisini de `~/.claude/settings.json` içinden kapat:
+
+```json
+{
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
+  }
+}
+```
+
+Boş metin o atfı gizler. `sessionUrl: false` bulut oturumlarındaki oturum bağlantısını da kaldırır. İnternette dolaşan `"includeCoAuthoredBy": false` satırı kullanımdan kalktı. Hâlâ okunuyor ama `attribution` ayarlanınca yok sayılıyor, yani yukarıdaki blokla birlikte yazmanın etkisi yok. Kısa yol `"attribution": false` 2.1.281 ve sonrasını ister. Daha eski sürüm bu değeri reddeder ve ayar dosyasının **tamamını** atlar. CLAUDE.md'ye "kendini imzalama" yazmak da işe yarar, ama kalıcı çözüm ayardır. [[15.4]]
+
+### Konuşma kayıtlarının ömrünü ayarla
+
+`cleanupPeriodDays` kayıtların kaç gün tutulacağını belirler. Varsayılan 30. Eski bir oturuma aylar sonra dönmek istiyorsan büyüt, gizlilik için küçült. `0` geçersizdir, en az 1. Bu süre dolunca `/rewind` ve `/resume` de o oturumu bulamaz.
+
+```json
+{ "cleanupPeriodDays": 90 }
+```
+
+### `auto` ve `bypassPermissions` yalnız kullanıcı dosyasında çalışır
+
+`permissions.defaultMode` için bu iki değer proje ya da yerel ayara yazılırsa etki etmez. `~/.claude/settings.json` dosyasına yaz. Böylece klonladığın bir depo seni sessizce izinsiz moda sokamaz. [[6.7]]
+
+### Ortam değişkenini ayar dosyasına koy
+
+`settings.json` içindeki `env` alanı her oturuma ve alt süreçlere ortam değişkeni verir. Kabuk profilini kirletmeden, projeye özel değer tanımlamak için kullanılır.
+
+```json
+{ "env": { "BASH_DEFAULT_TIMEOUT_MS": "300000" } }
+```
+
+Bash komutlarının varsayılan zaman aşımı 120 saniye, üst sınırı 600 saniyedir. Uzun derleme ya da test koşuyorsan bu iki değeri büyütmek, komutun yarıda kesilmesini önler. [[13.4]]
+
+### Kendi git kurallarını kullanıyorsan yerleşiklerini kapat
+
+`includeGitInstructions: false` Claude'un bağlamından yerleşik commit ve PR talimatlarını ve git durum özetini çıkarır. Kendi commit skill'in ya da CLAUDE.md kuralların varsa çatışmayı önler.
+
+### İki hesap, iki yapılandırma
+
+`CLAUDE_CONFIG_DIR` bütün ayarları, kayıtları ve plugin'leri başka bir dizine taşır. İş ve kişisel hesabı ayırmak için:
+
+```sh
+alias claude-is='CLAUDE_CONFIG_DIR=~/.claude-is claude'
+```
+
+### Telemetriyi kapatırken dikkat
+
+`DISABLE_TELEMETRY` değişkeni tanımlı olduğu sürece, değeri `0` ya da `false` olsa bile telemetri kapalı kalır. Yeniden açmak için değişkeni kaldırmak gerekir. Bu değişken `/skill-doctor` gibi bazı özellikleri de kapatır.
+
+## Talimatlar
+
+### Yeni model çıkınca talimatlarını buda
+
+Talimatların bir kısmı eski bir modelin eksiğini kapatmak için yazılmıştır. Yeni model o eksiği taşımıyorsa bu satırlar işe yaramaz, hatta zarar verir. Belge iki şey söylüyor. Büyük harfli vurgu ve "CRITICAL: You MUST" tarzı dil güncel modellerde kuralı aşırı uygulatabilir, düz bir cümle yeterli. Yeni model varsayılan haliyle daha iyi sonuç veriyorsa eski talimatları kaldırmayı değerlendir.
+
+Bundan bir deneme yöntemi çıkar. Belgede bu döngü olarak yazmıyor, bir iş akışı önerisidir: şüphelendiğin talimatları kaldır, temsilî birkaç işi yeni modelle koş, yalnız modelin gerçekten kaçırdığı kuralları geri ekle. [[5.6]] [[19.3]]
+
+### `/doctor prompt-audit` eski talimatları işaretler
+
+`/doctor prompt-audit` talimat dosyalarını tarar. Eski modeller için yazılmış talimatları, artık var olmayan dosya ya da komuta işaret eden satırları ve birbiriyle çelişen dosyaları raporlar. Sen onaylamadan hiçbir dosyaya dokunmaz. Varsayılan kapsam CLAUDE.md, CLAUDE.local.md, AGENTS.md ve `.claude/` ile `~/.claude/` altındaki kurallar, skill'ler, komutlar, alt ajanlar ve stillerdir. Tek dosya ya da dizin için yol ver. 2.1.283 ve sonrasında var.
+
+```text
+/doctor prompt-audit
+/doctor prompt-audit .claude/skills/deploy
+```
+
+### CLAUDE.md'ye bağlam harcamayan not yaz
+
+CLAUDE.md içindeki `<!-- ... -->` blok yorumları bağlama girmeden silinir. Bakımcıya not, kuralın gerekçesi ya da tarih bırakmak için kullanılır, modelin dikkatini dağıtmaz. [[18.4]]
+
+### Sıkıştırmadan sonra ne kalır
+
+`/compact` sonrasında proje kökündeki CLAUDE.md diskten yeniden yüklenir. Kaybolan yalnız konuşmada verdiğin talimattır. Oturum boyunca geçerli kalması gereken bir kuralı sohbete değil dosyaya yaz. [[2.6]]
+
+## Oturum
+
+### Oturumlara ad ver
+
+`claude -n odeme-refactor` ya da oturum içinde `/rename odeme-refactor`. Sonra `claude --resume odeme-refactor` ile adıyla dönersin. Uzun kimlik aramak gerekmez. [[2.7]]
+
+### Uzun prompt'u editörde yaz
+
+`Ctrl+G` girdiyi varsayılan metin editöründe açar. Çok paragraflı bir brief'i terminal satırında yazmaktan kolaydır. `/config` içinden Claude'un son cevabını da editöre yorum olarak getirebilirsin.
+
+### Ana işi bölmeden soru sor
+
+`/btw neden bu kütüphaneyi seçtin?` cevabı gösterir ama konuşmaya eklemez. Bağlam büyümez, ana iş yön değiştirmez.
+
+### Kod bloğunu tek tuşla al
+
+`/copy` son cevabı panoya kopyalar. Cevapta birden çok kod bloğu varsa seçici açılır, `w` ile seçtiğini dosyaya yazar. SSH üzerinden pano çalışmıyorsa işe yarar.
+
+### Bitiş koşulu olan iş için `/goal`
+
+`/goal bütün testler geçiyor ve lint temiz` Claude'u koşul sağlanana kadar turdan tura çalıştırır. Her turdan sonra ayrı bir model koşulu değerlendirir. Koşul doğrulanabilir olmalı. [[3.1]]
+
+## Hata ayıklama
+
+### `--safe-mode` ile `--bare` farklı işler
+
+`claude --safe-mode` bütün özelleştirmeleri kapatır: CLAUDE.md, skill, plugin, hook, MCP, bellek. Giriş, model ve izinler normal kalır. Bir sorunun senin yapılandırmandan gelip gelmediğini ayırmanın en hızlı yolu budur. `--bare` ise betikler içindir: keşfi atlar, OAuth'u da okumaz, kimlik `ANTHROPIC_API_KEY` ile gelmelidir.
+
+### Ayarın neden etki etmediğini bul
+
+Üç kontrol yeter. `/status` içindeki `Setting sources` yüklenen dosyaları gösterir. `/doctor` ayrıştırılamayan ayar dosyasını bulur. `/context` bağlamda gerçekte nelerin durduğunu gösterir. [[1.8]]
+
+## Genişletme
+
+### Hook'un `if` alanı her olayda çalışmaz
+
+`if` alanı hook'u araç adı ve argümanıyla süzer: `"Bash(git *)"`, `"Edit(*.ts)"`. Eşleşmeyince süreç hiç başlamaz, başlatma maliyeti de olmaz. Ama `if` yalnız araç olaylarında değerlendirilir: PreToolUse, PostToolUse, PostToolUseFailure, PermissionRequest ve PermissionDenied. Başka bir olaya `if` konmuş hook **hiç çalışmaz**. Tek kural alır, `&&` ya da liste kabul etmez. [[8.2]] [[8.4]]
+
+### Yan etkili skill'i otomatik çağrıya kapat
+
+Skill frontmatter'ında `disable-model-invocation: true` olan skill'i Claude kendi başına yüklemez. Yalnız sen `/ad` yazınca çalışır. Yayın, silme ya da mesaj gönderme gibi işler için. `context: fork` skill'i ayrı bir alt ajan bağlamında çalıştırır, ana bağlamı doldurmaz. `allowed-tools` yalnız o turda izinsiz kullanılacak araçları açar. [[9.4]]
+
+### Worktree'li alt ajan nereden dallanır
+
+Alt ajan tanımında `isolation: worktree` onu geçici bir worktree'de çalıştırır. Bu worktree senin o anki dalından değil, deponun varsayılan dalından açılır. Commit'lenmemiş değişikliklerin ve dalındaki yeni commit'ler alt ajanda görünmez. Değişiklik yoksa worktree kendiliğinden temizlenir. [[11.1]]
+
+### Kullanılmayan skill'leri bul
+
+`/skill-doctor` her skill'in bağlamda ne kadar yer tuttuğunu ve ne sıklıkla kullanıldığını gösterir. Hiç çağrılmayan ama açıklaması her oturumda bağlamda duran skill'i kapatmak için. 2.1.252 ve sonrasında var.
+
+### Başka araçtan geç
+
+`/import codex`, `/import gemini` ve `/import cursor` o aracın talimatlarını, MCP sunucularını, komutlarını, ajanlarını ve skill'lerini getirir. Önce `--dry-run` ile ne geleceğini gör.
+
+### Kendi kullanımını gör
+
+`/insights` son oturumlarından bir rapor üretir: hangi projelerde ne yaptığın, nerede takıldığın, hangi özellikleri denemediğin. Rapor `~/.claude/usage-data/report.html` dosyasına yazılır. [[19.5]]
+"""
+
 EKLER = [
  dict(ad="komutlar", baslik="Komutlar ve kısayollar",
       ozet="Slash komutları işe göre, en çok işe yarayan CLI bayrakları, klavye kısayolları ve sık karıştırılan çiftler.", md=KOMUTLAR),
  dict(ad="sorun-giderme", baslik="Sorun giderme",
       ozet="Belirti, ilk ayırıcı kontrol ve sonraki adım. Talimat, izin, hook, bağlam, genişletme ve koşum sorunları.", md=SORUN_GIDERME),
+ dict(ad="dosyalar", baslik="Dosya konumları",
+      ozet="Ayar, talimat, bellek, skill, MCP, plugin ve oturum verisi nerede durur, ne işe yarar, git'e girer mi.", md=DOSYALAR),
+ dict(ad="ipuclari", baslik="İpuçları ve püf noktaları",
+      ozet="Gözden kaçan ayarlar ve tuzaklar: commit imzası, talimat budama, prompt-audit, safe-mode, hook if alanı.", md=IPUCLARI),
  dict(ad="deneyimler", baslik="Gerçek deneyimlerden on ders",
       ozet="Tarihli ölçüm defterinden anonimleştirilmiş vakalar: gözlenen, ders, ayırıcı kanıt ve sınır.", md=DENEYIMLER),
  dict(ad="sozluk", baslik="Terimler sözlüğü",

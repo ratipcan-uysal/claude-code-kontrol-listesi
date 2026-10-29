@@ -64,4 +64,4 @@ Terimler ilk geçtiği maddede kısaca tanımlanır. Bu sayfa hepsini bir arada 
 
 ---
 
-[Kontrol listesi](../README.md) · [Komutlar ve kısayollar](komutlar.md) · [Sorun giderme](sorun-giderme.md) · [Gerçek deneyimlerden on ders](deneyimler.md)
+[Kontrol listesi](../README.md) · [Komutlar ve kısayollar](komutlar.md) · [Sorun giderme](sorun-giderme.md) · [Dosya konumları](dosyalar.md) · [İpuçları ve püf noktaları](ipuclari.md) · [Gerçek deneyimlerden on ders](deneyimler.md)
