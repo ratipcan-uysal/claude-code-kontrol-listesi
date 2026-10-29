@@ -1,5 +1,17 @@
 # Doğrulama kaydı
 
+## 30 Ekim 2026: Opus 5.5 ve Projects eklemeleri
+
+| Kontrol | Durum | Kanıt ve sınır |
+|---|---|---|
+| İçerik yapısı | PASS | 14 test. 20 bölüm, 125 madde, 25 temel, 100 ileri. Rehber 14 bölüm |
+| Sayfa işlevleri | PASS | 74 tarayıcı kontrolü yerelde ve herkese açık adreste |
+| Ürün iddiaları | PASS | Projects maddeleri claude-projects ve cloud-environments belgeleriyle, 5.7 model-config ve settings-reference ile karşılaştırıldı. Opus 5.5 kaynaklı 3.8, 12.8, 13.7, 16.5 iş akışı önerisidir |
+| Canlı özellik denemesi | NOT_RUN | Projects ve model geçişi canlı denenmedi |
+| GitHub CI | PASS | [İçerik kontrolü](https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/actions/runs/40958918442), commit `b9a2622` |
+| Canlı yayın | PASS | [Pages dağıtımı](https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/actions/runs/40958915697). 23 dosya anonim HTTP 200 ve yerel dosyalarla SHA-256 düzeyinde aynı: [kanıt](dogrulama/canli-yayin.json) |
+| PDF | PASS | 99 A4 sayfa |
+
 ## 29 Ekim 2026 rehber
 
 | Kontrol | Durum | Kanıt ve sınır |

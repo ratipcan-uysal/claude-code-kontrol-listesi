@@ -1,18 +1,18 @@
 {
-  "tarih": "2026-10-29T16:13:40.661141Z",
-  "commit": "250e3e0c142a305f351b67fed600176883eafd69",
+  "tarih": "2026-10-29T21:35:26.153189Z",
+  "commit": "b9a2622c2d83c2ae212f152111a56915cc9af634",
   "dosyalar": [
     {
       "yol": "index.html",
       "http": 200,
       "esit": true,
-      "sha256": "31af52cea8465cf8d0594d8357c4d30a9900f9021ae0f8db96c11eef9e65800b"
+      "sha256": "874753270c57789937a6beef7192cb7ff3605fce7af9531745ab1adceb3eff58"
     },
     {
       "yol": "claude-code-kontrol-listesi.pdf",
       "http": 200,
       "esit": true,
-      "sha256": "def1fa3c4b09d6bb702d7870f9e7fc9133f0d689fcc77eb0f06f2c623f60115a"
+      "sha256": "d3f62fadc4b66843b0096c142d66f6f8d0daa51ed02fdddf59c16f1a3647a7c9"
     },
     {
       "yol": "ekler/deneyimler.html",
@@ -30,7 +30,7 @@
       "yol": "ekler/ipuclari.html",
       "http": 200,
       "esit": true,
-      "sha256": "ee524a396de84c6a321a53d20393f5f096c000d107caf0007e8bf8f637703dda"
+      "sha256": "eacaaa9f47cb0ee62946bfaecbcab26c01d6f019c83686637fa979bf40e86f2f"
     },
     {
       "yol": "ekler/komutlar.html",
@@ -42,7 +42,7 @@
       "yol": "ekler/sorun-giderme.html",
       "http": 200,
       "esit": true,
-      "sha256": "4d4f5e7aa6c6b104e80cecf4e88a843c166595b0cca94586e33b9a25c418d385"
+      "sha256": "d9c93d59a297462e93a600ac7e752da805bafce43fc30bc6a817fe78f1c9f129"
     },
     {
       "yol": "ekler/sozluk.html",
@@ -66,7 +66,7 @@
       "yol": "rehber/03-oturumu-yonetmek.html",
       "http": 200,
       "esit": true,
-      "sha256": "ec9e8d888e6d6c1635b970a51a2876507e95a07904e47c424a071a37d1314467"
+      "sha256": "8567ccc00bfc79310dbd7375b0c8cc13f779e6502e0d82e030b4933a8f1794ae"
     },
     {
       "yol": "rehber/04-kanitla-teslim.html",
@@ -114,25 +114,31 @@
       "yol": "rehber/11-ekip-olcegi.html",
       "http": 200,
       "esit": true,
-      "sha256": "c59cb16d4d1391b6065a3e6084d72123a0900fc195cc1cf258048303ec4dd6d5"
+      "sha256": "31c6a8b96833486e78d94f613fb3f2a7d608840811f2231d04b20969bc3024cc"
     },
     {
       "yol": "rehber/12-sistemi-iyilestirmek.html",
       "http": 200,
       "esit": true,
-      "sha256": "c4cd231d14d49b6616097cf2c6415f7b13bc181f8a7c9482f8bf4ef7cf93ad2c"
+      "sha256": "ce0ecad77b1d35eee35b2a579cc95b169a39a04aa56413685de673120cf8d1e1"
     },
     {
       "yol": "rehber/13-bitirme-projesi.html",
       "http": 200,
       "esit": true,
-      "sha256": "6244047d8f175c0dcce49ff5f5ddf18ce579c332e6e889388a8e3d88154d5210"
+      "sha256": "18ba1160da823f15b5eb5b41932dd754041cd0cf563696d54010d928584a1ba8"
+    },
+    {
+      "yol": "rehber/14-projects.html",
+      "http": 200,
+      "esit": true,
+      "sha256": "8de98904a8e24558272d7f7e991ae35144738a7fc172ba9dece5ca5688efa10d"
     },
     {
       "yol": "rehber/index.html",
       "http": 200,
       "esit": true,
-      "sha256": "7a9100d71abf1e5a084327098cb3674a1890043f10a15e8311c616b2aed78ee6"
+      "sha256": "9453946c4a757a9fef8b1fb320a821080ee4a05ff05beea2eadc5e362d71fc91"
     }
   ]
 }
