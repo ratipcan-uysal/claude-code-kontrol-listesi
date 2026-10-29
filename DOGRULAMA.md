@@ -9,7 +9,9 @@
 | Ürün iddiaları | PASS | Her bölümün iddiaları yazımda resmî belgeyle karşılaştırıldı, sonra 13 bölüm bir tutarlılık okumasından geçti |
 | Alıştırmalar | NOT_RUN | Bölüm 8'deki hook betiği dışında alıştırmalar canlı koşulmadı |
 | PDF | PASS | 92 A4 sayfa |
-| Canlı yayın | NOT_RUN | Yerel commit |
+| GitHub CI | PASS | [İçerik kontrolü](https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/actions/runs/40909268315), commit `250e3e0` |
+| Canlı yayın | PASS | [Pages dağıtımı](https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/actions/runs/40909266132). 22 dosya (ana sayfa, PDF, 6 ek, 14 rehber sayfası) anonim HTTP 200 ve yerel dosyalarla SHA-256 düzeyinde aynı: [kanıt](dogrulama/canli-yayin.json) |
+| Canlı sayfa işlevleri | PASS | Aynı 72 tarayıcı kontrolü herkese açık adreste de geçti |
 
 ## 29 Ekim 2026 güncellemesi
 
