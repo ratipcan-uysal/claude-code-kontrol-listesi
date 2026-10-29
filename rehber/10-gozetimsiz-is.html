@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Gözetimsiz iş, hangi kararın verilebileceğini, neyin işi durduracağını ve bittiğin kanıtını önceden yazmaktır. En pahalı hata işin yapılmaması değil, yapılmadığının fark edilmemesidir.">
+<title>Gözetimsiz iş: sen yokken çalışan sistem · Claude Code kontrol listesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Düzen: tek sütun okuma alanı, üstte yapışkan ilerleme ve süzgeç çubuğu, geniş ekranda solda bölüm dizini */
+:root{
+ --bg:#f6f7f9;--yuzey:#ffffff;--fg:#17202c;--soft:#5b6472;--line:#e1e5eb;--kod:#eef1f5;
+ --acc:#1d4f91;--accbg:#e6eef9;--ile:#6a4a9c;--ilebg:#f0eaf8;--ok:#1f7a4d;
+ --f-baslik:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+ --f-govde:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+ --f-kod:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-govde);font-size:15px;line-height:1.55;margin:0}
+.sar{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;grid-template-columns:1fr;gap:32px}
+@media (min-width:980px){.sar{grid-template-columns:230px minmax(0,1fr)}}
+nav.dizin{display:none}
+@media (min-width:980px){nav.dizin{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);align-self:start;max-height:calc(100vh - 120px);overflow:auto;font-size:13px}}
+nav.dizin a{display:flex;justify-content:space-between;gap:8px;color:var(--soft);text-decoration:none;padding:4px 8px;border-radius:6px}
+nav.dizin a:hover,nav.dizin a:focus-visible{background:var(--accbg);color:var(--fg);outline:none}
+nav.dizin small{font-variant-numeric:tabular-nums}
+main{min-width:0}
+header.ust h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+header.ust p{color:var(--soft);max-width:65ch;margin:0 0 6px}
+.surum{font-family:var(--f-kod);font-size:12px;color:var(--soft)}
+.cubuk{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0;margin:20px 0 8px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.ilerleme{flex:1 1 220px;min-width:0}
+.ilerleme .etiket{font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
+.ilerleme .yol{height:6px;background:var(--line);border-radius:3px;margin-top:5px;overflow:hidden}
+.ilerleme .dolu{height:100%;width:0;background:var(--ok);transition:width .25s}
+.suzgec{display:flex;flex-wrap:wrap;gap:6px}
+.suzgec button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--yuzey);color:var(--fg);padding:5px 11px;border-radius:999px;cursor:pointer}
+.suzgec button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.suzgec button:focus-visible,.kopya:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+h2{font-family:var(--f-baslik);font-size:24px;letter-spacing:-.01em;margin:44px 0 6px;text-wrap:balance;scroll-margin-top:90px}
+h2 .no{color:var(--acc);margin-right:10px;font-variant-numeric:tabular-nums}
+.giris{color:var(--soft);max-width:68ch;margin:0 0 10px}
+details.okuma{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:8px}
+details.okuma summary{cursor:pointer;font-weight:600}
+details.okuma p{max-width:68ch}
+.sayilar{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.sayilar div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
+.sayilar b{display:block;font-family:var(--f-baslik);font-size:18px}
+.sayilar span{color:var(--soft);font-size:13px}
+.ilk10{list-style:none;padding:0;margin:8px 0 0;counter-reset:s;display:grid;gap:8px}
+.ilk10 li{counter-increment:s;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px;background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.ilk10 li::before{content:counter(s);font-family:var(--f-baslik);font-size:24px;font-weight:700;color:var(--acc);line-height:1}
+.ilk10 a{color:var(--fg);font-weight:600;text-decoration:none}.ilk10 a:hover{text-decoration:underline}
+.ilk10 .n{color:var(--soft);font-size:14px}
+.madde{display:grid;grid-template-columns:28px minmax(0,1fr);gap:4px 10px;padding:16px 0;border-top:1px solid var(--line)}
+.madde[hidden]{display:none}
+.madde input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--ok);cursor:pointer}
+.madde.yapildi .bas{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--line)}
+.bas{font-weight:600;font-size:16px;cursor:pointer}
+.no2{font-variant-numeric:tabular-nums;color:var(--soft);font-weight:500;margin-right:6px}
+.et{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:4px;margin-left:8px;vertical-align:2px}
+.temel{color:var(--acc);background:var(--accbg)}.ileri{color:var(--ile);background:var(--ilebg)}
+dl{display:grid;grid-template-columns:76px minmax(0,1fr);gap:4px 10px;margin:8px 0 0;font-size:14.5px}
+dt{color:var(--soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
+dd{margin:0;min-width:0}
+code{font-family:var(--f-kod);font-size:.88em;background:var(--kod);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.ornek{position:relative;margin-top:8px}
+.ornek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:0;overflow-x:auto;white-space:pre}
+.kopya{position:absolute;top:6px;right:6px;font:inherit;font-size:12px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:2px 9px;cursor:pointer}
+.bos-durum{color:var(--soft);padding:12px 0}
+footer{color:var(--soft);font-size:13px;margin-top:48px;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.ilerleme .dolu{transition:none}}
+
+a{color:var(--acc)}
+.madde,section.bolum{scroll-margin-top:var(--kaydirma,170px)}
+.kaynak{font-size:12px;color:var(--soft);margin:8px 0 0}
+.araclar{margin:14px 0}.araclar label{font-weight:600;font-size:13px;display:block}
+#ara{width:100%;font:inherit;color:var(--fg);background:var(--yuzey);border:1px solid var(--line);border-radius:8px;padding:10px;margin:5px 0}
+.islemler{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.islemler button,.islemler a{font:inherit;font-size:12px;padding:7px 9px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;cursor:pointer;text-decoration:none}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+#arama-sonuc,#bildirim{font-size:13px;color:var(--soft)}
+.ornek pre{padding-top:40px;white-space:pre-wrap;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+@media(max-width:480px){dl{grid-template-columns:1fr;gap:3px}dt{margin-top:7px}.sar{padding-inline:12px}.madde{gap:4px 6px}.cubuk{position:static}.et{margin-left:4px}nav.dizin{position:static}}
+@media print{.cubuk,.araclar,.dizin,.kopya,.ilk10,details.okuma{display:none!important}.sar{display:block;padding:0}body{background:white;color:#17202c}.madde{break-inside:avoid}.ornek pre{padding:10px}a{color:#1d4f91}}
+
+main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
+.ek .ust-bag{font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:18px}
+.ek h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+.ek h2{scroll-margin-top:16px}.ek h3{font-size:17px;margin:26px 0 4px}
+.ek p,.ek li{max-width:72ch}
+.ek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.tablo{overflow-x:auto;margin:10px 0 18px;border:1px solid var(--line);border-radius:8px}
+.tablo table{border-collapse:collapse;width:100%;font-size:14px;background:var(--yuzey)}
+.tablo th,.tablo td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
+.tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
+@media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
+ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
+ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+ul.ekler a{font-weight:600}
+ul.ekler span{display:block;color:var(--soft);font-size:14px}
+</style>
+<script>try{var t=localStorage.getItem("cc-kontrol-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main class="ek"><nav class="ust-bag" aria-label="Gezinme"><a href="../index.html">← Kontrol listesi</a><a href="index.html">Rehber içindekiler</a><a href="../index.html#ekler">Ekler</a></nav><p class="surum">Uzman · Bölüm 10</p><h1>Gözetimsiz iş: sen yokken çalışan sistem</h1><p class="giris">Gözetimsiz iş, hangi kararın verilebileceğini, neyin işi durduracağını ve bittiğin kanıtını önceden yazmaktır. En pahalı hata işin yapılmaması değil, yapılmadığının fark edilmemesidir.</p><p class="surum">Belge kontrolü: 29 Ekim 2026</p>
+<h2 id="zihinsel-model-sen-yokken-karar-veren-bir-sistem-kuruyorsun">Zihinsel model: sen yokken karar veren bir sistem kuruyorsun</h2>
+<p>Gözetimsiz iş, "Claude'u çalıştırıp uzaklaşmak" değildir. Orada olmadığın sürece her kararı Claude verir, her tıkanıklıkta sana soramaz ve her sessizlik senin için bir sonuç gibi görünür. : <b>hangi kararı Claude verebilir</b>, <b>ne olursa durmalı</b> ve <b>bittiğini hangi kanıt gösterir</b>.</p>
+<p>Gözetimsiz işin en pahalı hatası iş yapılmaması değil, yapılmadığının fark edilmemesidir. Sabah baktığında log boşsa ve hiçbir hata yoksa, iki ihtimal var: iş sessizce bitti ya da hiç başlamadı. İkisi dışarıdan aynı görünür.</p>
+<h2 id="sen-yokken-hangi-karar-verilebilir">Sen yokken hangi karar verilebilir</h2>
+<p>"Sormadan ilerle" tek başına yetmez. Hangi kararın serbest, hangisinin yasak olduğunu yazmak gerekir. Pratik ölçü geri alınabilirliktir:</p>
+<div class="tablo"><table><thead><tr><th>Karar türü</th><th>Gözetimsiz kural</th></tr></thead><tbody><tr><td data-e="Karar türü">Geri alınabilir ve kapsam içinde (dosya düzenleme, yerel commit, deneme)</td><td data-e="Gözetimsiz kural">Claude verir, varsayımı raporda yazar</td></tr><tr><td data-e="Karar türü">Sonucu değiştiren seçim (hangi kütüphane, hangi veri kaynağı)</td><td data-e="Gözetimsiz kural">En makul varsayımla ilerler, varsayımı işaretler</td></tr><tr><td data-e="Karar türü">Geri alınamaz ya da dışarıya etkili (push, deploy, silme, ödeme)</td><td data-e="Gözetimsiz kural">Yapmaz, adımı "engelli" işaretler, kalanı bitirir</td></tr><tr><td data-e="Karar türü">İzin gerektiren adım</td><td data-e="Gözetimsiz kural">En sona bırakılır, gerektirmeyen her şey önce biter</td></tr></tbody></table></div>
+<p>Bunu işe başlamadan görev dosyasına yaz. Yetki, kapsam, bütçe ve tıkanma davranışı net olsun. Her projeye sınırsız genel yetki yazma. İş tıkandığında "dur ve sor" yerine "o maddeyi atla, kalanı bitir, sonda yaz" de. Sabah ilk gördüğün şey çalışan bir sonuç olmalı, izin ekranı değil. <a href="../index.html#m-gozetimsiz-1-k">13.1</a></p>
+<h2 id="headless-kosum-claude-p">Headless koşum: claude -p</h2>
+<p><code>claude -p "..."</code> Claude'u etkileşimsiz çalıştırır. Betikten, zamanlayıcıdan ya da başka bir araçtan çağırabilirsin. Çıktıyı <code>--output-format json</code> ile makine okuyacak biçime çevirirsin.</p>
+<p>Belge çıkış durumunu şöyle tanımlar: başarıda 0, koşum başarısız olursa sıfırdan farklı bir kod. Ama iş içinde oluşan bir hata, örneğin kimlik doğrulama eksikliği, sonuç olarak stdout'a basılır. Yani çıkış koduna tek başına güvenme. Başarıyı üç yerden birlikte oku: çıkış kodu, JSON'daki <code>is_error</code> alanı ve sonuç türü (<code>subtype</code>). Belgeye göre bütçe ya da tur sınırı gibi sınırlar dolduğunda koşum hata türüyle biter. Bu sınırların dolması başarı değildir, işin yarım kaldığı anlamına gelir. <a href="../index.html#m-rutin-6-k">14.6</a></p>
+<p>Makinenin okuyacağı sonucu serbest metinden ayıklama. <code>--json-schema</code> ile şema ver, sonuç <code>structured_output</code> alanında gelir. Claude geçerli çıktı üretemezse (örneğin isteği reddettiyse) alan hiç gelmez. Betik önce alanın varlığına baksın. <a href="../index.html#m-rutin-7-k">14.7</a></p>
+<pre>claude -p &quot;Bu haftanın hata kayıtlarını özetle&quot; --output-format json \
+  --json-schema &#x27;{&quot;type&quot;:&quot;object&quot;,&quot;properties&quot;:{&quot;kritik&quot;:{&quot;type&quot;:&quot;integer&quot;}},&quot;required&quot;:[&quot;kritik&quot;]}&#x27; \
+  &gt; sonuc.json
+jq -e &#x27;.is_error == false and has(&quot;structured_output&quot;)&#x27; sonuc.json</pre>
+<p>İki sınır işaretleyici vardır:</p>
+<ul><li><b><code>--max-turns</code>:</b> tur sayısını sınırlar, dolunca hatayla çıkar. Belgede var, ama yerel 2.1.284 <code>--help</code> çıktısında görünmedi. Kullanmadan önce kendi sürümünde dene.</li><li><b><code>--max-budget-usd</code>:</b> tahmini harcamaya üst sınır koyar, yalnız <code>-p</code> ile çalışır. Belge bunun istemci tarafı bir tahmin olduğunu ve gerçek faturadan sapabileceğini, sınırın aşılabileceğini yazar. Sınırı gerçek bütçenin altında tut.</li></ul>
+<p>Arka plan işi için belgede bir sınır daha var. Ana konuşmanın başlattığı bir arka plan komutu hâlâ çalışıyorsa koşum onu bekler. Beklenen bir şey yokken 10 dakika kesintisiz boşta beklenirse Claude Code çalışan işi durdurur ve kısmi sonucunu atar (süre bir ortam değişkeniyle değişir). Uzun işi arka plana atıp turu kapatmak bu yüzden güvenilir değildir.</p>
+<h2 id="hedef-dongu-ve-zamanlama">Hedef, döngü ve zamanlama</h2>
+<p>Dört mekanizma sık karıştırılır. Her biri farklı bir şeyle başlar ve farklı bir şeyle durur.</p>
+<div class="tablo"><table><thead><tr><th>Mekanizma</th><th>Sonraki tur ne zaman başlar</th><th>Nerede yaşar</th><th>Ne zaman biter</th></tr></thead><tbody><tr><td data-e="Mekanizma"><code>/goal</code></td><td data-e="Sonraki tur ne zaman başlar">Önceki tur bitince</td><td data-e="Nerede yaşar">Oturum</td><td data-e="Ne zaman biter">Bir model koşulu karşılanmış bulunca</td></tr><tr><td data-e="Mekanizma"><code>/loop</code></td><td data-e="Sonraki tur ne zaman başlar">Zaman aralığı dolunca</td><td data-e="Nerede yaşar">Açık oturum</td><td data-e="Ne zaman biter">Sen durdurunca ya da 7 gün sonra</td></tr><tr><td data-e="Mekanizma">Masaüstü zamanlanmış görev</td><td data-e="Sonraki tur ne zaman başlar">Zaman gelince</td><td data-e="Nerede yaşar">Senin makinen</td><td data-e="Ne zaman biter">Sen silince</td></tr><tr><td data-e="Mekanizma">Bulut rutini (<code>/schedule</code>)</td><td data-e="Sonraki tur ne zaman başlar">Zaman gelince</td><td data-e="Nerede yaşar">Anthropic'in bulutu</td><td data-e="Ne zaman biter">Sen silince</td></tr></tbody></table></div>
+<p><b><code>/goal</code></b> bir tamamlanma koşulu verir. Her turdan sonra ayrı bir model koşulun sağlanıp sağlanmadığına bakar ve sağlanmadıysa Claude'u yeni tura sokar. <code>-p</code> ile de çalışır ve koşulu tek koşumda sonuna kadar götürür. Değerlendirici komut çalıştırmaz, dosya okumaz. Yalnız Claude'un konuşmaya getirdiği kanıtı görür. Bu yüzden koşulu "testler geçiyor ve çıkış kodu 0" gibi Claude'un çıktısında görünecek bir şeye bağla.</p>
+<p><b><code>/loop</code></b> oturum içi bir zamanlayıcıdır. Oturum kapanınca durur. Tekrarlayan görev oluşturulduktan 7 gün sonra son kez çalışır ve kendini siler. Kalıcı zamanlama yerine geçmez. <a href="../index.html#m-rutin-5-k">14.5</a></p>
+<p><b>Masaüstü zamanlanmış görev</b> makinende çalışır. Belgeye göre görev yalnız masaüstü uygulaması açıkken ve bilgisayar uyanıkken tetiklenir. Uyku boyunca kaçan koşum için uygulama açılınca, son yedi gün içinde en son kaçan zamana tek bir telafi koşumu başlatır. "Bilgisayarı uyanık tut" ayarı boşta uykuyu engeller, kapağı kapatmak yine uyutur.</p>
+<p><b>Bulut rutini</b> (<code>/schedule</code>) bilgisayarından bağımsızdır. Belge bunun bir araştırma önizlemesi olduğunu ve davranışın, sınırların değişebileceğini söylüyor. Rutin her koşuda depoyu taze klonlar, yerel dosyalarına erişemez, değişikliklerini <code>claude/</code> önekli bir dala yazar. Belgeye göre oturum otomatik modda başlar. En küçük aralık 1 saattir. <a href="../index.html#m-rutin-1-k">14.1</a></p>
+<h2 id="on-kosullar">Ön koşullar</h2>
+<p>Ayrılmadan önce dört şeye bak. Biri eksikse gece boşa gider. <a href="../index.html#m-gozetimsiz-2-k">13.2</a></p>
+<ul><li><b>İzin listesi.</b> Projenin <code>.claude/settings.json</code> içindeki allow listesi, gözetimsiz koşumu ayakta tutan şeydir. Başka projedeki liste seni kurtarmaz.</li><li><b>Disk.</b> <code>df -h .</code> yeterli boş yer gösteriyor mu?</li><li><b>Yük.</b> <code>uptime</code> makinenin sakin olduğunu gösteriyor mu?</li><li><b>Uyku ve şarj.</b> Makine prizde mi, uyku engelleniyor mu? <code>pmset -g</code> bunu gösterir (macOS).</li></ul>
+<h2 id="tekrar-baslatilabilir-adimlar">Tekrar başlatılabilir adımlar</h2>
+<p>Uyku ya da çökme işi baştan başlatmamalı. Ara çıktıyı diske yaz, her adımın başında "bu adım bitti mi" diye bak. Kaynağı geçici dizinde tutma, proje dizinine ya da kalıcı bir yola koy. <a href="../index.html#m-gozetimsiz-3-k">13.3</a></p>
+<h2 id="karar-kurallari">Karar kuralları</h2>
+<ul><li><b>Sen yokken verilebilecek kararları önceden yaz.</b> Geri alınamaz adım engelli işaretlenir. <a href="../index.html#m-gozetimsiz-1-k">13.1</a></li><li><b>Çıkış kodu, <code>is_error</code> ve sonuç türünü birlikte oku.</b> Geçerli JSON başarı kanıtı değildir. <a href="../index.html#m-rutin-6-k">14.6</a></li><li><b>Makineye aktarılacak sonuca şema ver,</b> <code>structured_output</code> varlığını kontrol et. <a href="../index.html#m-rutin-7-k">14.7</a></li><li><b>Uzun işi ön planda tut,</b> log'u oturumdan bağımsız bir yola yaz. Arka plana düşen işi bitmesini bekleyerek ve çıkış satırını okuyarak uzlaştır. <a href="../index.html#m-gozetimsiz-4-k">13.4</a></li><li><b>"Ucuz" bir komutun süresini varsayma.</b> Yük altında uzar. <a href="../index.html#m-paralel-4-k">11.4</a></li><li><b>Makineden bağımsız olması gereken işi buluta ya da bulut rutinine ver.</b> Yerel dosya isteyen iş makinede kalır. <a href="../index.html#m-rutin-1-k">14.1</a></li><li><b>Rutinin kendisini izleyen küçük bir nöbet kur.</b> Hiç koşmayan rutin hata da vermez. <a href="../index.html#m-rutin-3-k">14.3</a></li><li><b>Sessizliği başarı sayma.</b> Kanıt log'un son satırı, çıkış durumu ve beklenen çıktı dosyasıdır.</li></ul>
+<h2 id="hata-bicimleri">Hata biçimleri</h2>
+<p><b>Gerçek vaka D01: mod sessizce değişti.</b> Zamanlanmış oturumların izinsiz ilerlemesi için bir mod ayarlanmıştı. Bir projenin 43 oturum kaydındaki 345 mod değeri tarandı ve bu mod hiç görünmüyordu. Mod ilk kullanımda onay penceresi istiyor, zamanlanmış oturum pencereyi gösteremeyince hata vermeden varsayılan moda düşüyordu. Gözetimsiz koşumu ayakta tutan şey projenin kendi izin listesiydi. Ayrıntısı <a href="../ekler/deneyimler.html">Gerçek deneyimlerden on ders</a> sayfasında D01.</p>
+<p><b>Gerçek vaka D03: arka plandaki iş tur bitince öldü.</b> Zamanlanmış bir görev uzun bir veri çekimini arka planda başlattı ve turu "bekliyorum" diye kapattı. Oturum kapanınca süreç öldü, çıktı dizinle birlikte silindi. 83 dakika boyunca ağa tek istek gitmedi ve geriye tek satır kanıt kalmadı. Aynı iş ön planda ve kalıcı log'la 12 dakikada bitti. Ayrıntısı D03.</p>
+<p><b>Gerçek vaka D04: "ucuz" kontrol 120 kat uzadı.</b> Görev dosyası bir test komutunu yaklaşık 2,5 saniye diye tarif ediyordu. Bir nöbet koşumunda aynı komut 300 saniyelik ön plan sınırını aştı ve arka plana düştü. Makine yükü o dakikada 68'e çıkmıştı. Ders: arka plana düşen kontrolü bitmesini bekleyerek uzlaştır, yoksa D03 tekrarlanır. Ayrıntısı D04.</p>
+<p><b>Gerçek vaka D05: uyku engelleyici bataryada işe yaramadı.</b> Gece koşumu bir uyku engelleyiciyle sarılmıştı, makine prizde değildi. 19 saatte süreç 1,2 saniye işlemci zamanı kullandı ve çıktı dosyası boş kaldı. Prize takılınca aynı koşum 20 dakikada bitti. Ayrıntısı D05.</p>
+<p><b>Gerçek vaka D09: geçici dizin toptan silindi.</b> Çok günlük bir yazı serisinin kaynakları oturumun geçici çalışma dizinindeydi. Dizin ağacı bir akşam silindi. Metinler alt ajan kayıtlarından geri kuruldu, görsellerin yerel kopyası gelmedi. Ayrıntısı D09.</p>
+<p><b>Kurgu senaryo: sabah boş log.</b> Deniz her gece yapılan bir raporu <code>/loop</code> ile kurar ve ertesi sabah log'un boş olduğunu görür. Sebep, 7 gün dolduğu için görevin kendini silmesidir. Hata yoktu, çünkü koşum hiç tetiklenmemişti. Kalıcı zamanlamayı bulut rutinine ya da masaüstü göreve taşır ve yanına son başarılı koşumu kontrol eden bir nöbet ekler.</p>
+<h2 id="alistirma-bir-gece-kosumu-kur-sabah-kanitla-oku">Alıştırma: bir gece koşumu kur, sabah kanıtla oku</h2>
+<p>Gerçek bir iş deposunda değil, bu iş için açtığın bir deneme deposunda yap.</p>
+<p>1. <code>gorev.md</code> yaz. İçine yetkili kapsamı, engel davranışını ve istenen çıktı dosyasını yaz. Örnek görev: depodaki her kaynak dosyanın satır sayısını <code>work/sonuc.json</code> içine yaz. 2. Ayrılmadan önce <code>df -h .</code>, <code>uptime</code>, <code>pmset -g</code> çıktılarını <code>work/on-kosul.txt</code> dosyasına kaydet. <code>/permissions</code> ile izin listesini incele. 3. Koşumu şu biçimde kur: JSON çıktı, tur sınırı, kendi log yolu, çıkış kodunun dosyaya yazılması. ``<code> mkdir -p work/runs claude -p "$(cat gorev.md)" --output-format json --max-turns 30 \ &gt; work/runs/sonuc.json 2&gt; work/runs/hata.log printf '%s\n' "$?" &gt; work/runs/exit-code.txt </code>`<code> 4. Koşumu zamanla ya da elle başlat. Başlamadan önce yarıda öldürüp yeniden başlatmayı bir kez dene, tamamlanan adımlar atlanıyor mu bak. 5. Sabah üç şeye bak: </code>exit-code.txt<code>, </code>sonuc.json<code> içinde </code>is_error<code> ve </code>subtype<code>, </code>work/sonuc.json` dosyası.</p>
+<p><b>Bitti sayılması için:</b> <code>exit-code.txt</code> içinde 0, <code>sonuc.json</code> içinde <code>is_error: false</code>, beklenen çıktı dosyası var ve içeriği görev tarifine uyuyor, log'un son satırı işin bittiğini gösteriyor. Bunlardan biri eksikse iş bitmiş sayılmaz, yalnız sessiz kalmıştır.</p>
+<h2 id="baglantilar">Bağlantılar</h2>
+<p>Kontrol listesi: <a href="../index.html#m-gozetimsiz-1-k">13.1</a> <a href="../index.html#m-gozetimsiz-2-k">13.2</a> <a href="../index.html#m-gozetimsiz-3-k">13.3</a> <a href="../index.html#m-gozetimsiz-4-k">13.4</a> <a href="../index.html#m-gozetimsiz-5-k">13.5</a> <a href="../index.html#m-gozetimsiz-6-k">13.6</a> <a href="../index.html#m-rutin-1-k">14.1</a> <a href="../index.html#m-rutin-2-k">14.2</a> <a href="../index.html#m-rutin-3-k">14.3</a> <a href="../index.html#m-rutin-4-k">14.4</a> <a href="../index.html#m-rutin-5-k">14.5</a> <a href="../index.html#m-rutin-6-k">14.6</a> <a href="../index.html#m-rutin-7-k">14.7</a>. Ekler: <a href="../ekler/deneyimler.html">Gerçek deneyimlerden on ders</a>, <a href="../ekler/komutlar.html">Komutlar ve kısayollar</a>, <a href="../ekler/sorun-giderme.html">Sorun giderme</a>. Önceki bölüm: <a href="09-paralel-isler.html">Bölüm 9: Paralel işler: bağımsızlığı ölçmek</a>.</p>
+<footer><a href="09-paralel-isler.html">← Bölüm 9: Paralel işler: bağımsızlığı ölçmek</a> · <a href="11-ekip-olcegi.html">Bölüm 11: Ekip ölçeği: ortak ayar, dağıtım ve güven →</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/rehber/10-gozetimsiz-is.md">Markdown sürümü</a></footer></main>
+</body>
+</html>

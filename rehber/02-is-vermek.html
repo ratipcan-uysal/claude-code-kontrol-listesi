@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="İyi bir istek hedefin yanında bitiş ölçütünü, kısıtı, örneği ve okuru da söyler. Ölçütü Claude&#x27;un kendi koşturabileceği bir kanıta çevirirsen tek doğrulayıcı sen kalmazsın.">
+<title>İş vermek: bitiş çizgisini çizmek · Claude Code kontrol listesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Düzen: tek sütun okuma alanı, üstte yapışkan ilerleme ve süzgeç çubuğu, geniş ekranda solda bölüm dizini */
+:root{
+ --bg:#f6f7f9;--yuzey:#ffffff;--fg:#17202c;--soft:#5b6472;--line:#e1e5eb;--kod:#eef1f5;
+ --acc:#1d4f91;--accbg:#e6eef9;--ile:#6a4a9c;--ilebg:#f0eaf8;--ok:#1f7a4d;
+ --f-baslik:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+ --f-govde:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+ --f-kod:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-govde);font-size:15px;line-height:1.55;margin:0}
+.sar{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;grid-template-columns:1fr;gap:32px}
+@media (min-width:980px){.sar{grid-template-columns:230px minmax(0,1fr)}}
+nav.dizin{display:none}
+@media (min-width:980px){nav.dizin{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);align-self:start;max-height:calc(100vh - 120px);overflow:auto;font-size:13px}}
+nav.dizin a{display:flex;justify-content:space-between;gap:8px;color:var(--soft);text-decoration:none;padding:4px 8px;border-radius:6px}
+nav.dizin a:hover,nav.dizin a:focus-visible{background:var(--accbg);color:var(--fg);outline:none}
+nav.dizin small{font-variant-numeric:tabular-nums}
+main{min-width:0}
+header.ust h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+header.ust p{color:var(--soft);max-width:65ch;margin:0 0 6px}
+.surum{font-family:var(--f-kod);font-size:12px;color:var(--soft)}
+.cubuk{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0;margin:20px 0 8px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.ilerleme{flex:1 1 220px;min-width:0}
+.ilerleme .etiket{font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
+.ilerleme .yol{height:6px;background:var(--line);border-radius:3px;margin-top:5px;overflow:hidden}
+.ilerleme .dolu{height:100%;width:0;background:var(--ok);transition:width .25s}
+.suzgec{display:flex;flex-wrap:wrap;gap:6px}
+.suzgec button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--yuzey);color:var(--fg);padding:5px 11px;border-radius:999px;cursor:pointer}
+.suzgec button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.suzgec button:focus-visible,.kopya:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+h2{font-family:var(--f-baslik);font-size:24px;letter-spacing:-.01em;margin:44px 0 6px;text-wrap:balance;scroll-margin-top:90px}
+h2 .no{color:var(--acc);margin-right:10px;font-variant-numeric:tabular-nums}
+.giris{color:var(--soft);max-width:68ch;margin:0 0 10px}
+details.okuma{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:8px}
+details.okuma summary{cursor:pointer;font-weight:600}
+details.okuma p{max-width:68ch}
+.sayilar{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.sayilar div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
+.sayilar b{display:block;font-family:var(--f-baslik);font-size:18px}
+.sayilar span{color:var(--soft);font-size:13px}
+.ilk10{list-style:none;padding:0;margin:8px 0 0;counter-reset:s;display:grid;gap:8px}
+.ilk10 li{counter-increment:s;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px;background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.ilk10 li::before{content:counter(s);font-family:var(--f-baslik);font-size:24px;font-weight:700;color:var(--acc);line-height:1}
+.ilk10 a{color:var(--fg);font-weight:600;text-decoration:none}.ilk10 a:hover{text-decoration:underline}
+.ilk10 .n{color:var(--soft);font-size:14px}
+.madde{display:grid;grid-template-columns:28px minmax(0,1fr);gap:4px 10px;padding:16px 0;border-top:1px solid var(--line)}
+.madde[hidden]{display:none}
+.madde input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--ok);cursor:pointer}
+.madde.yapildi .bas{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--line)}
+.bas{font-weight:600;font-size:16px;cursor:pointer}
+.no2{font-variant-numeric:tabular-nums;color:var(--soft);font-weight:500;margin-right:6px}
+.et{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:4px;margin-left:8px;vertical-align:2px}
+.temel{color:var(--acc);background:var(--accbg)}.ileri{color:var(--ile);background:var(--ilebg)}
+dl{display:grid;grid-template-columns:76px minmax(0,1fr);gap:4px 10px;margin:8px 0 0;font-size:14.5px}
+dt{color:var(--soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
+dd{margin:0;min-width:0}
+code{font-family:var(--f-kod);font-size:.88em;background:var(--kod);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.ornek{position:relative;margin-top:8px}
+.ornek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:0;overflow-x:auto;white-space:pre}
+.kopya{position:absolute;top:6px;right:6px;font:inherit;font-size:12px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:2px 9px;cursor:pointer}
+.bos-durum{color:var(--soft);padding:12px 0}
+footer{color:var(--soft);font-size:13px;margin-top:48px;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.ilerleme .dolu{transition:none}}
+
+a{color:var(--acc)}
+.madde,section.bolum{scroll-margin-top:var(--kaydirma,170px)}
+.kaynak{font-size:12px;color:var(--soft);margin:8px 0 0}
+.araclar{margin:14px 0}.araclar label{font-weight:600;font-size:13px;display:block}
+#ara{width:100%;font:inherit;color:var(--fg);background:var(--yuzey);border:1px solid var(--line);border-radius:8px;padding:10px;margin:5px 0}
+.islemler{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.islemler button,.islemler a{font:inherit;font-size:12px;padding:7px 9px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;cursor:pointer;text-decoration:none}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+#arama-sonuc,#bildirim{font-size:13px;color:var(--soft)}
+.ornek pre{padding-top:40px;white-space:pre-wrap;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+@media(max-width:480px){dl{grid-template-columns:1fr;gap:3px}dt{margin-top:7px}.sar{padding-inline:12px}.madde{gap:4px 6px}.cubuk{position:static}.et{margin-left:4px}nav.dizin{position:static}}
+@media print{.cubuk,.araclar,.dizin,.kopya,.ilk10,details.okuma{display:none!important}.sar{display:block;padding:0}body{background:white;color:#17202c}.madde{break-inside:avoid}.ornek pre{padding:10px}a{color:#1d4f91}}
+
+main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
+.ek .ust-bag{font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:18px}
+.ek h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+.ek h2{scroll-margin-top:16px}.ek h3{font-size:17px;margin:26px 0 4px}
+.ek p,.ek li{max-width:72ch}
+.ek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.tablo{overflow-x:auto;margin:10px 0 18px;border:1px solid var(--line);border-radius:8px}
+.tablo table{border-collapse:collapse;width:100%;font-size:14px;background:var(--yuzey)}
+.tablo th,.tablo td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
+.tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
+@media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
+ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
+ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+ul.ekler a{font-weight:600}
+ul.ekler span{display:block;color:var(--soft);font-size:14px}
+</style>
+<script>try{var t=localStorage.getItem("cc-kontrol-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main class="ek"><nav class="ust-bag" aria-label="Gezinme"><a href="../index.html">← Kontrol listesi</a><a href="index.html">Rehber içindekiler</a><a href="../index.html#ekler">Ekler</a></nav><p class="surum">Temel · Bölüm 2</p><h1>İş vermek: bitiş çizgisini çizmek</h1><p class="giris">İyi bir istek hedefin yanında bitiş ölçütünü, kısıtı, örneği ve okuru da söyler. Ölçütü Claude&#x27;un kendi koşturabileceği bir kanıta çevirirsen tek doğrulayıcı sen kalmazsın.</p><p class="surum">Belge kontrolü: 29 Ekim 2026</p>
+<h2 id="zihinsel-model-is-vermek-bitis-cizgisini-cizmektir">Zihinsel model: iş vermek, bitiş çizgisini çizmektir</h2>
+<p>Claude Code'a verdiğin istek bir talimat olduğu kadar bir sözleşmedir. İsteğin "ne yapılacak" kısmı genellikle belli olur. Eksik kalan kısım "ne zaman bitti sayılacak" ve "neye dokunulmayacak" sorularıdır. Bu iki boşluğu sen doldurmazsan Claude kendi tahminiyle doldurur ve tahmin çoğu zaman makul görünür ama senin aklındakiyle aynı çıkmaz.</p>
+<p>Belgenin en çok vurguladığı alışkanlık da budur: Claude'a işin sonucunu kendi kendine kontrol edebileceği bir yol ver. Testler, beklenen çıktı, ekran görüntüsü ya da bir komutun çıkış kodu bu yolu sağlar. Böyle bir ölçüt yoksa tek doğrulayıcı sen kalırsın ve her parçada Claude seni bekler. Ölçüt varsa Claude denemeyi, ölçmeyi ve düzeltmeyi kendi döngüsünde yapar.</p>
+<p>İyi bir iş isteği beş parçadan oluşur:</p>
+<div class="tablo"><table><thead><tr><th>Parça</th><th>Cevapladığı soru</th><th>Eksikse ne olur</th></tr></thead><tbody><tr><td data-e="Parça">Hedef</td><td data-e="Cevapladığı soru">Ne değişecek?</td><td data-e="Eksikse ne olur">Claude başka bir şeyi çözer</td></tr><tr><td data-e="Parça">Bitiş ölçütü</td><td data-e="Cevapladığı soru">Hangi kanıtla biter?</td><td data-e="Eksikse ne olur">İş hep "bitti gibi" görünür</td></tr><tr><td data-e="Parça">Kısıt</td><td data-e="Cevapladığı soru">Neye dokunma?</td><td data-e="Eksikse ne olur">Çalışan kısmı bozarsın</td></tr><tr><td data-e="Parça">Örnek</td><td data-e="Cevapladığı soru">Çıktı nasıl görünür?</td><td data-e="Eksikse ne olur">Biçim tutmaz</td></tr><tr><td data-e="Parça">Okur ve yer</td><td data-e="Cevapladığı soru">Kim, nerede kullanacak?</td><td data-e="Eksikse ne olur">Ton ve ayrıntı seviyesi şaşar</td></tr></tbody></table></div>
+<h2 id="bitis-olcutu-ve-dogrulanabilir-kabul-olcutu">Bitiş ölçütü ve doğrulanabilir kabul ölçütü</h2>
+<p>"Giriş formundaki hatayı düzelt" bir hedeftir, bitiş ölçütü değildir. "Boş e-postayla gönderince form kırmızı uyarı göstersin, <code>npm test</code> içinde bu durumu sınayan yeni bir test olsun ve tüm testler geçsin" ise bitiş ölçütüdür. İkinci cümlede Claude'un kendi başına koşturabileceği iki şey var: bir test ve bir komut. <a href="../index.html#m-gorev-1-k">3.1</a></p>
+<p>Kabul ölçütünün sınaması basit: bir yabancı sadece bu cümleye bakıp "oldu" ya da "olmadı" diyebilir mi? "Hızlı açılsın" diyemez. "Ana sayfa soğuk açılışta iki saniyenin altında yüklensin, ölçümü şu komut versin" diyebilir. Ölçülemeyen bir ölçüt yazamıyorsan işi ikiye böl: önce ölçmeyi kuran bir iş, sonra ölçüte göre çalışan bir iş. <a href="../index.html#m-gorev-2-k">3.2</a></p>
+<h2 id="kisit-ve-korunacak-davranis">Kısıt ve korunacak davranış</h2>
+<p>Claude bir hatayı düzeltirken yakındaki "çirkin" kodu da toparlayabilir. Niyeti iyidir ama diff'in okunmasını zorlaştırır ve çalışan bir davranışı bozabilir. Bunu kısıtla önlersin: hangi dosyaya dokunulacağını, hangi davranışın aynı kalacağını ve neyin yapılmayacağını söyle.</p>
+<p>Güçlü kısıt cümlesi üç şey içerir: korunacak davranış, sınır ve kanıt. Örnek: "Ödeme akışı aynı çalışsın, yalnız <code>fiyat.py</code> içindeki yuvarlamayı değiştir, mevcut ödeme testleri değişmeden geçsin." Yasak listesi uzun olmak zorunda değil. Sadece Claude'un makul bulup yapacağı ama senin istemediğin şeyleri yaz. <a href="../index.html#m-gorev-4-k">3.4</a></p>
+<h2 id="ornek-ve-karsi-ornek">Örnek ve karşı örnek</h2>
+<p>Çıktının biçimini anlatmaktansa göstermek daha kısadır ve yanlış anlaşılmaz. Bir örnek "buna benzesin" der. Karşı örnek "buna benzemesin" der ve çoğu zaman daha çok bilgi taşır, çünkü Claude'un kolay yolunu keser.</p>
+<p>Kurgu senaryo: Sibel haftalık durum özeti istiyor. Bir önceki haftanın özetini örnek olarak yapıştırıyor ve altına bir karşı örnek ekliyor: "Şu özet fazla uzundu, her satırın başında 'bu hafta' yazıyordu, bunu tekrarlama." İlk denemede format tutuyor. Karşı örnek olmasaydı Claude örneğin uzunluğunu ve sözcüklerini kopyalayacaktı. <a href="../index.html#m-gorev-5-k">3.5</a></p>
+<h2 id="plan-modu-ne-zaman">Plan modu ne zaman</h2>
+<p>Plan modu Claude'a dosyaları okutur ama düzenletmez. Sen planı onaylayınca uygulama başlar. Belgeye göre <code>Shift+Tab</code> ile durum çubuğunda <code>plan mode on</code> yazana kadar geçilir ya da <code>claude --permission-mode plan</code> ile başlanır. Bu iş akışı önerisi değil, belgelenmiş bir mod. Ne zaman kullanacağın ise senin kararın:</p>
+<ul><li>Hedef belirsizse, birden çok dosyaya dokunuyorsa ya da yaklaşımı sen de bilmiyorsan önce plan iste.</li><li>Değişiklik bir cümleyle diff olarak anlatılabiliyorsa, ör. bir yazım hatası ya da tek satırlık düzeltme, plan modu zaman kaybıdır.</li><li>Gereksinimleri kendin de net bilmiyorsan belgenin önerisi: Claude'dan seni röportaj yapıp bir <code>SPEC.md</code> yazmasını iste, sonra temiz bir oturumda o dosyadan inşa et. <a href="../index.html#m-gorev-3-k">3.3</a></li></ul>
+<h2 id="i-yi-yi-olcute-cevirmek">"İyi"yi ölçüte çevirmek</h2>
+<p>"En iyi", "kaliteli", "profesyonel" gibi sözcükler Claude'a yön vermez, çünkü iyinin ne olduğunu senin kafanda kalan kıstaslar belirler. Sözcüğü bir ölçüte çevir. "Kaliteli bir README" yerine "kurulum üç komutta bitsin, ilk örnek çalışsın, bir ekran görüntüsü olsun" yaz. "İyi performans" yerine bir süre, bir bellek sınırı ya da bir kıyas komutu yaz. <a href="../index.html#m-prompt-1-k">4.1</a></p>
+<h2 id="okur-ve-kullanim-yeri">Okur ve kullanım yeri</h2>
+<p>Aynı bilgi bir mühendise yazılan commit mesajında, bir yöneticiye giden özette ve bir müşteri e-postasında farklı görünür. Claude okuru bilmezse ortalama bir ton seçer. "Bu metni bütçeyi onaylayacak yönetici okuyacak, teknik terim kullanma, tek ekranı geçmesin" demek sonucu belirgin biçimde değiştirir. Kullanım yeri de aynı işi görür: bir e-posta, bir slayt, bir kod yorumu, bir issue. <a href="../index.html#m-prompt-2-k">4.2</a></p>
+<h2 id="karar-kurallari">Karar kuralları</h2>
+<ul><li><b>İsteği göndermeden önce şunu sor:</b> Claude bitirdiğinde "oldu" demek için hangi kanıta bakacağım? Cevap yoksa ölçütü ekle.</li><li><b>Ölçütü Claude'un koşturabileceği biçimde yaz.</b> Bir test, bir komut, bir dosyada beklenen satır. Senin gözüne kalan kontrol seni darboğaz yapar.</li><li><b>Kısıtı dört parça yap:</b> neye dokunabilir, neye dokunamaz, hangi davranış aynı kalır, neyin kanıtı var.</li><li><b>Biçim önemliyse bir örnek yapıştır.</b> Çoğu zaman bir de karşı örnek ekle.</li><li><b>Küçük ve net işi doğrudan yaptır.</b> Büyük ve belirsiz işte önce plan iste.</li><li><b>Sıfatları ölçüte çevir.</b> Okuru ve yeri her yazı işinde söyle.</li></ul>
+<h2 id="hata-bicimleri">Hata biçimleri</h2>
+<p><b>Gerçek vaka: ölçüt yoktu, yeşil yanıltıcıydı.</b> Bir test komutuna süitin okunur adı filtre olarak verildi. Eşleşen test çıkmadı, sıfır test koştu ve çıktı "başarılı" dedi. İstekte yalnız "testler geçsin" yazıyorsa bu yeşil kabul edilir. "En az şu kadar test koşsun ve geçsin" yazıyorsa sıfır hemen göze çarpar. Ayrıntısı <a href="../ekler/deneyimler.html">Gerçek deneyimlerden on ders</a> sayfasında D02. <a href="04-kanitla-teslim.html">Bölüm 4: Kanıtla teslim: iddiayı sayıya çevir</a> bölümü bu vakayı kanıt açısından işler.</p>
+<p><b>Gerçek vaka: olgu, eski rapordan geldi.</b> On gün önceki bir denetim notu "uygulama yalnız bir ülkede satışta" diyordu. Not oturuma girdi ve öneri ona dayandı. Yönetim panelinde uygulama 175 ülkedeydi. İsteğin içine yapıştırdığın her olgu, ölçütün bir parçası olur. Yanlış olgu yanlış ölçüt doğurur. Ayrıntısı D10.</p>
+<p><b>Kurgu senaryo: kısıtsız düzeltme.</b> Kaan bir sipariş toplamı hatasını düzelttirir. Claude hatayı düzeltir, ayrıca yakındaki üç fonksiyonun adını "daha okunur" olacak şekilde değiştirir. Diff 40 satıra çıkar, Kaan dört fonksiyonun hangisinin gerçekten gerektiğini ayıklayamaz ve hepsini geri alır. "Yalnız <code>toplam.py</code>, başka dosya ve ad değişikliği yok" kısıtı bunu önlerdi.</p>
+<h2 id="alistirma-ayni-is-iki-istek">Alıştırma: aynı iş, iki istek</h2>
+<p>Herhangi bir git deposunda yap. Küçük bir iş seç, ör. bir fonksiyona giriş doğrulaması eklemek ya da bir betiğe <code>--yardim</code> seçeneği koymak.</p>
+<p>1. İlk isteği zayıf yaz, tek cümle: "X'e doğrulama ekle". İş bitince çıktıyı ve <code>git diff --stat</code> satırını kaydet. Sonra <code>git restore .</code> ile değişikliği geri al. 2. Aynı işi bu sefer güçlü isteyle ver. İsteğe şunlar girsin: bitiş ölçütü (hangi komut, hangi çıktı), iki kabul ölçütü, bir kısıt (dokunulacak dosya, korunacak davranış), biçim için bir örnek ve bir karşı örnek. 3. İkisini karşılaştır: diff kaç dosyaya ve kaç satıra değdi? Claude kaç kez durup sana soru sordu? Test ya da komut kanıtı sundu mu? 4. Büyük bir iş seçtiysen ikinci denemeyi plan modunda başlat ve planı onaylamadan önce kısıtlarına uyup uymadığına bak.</p>
+<p><b>Bitti sayılması için:</b> iki satırlık bir karşılaştırma tablosu (dosya sayısı, satır sayısı, soru sayısı, kanıt var mı) ve bir cümle: hangi ölçüt farkı yarattı.</p>
+<h2 id="baglantilar">Bağlantılar</h2>
+<p>Kontrol listesi: <a href="../index.html#m-gorev-1-k">3.1</a> <a href="../index.html#m-gorev-2-k">3.2</a> <a href="../index.html#m-gorev-3-k">3.3</a> <a href="../index.html#m-gorev-4-k">3.4</a> <a href="../index.html#m-gorev-5-k">3.5</a> <a href="../index.html#m-prompt-1-k">4.1</a> <a href="../index.html#m-prompt-2-k">4.2</a>. Önceki bölüm: <a href="01-zihinsel-model.html">Bölüm 1: Zihinsel model: döngü, bağlam ve harness</a>. Sonraki: <a href="03-oturumu-yonetmek.html">Bölüm 3: Oturum: masayı doğru yönetmek</a>, <a href="04-kanitla-teslim.html">Bölüm 4: Kanıtla teslim: iddiayı sayıya çevir</a>. Ekler: <a href="../ekler/komutlar.html">Komutlar ve kısayollar</a>, <a href="../ekler/ipuclari.html">İpuçları ve püf noktaları</a>.</p>
+<footer><a href="01-zihinsel-model.html">← Bölüm 1: Zihinsel model: döngü, bağlam ve harness</a> · <a href="03-oturumu-yonetmek.html">Bölüm 3: Oturum: masayı doğru yönetmek →</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/rehber/02-is-vermek.md">Markdown sürümü</a></footer></main>
+</body>
+</html>

@@ -65,6 +65,8 @@ class Tests(unittest.TestCase):
  def test_md_html_table_and_code(self):
   h=yap.md_html('| A | B |\n|---|---|\n| `x` | y |\n\n```\n<a>\n```')
   self.assertIn('<th>A</th>',h);self.assertIn('<td data-e="B">y</td>',h);self.assertIn('<pre>&lt;a&gt;</pre>',h)
+ def test_md_satir_keeps_angle_brackets_in_code(self):
+  self.assertEqual(yap.md_satir('Yol: <code>~/.claude/skills/&lt;ad&gt;/SKILL.md</code>'),'Yol: `~/.claude/skills/<ad>/SKILL.md`')
  def test_pdf_contains_each_item(self):
   pdf=yap.pdf()
   for i,(_,_,_,ms) in enumerate(yap.BOLUMLER,1):

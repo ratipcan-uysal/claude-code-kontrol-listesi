@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Hook, modelin kararına girmeden olay gelince çalışan koddur. Çıkış koduna göre neyi engelleyip neyi engellemediği, hook tiplerinin farkı ve hook&#x27;u bozarak sınamak.">
+<title>Hook ile garanti: olay, çıkış kodu, sınama · Claude Code kontrol listesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Düzen: tek sütun okuma alanı, üstte yapışkan ilerleme ve süzgeç çubuğu, geniş ekranda solda bölüm dizini */
+:root{
+ --bg:#f6f7f9;--yuzey:#ffffff;--fg:#17202c;--soft:#5b6472;--line:#e1e5eb;--kod:#eef1f5;
+ --acc:#1d4f91;--accbg:#e6eef9;--ile:#6a4a9c;--ilebg:#f0eaf8;--ok:#1f7a4d;
+ --f-baslik:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+ --f-govde:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+ --f-kod:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-govde);font-size:15px;line-height:1.55;margin:0}
+.sar{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;grid-template-columns:1fr;gap:32px}
+@media (min-width:980px){.sar{grid-template-columns:230px minmax(0,1fr)}}
+nav.dizin{display:none}
+@media (min-width:980px){nav.dizin{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);align-self:start;max-height:calc(100vh - 120px);overflow:auto;font-size:13px}}
+nav.dizin a{display:flex;justify-content:space-between;gap:8px;color:var(--soft);text-decoration:none;padding:4px 8px;border-radius:6px}
+nav.dizin a:hover,nav.dizin a:focus-visible{background:var(--accbg);color:var(--fg);outline:none}
+nav.dizin small{font-variant-numeric:tabular-nums}
+main{min-width:0}
+header.ust h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+header.ust p{color:var(--soft);max-width:65ch;margin:0 0 6px}
+.surum{font-family:var(--f-kod);font-size:12px;color:var(--soft)}
+.cubuk{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0;margin:20px 0 8px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.ilerleme{flex:1 1 220px;min-width:0}
+.ilerleme .etiket{font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
+.ilerleme .yol{height:6px;background:var(--line);border-radius:3px;margin-top:5px;overflow:hidden}
+.ilerleme .dolu{height:100%;width:0;background:var(--ok);transition:width .25s}
+.suzgec{display:flex;flex-wrap:wrap;gap:6px}
+.suzgec button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--yuzey);color:var(--fg);padding:5px 11px;border-radius:999px;cursor:pointer}
+.suzgec button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.suzgec button:focus-visible,.kopya:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+h2{font-family:var(--f-baslik);font-size:24px;letter-spacing:-.01em;margin:44px 0 6px;text-wrap:balance;scroll-margin-top:90px}
+h2 .no{color:var(--acc);margin-right:10px;font-variant-numeric:tabular-nums}
+.giris{color:var(--soft);max-width:68ch;margin:0 0 10px}
+details.okuma{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:8px}
+details.okuma summary{cursor:pointer;font-weight:600}
+details.okuma p{max-width:68ch}
+.sayilar{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.sayilar div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
+.sayilar b{display:block;font-family:var(--f-baslik);font-size:18px}
+.sayilar span{color:var(--soft);font-size:13px}
+.ilk10{list-style:none;padding:0;margin:8px 0 0;counter-reset:s;display:grid;gap:8px}
+.ilk10 li{counter-increment:s;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px;background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.ilk10 li::before{content:counter(s);font-family:var(--f-baslik);font-size:24px;font-weight:700;color:var(--acc);line-height:1}
+.ilk10 a{color:var(--fg);font-weight:600;text-decoration:none}.ilk10 a:hover{text-decoration:underline}
+.ilk10 .n{color:var(--soft);font-size:14px}
+.madde{display:grid;grid-template-columns:28px minmax(0,1fr);gap:4px 10px;padding:16px 0;border-top:1px solid var(--line)}
+.madde[hidden]{display:none}
+.madde input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--ok);cursor:pointer}
+.madde.yapildi .bas{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--line)}
+.bas{font-weight:600;font-size:16px;cursor:pointer}
+.no2{font-variant-numeric:tabular-nums;color:var(--soft);font-weight:500;margin-right:6px}
+.et{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:4px;margin-left:8px;vertical-align:2px}
+.temel{color:var(--acc);background:var(--accbg)}.ileri{color:var(--ile);background:var(--ilebg)}
+dl{display:grid;grid-template-columns:76px minmax(0,1fr);gap:4px 10px;margin:8px 0 0;font-size:14.5px}
+dt{color:var(--soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
+dd{margin:0;min-width:0}
+code{font-family:var(--f-kod);font-size:.88em;background:var(--kod);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.ornek{position:relative;margin-top:8px}
+.ornek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:0;overflow-x:auto;white-space:pre}
+.kopya{position:absolute;top:6px;right:6px;font:inherit;font-size:12px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:2px 9px;cursor:pointer}
+.bos-durum{color:var(--soft);padding:12px 0}
+footer{color:var(--soft);font-size:13px;margin-top:48px;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.ilerleme .dolu{transition:none}}
+
+a{color:var(--acc)}
+.madde,section.bolum{scroll-margin-top:var(--kaydirma,170px)}
+.kaynak{font-size:12px;color:var(--soft);margin:8px 0 0}
+.araclar{margin:14px 0}.araclar label{font-weight:600;font-size:13px;display:block}
+#ara{width:100%;font:inherit;color:var(--fg);background:var(--yuzey);border:1px solid var(--line);border-radius:8px;padding:10px;margin:5px 0}
+.islemler{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.islemler button,.islemler a{font:inherit;font-size:12px;padding:7px 9px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;cursor:pointer;text-decoration:none}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+#arama-sonuc,#bildirim{font-size:13px;color:var(--soft)}
+.ornek pre{padding-top:40px;white-space:pre-wrap;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+@media(max-width:480px){dl{grid-template-columns:1fr;gap:3px}dt{margin-top:7px}.sar{padding-inline:12px}.madde{gap:4px 6px}.cubuk{position:static}.et{margin-left:4px}nav.dizin{position:static}}
+@media print{.cubuk,.araclar,.dizin,.kopya,.ilk10,details.okuma{display:none!important}.sar{display:block;padding:0}body{background:white;color:#17202c}.madde{break-inside:avoid}.ornek pre{padding:10px}a{color:#1d4f91}}
+
+main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
+.ek .ust-bag{font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:18px}
+.ek h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+.ek h2{scroll-margin-top:16px}.ek h3{font-size:17px;margin:26px 0 4px}
+.ek p,.ek li{max-width:72ch}
+.ek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.tablo{overflow-x:auto;margin:10px 0 18px;border:1px solid var(--line);border-radius:8px}
+.tablo table{border-collapse:collapse;width:100%;font-size:14px;background:var(--yuzey)}
+.tablo th,.tablo td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
+.tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
+@media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
+ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
+ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+ul.ekler a{font-weight:600}
+ul.ekler span{display:block;color:var(--soft);font-size:14px}
+</style>
+<script>try{var t=localStorage.getItem("cc-kontrol-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main class="ek"><nav class="ust-bag" aria-label="Gezinme"><a href="../index.html">← Kontrol listesi</a><a href="index.html">Rehber içindekiler</a><a href="../index.html#ekler">Ekler</a></nav><p class="surum">Orta · Bölüm 8</p><h1>Hook ile garanti: olay, çıkış kodu, sınama</h1><p class="giris">Hook, modelin kararına girmeden olay gelince çalışan koddur. Çıkış koduna göre neyi engelleyip neyi engellemediği, hook tiplerinin farkı ve hook&#x27;u bozarak sınamak.</p><p class="surum">Belge kontrolü: 29 Ekim 2026</p>
+<h2 id="zihinsel-model-olay-gelir-betik-karar-verir">Zihinsel model: olay gelir, betik karar verir</h2>
+<p><a href="05-talimat-mimarisi.html">Bölüm 5: Talimat mimarisi: rica ile garanti</a> rica ile garanti ayrımını kurdu. Hook, garanti tarafının en esnek aracıdır. Claude Code yaşam döngüsünde belirli noktalara geldiğinde senin betiğini, HTTP isteğini ya da küçük bir model çağrısını çalıştırır. Betik olay hakkında JSON girdisi alır. Çıktısıyla işlemi durdurur, bağlama bilgi ekler ya da sessiz kalır. Model araya girmez, çünkü Claude ne düşünürse düşünsün olay geldiği anda hook çalışır ve kararını kendi başına verir.</p>
+<p>Hook'u anlamak için üç şeyi bil: ne zaman çalıştığı, neye bakarak seçildiği ve çıkışının neyi etkilediği.</p>
+<p><b>Ne zaman çalışır?</b> Olaylar üç tempoda gelir. Oturum başına: <code>SessionStart</code>, <code>SessionEnd</code>. Tur başına: <code>UserPromptSubmit</code>, <code>Stop</code>. Araç çağrısı başına: <code>PreToolUse</code> (araç çalışmadan önce, durdurabilir) ve <code>PostToolUse</code> (araç çalıştıktan sonra, geri alamaz). Bunların yanında <code>PermissionRequest</code>, <code>SubagentStop</code>, <code>PreCompact</code>, <code>Notification</code> gibi daha özel olaylar vardır. Tam liste <a href="../ekler/komutlar.html">Komutlar ve kısayollar</a> ekinde ve belgenin hook referansında durur.</p>
+<p><b>Neye bakarak seçilir?</b> <code>matcher</code> alanı, olayın ilgili alanına göre hook'u süzer. Araç olaylarında araç adıdır: <code>Bash</code>, <code>Edit|Write</code>, <code>mcp__.*</code>. <code>SessionStart</code> için oturumun nasıl başladığıdır: <code>startup</code>, <code>resume</code>, <code>clear</code>, <code>compact</code>. Claude Code, yalnız harf, rakam, alt çizgi, tire, virgül ve <code>|</code> içeren değeri tam eşleşme listesi sayar. Başka bir karakter girerse JavaScript düzenli ifadesi olur ve değerin herhangi bir yerinde eşleşir. <code>Edit.*</code> hem <code>Edit</code> hem <code>NotebookEdit</code> ile eşleşir, tam eşleşme için <code>^Edit$</code> yaz.</p>
+<p>Bir de <code>if</code> alanı var. İzin kuralı sözdizimiyle yazılır, örneğin <code>Bash(git *)</code>. Hook yalnız çağrı bu kalıba uyarsa çalışır, böylece her komutta betik başlatmazsın. Belge iki sınır koyar. Claude Code <code>if</code> alanını yalnız araç olaylarında (<code>PreToolUse</code>, <code>PostToolUse</code>, <code>PostToolUseFailure</code>, <code>PermissionRequest</code>, <code>PermissionDenied</code>) değerlendirir. Diğer olaylarda <code>if</code> olan hook hiç çalışmaz. İkincisi, <code>if</code> en iyi çabayla süzer: Claude Code komutun neyi çalıştıracağını çözemezse hook'u yine de çalıştırır. Kesin izin ya da ret için hook'a değil izin sistemine güven.</p>
+<h2 id="cikis-kodu-ve-json-karar">Çıkış kodu ve JSON karar</h2>
+<p>Hook'un sonucunu iki yoldan bildirebilirsin. Birini seç, karıştırma.</p>
+<div class="tablo"><table><thead><tr><th>Çıkış</th><th>Anlamı</th></tr></thead><tbody><tr><td data-e="Çıkış">0, çıktı yok</td><td data-e="Anlamı">Karar yok. Normal izin akışı sürer. Sessiz kalmak onay vermek değildir</td></tr><tr><td data-e="Çıkış">2</td><td data-e="Anlamı">Engelleyebilen olayda işlemi durdurur. Stderr gerekçe olur ve Claude'a gider</td></tr><tr><td data-e="Çıkış">Başka kod, başlatılamama, bozuk JSON</td><td data-e="Anlamı">Engellemeyen hata. İşlem devam eder, yalnız bir bildirim görürsün</td></tr></tbody></table></div>
+<p>Bu tablonun son satırı bölümün en önemli cümlesidir. Betiğin çökerse, yolu yanlışsa ya da bozuk JSON basarsa Claude Code işlemi yine yapar. Güvenlik kapısı olan bir hook'ta bunu istemezsin. İki çözüm var: kapalı hata yönünü betikte kendin yaz (hata yakalayınca <code>exit 2</code>) ya da hook'a <code>"onFailure": "block"</code> ekle. İkincisi komut ve HTTP hook'ları için geçerli ve belgede v2.1.295 ve sonrasını gerektirir. Yerel sürüm 2.1.284 olduğundan bu makinede alan etkisiz kalır. Eski sürümde yokmuş gibi davran ve çözümü betiğe yaz.</p>
+<p>Exit 2 ne yapar, olaya göre değişir. <code>PreToolUse</code> araç çağrısını durdurur. <code>UserPromptSubmit</code> istemi Claude'a ulaşmadan reddeder. <code>Stop</code> Claude'un durmasını engeller ve konuşmayı sürdürür. <code>PostToolUse</code> ise geri alamaz, çünkü araç çalışmıştır, yalnız stderr'i Claude'a gösterir. <code>SessionStart</code> stderr'i yalnız sana gösterir. Bir olayı engelleyici saymadan önce belgedeki "Exit code 2 behavior per event" tablosuna bak. <a href="../index.html#m-hook-4-k">8.4</a></p>
+<p>JSON yoluyla daha ince karar verirsin. Exit 0 ile tek bir JSON nesnesi yazdırırsın. <code>PreToolUse</code> için karar <code>hookSpecificOutput</code> içinde olur: <code>permissionDecision</code> değeri <code>allow</code>, <code>deny</code>, <code>ask</code> ya da <code>defer</code>, yanında <code>permissionDecisionReason</code>. Birden çok hook farklı karar verirse öncelik <code>deny</code>, <code>defer</code>, <code>ask</code>, <code>allow</code> sırasıdır. Stdout'ta JSON dışında tek satır metin (kabuk profilinin bastığı bir karşılama satırı gibi) nesnenin okunmasını bozar.</p>
+<p>Hook kararı izin kurallarını delmez. Belgeye göre bir hook <code>allow</code> dese bile Claude Code eşleşen deny ve ask kurallarını değerlendirir. Ters yönde exit 2 ile bloklayan hook, izin kuralları değerlendirilmeden çağrıyı durdurur. Bu yüzden "Bash'i tamamen aç, ama şu üç komutu engelle" düzeni çalışır: <code>Bash</code> allow'da, engelleyen hook yanında. <a href="../index.html#m-guvenlik-6-k">7.6</a></p>
+<h2 id="hook-un-gucu-hangi-tip-kesin">Hook'un gücü: hangi tip kesin?</h2>
+<p>Beş hook tipi var: <code>command</code>, <code>http</code>, <code>mcp_tool</code>, <code>prompt</code>, <code>agent</code>. <a href="05-talimat-mimarisi.html">Bölüm 5: Talimat mimarisi: rica ile garanti</a> içinde gördüğün gibi <code>command</code> ve <code>http</code> kesindir, kod çalışır ve ne yazdıysan onu yapar. <code>prompt</code> ve <code>agent</code> tipi kararı başka bir modele bırakır. Belge prompt hook'unu, hook girdisini bir Claude modeline verip karar JSON'u alan tek turluk değerlendirme olarak anlatır. Karar bir modelden geldiği için belgenin iyi uygulamalar sayfası bu tipi de kesin saymaz. Garanti gereken yerde <code>command</code> kullan. <code>SessionStart</code> zaten yalnız <code>command</code> ve <code>mcp_tool</code> kabul eder.</p>
+<p>Aynı olaya eşleşen hook'lar paralel çalışır. Bunun sonucu şu: birinin diğerinin çıktısına dayandığı düzen bazen tutar, bazen tutmaz, bu yüzden sıraya bağlı adımları tek betikte birleştir ve paralel hook'lar aynı dosyaya yazıyorsa onları ayrı dosyalara yazdır. Aynı tanımı birden çok ayar dosyasında yazarsan yalnız bir kez çalışır. <a href="../index.html#m-hook-7-k">8.7</a></p>
+<h3 id="async-bekletmeyen-durduramayan">async: bekletmeyen, durduramayan</h3>
+<p><code>async: true</code> hook'u arka plana atar. Claude beklemez ama durdurulamaz da: <code>decision</code>, <code>permissionDecision</code> ve <code>continue</code> alanları async hook'ta etkisizdir. <code>asyncRewake</code> hook exit 2 verince Claude'u uyarır ama işlemi engellemez, çünkü işlem çoktan bitmiştir. <code>claude -p</code> oturumu bitince Claude Code hâlâ çalışan async hook'u iptal eder. Kural basit: engellemesi gereken hook'u hiç async yapma, bildirim, log ve yavaş biçimlendirme gibi işleri ise rahatça async'e ver. <a href="../index.html#m-hook-6-k">8.6</a></p>
+<h2 id="hook-u-sina-sonra-bozarak-dustugunu-gor">Hook'u sına, sonra bozarak düştüğünü gör</h2>
+<p>Hook hiçbir şeye bakmasa da sessizce "çalışır". <code>/hooks</code> yapılandırmayı gösterir, doğru çalıştığını göstermez. Sınama için olayın JSON girdisini elle ver ve çıkış kodunu oku. Üç vaka yeter: izinli, yasak, bozuk girdi. Sonra hook'u bilerek boz ve testin düştüğünü gör. <a href="../index.html#m-hook-4-k">8.4</a></p>
+<h2 id="hata-bicimleri">Hata biçimleri</h2>
+<p><b>Gerçek vaka D08: metin kuralı yeni oturuma ulaşmadı, hook ulaştı.</b> Dört paralel oturum aynı anda derleme koştu ve makine yükü sakin makinedeki 4'ten 720'ye çıktı. Metin talimatı ("ağır komutu kilitle sar") o anki oturumlara ulaştı, yenilere ve başka projelere ulaşmadı. Çalışan yol sırasız ağır komutu reddeden bir PreToolUse hook'uydu. Hook 16 vakalık testle sınandı ve sıfır yanlış verdi. Hafif komut istisnası bilerek bozulunca iki yanlış verdi, yani test gerçekten bakıyordu. Aynı vakada tek yuvanın fazla dar çıktığı da kaydedildi. Sınır: 26 Ekim 2026 gözlemi. Ayrıntısı <a href="../ekler/deneyimler.html">Gerçek deneyimlerden on ders</a> içinde.</p>
+<p><b>Gerçek vaka D07: hook kuralı uygulatmadı, bağlama girmesini garanti etti.</b> Proje dışı bir dosyayı import eden CLAUDE.md headless koşumda içeriği yüklemedi. Aynı içeriği her oturumda bağlama koyan bir SessionStart hook'u çözümü oldu. Model kuralı kelimesi kelimesine aktardı. Hook burada kuralı zorlamadı, sadece Claude'un gördüğü şeyi garanti etti. Doğrulama: dosya okuma araçları kapalı bir headless oturumda "bu kural ne diyor?" diye sormak. <a href="../index.html#m-hook-1-k">8.1</a></p>
+<p><b>Kurgu senaryo: sessizce açık bırakan kapı.</b> Cem'in ekibi <code>.claude/hooks/kontrol.js</code> betiğini bir <code>PreToolUse</code> hook'una bağlar. Bir refactor sırasında biri betiği başka klasöre taşır. Hook artık başlamaz, bu engellemeyen bir hatadır, yalnız transkriptte bir uyarı çıkar. İki hafta boyunca kontrol çalışmaz ve kimse fark etmez. Ekip <code>onFailure: "block"</code> alanını ekler ve sürümü v2.1.295 üstüne çıkarır, ayrıca testi CI'a bağlar: betik yoksa test düşer.</p>
+<h2 id="karar-kurallari">Karar kuralları</h2>
+<ul><li><b>Her seferinde olması gerekiyorsa <code>command</code> ya da <code>http</code> hook'u yaz.</b> Garanti <code>prompt</code> ve <code>agent</code> tipinde yok.</li><li><b>Engellemesi gereken hook senkron olsun.</b> Async yalnız bildirim ve log için.</li><li><b>Hata yönünü seç.</b> Bilgi veren hook hatada devam edebilir. Güvenlik kapısı hatada engellemeli: betikte <code>exit 2</code>, destekleyen sürümde <code>onFailure: "block"</code>.</li><li><b><code>if</code> ile süzmek hızlandırır, güvenlik sağlamaz.</b> Kesin ret için deny kuralı.</li><li><b>Sıraya güvenme.</b> Bağımlı adımlar tek betikte.</li><li><b>Hook sayısı arttıkça sor:</b> bu bir kural mı, tercih mi? Kırk hook'a ulaştıysan çoğu tercihtir.</li></ul>
+<h2 id="alistirma-engelleyen-bir-pretooluse-hook-u-yaz-ve-uc-girdiyle-sina">Alıştırma: engelleyen bir PreToolUse hook'u yaz ve üç girdiyle sına</h2>
+<p>Bunu deneme deposunda yap. Gerçek bir iş deposunda hook'u etkinleştirme.</p>
+<p>1. <code>jq</code> kurulu olduğundan emin ol (<code>jq --version</code>). Deneme deposunda <code>.claude/hooks/yasak-komut.sh</code> dosyasını oluştur.</p>
+<pre>#!/bin/sh
+# PreToolUse: Bash komutunda yasak kalıp varsa engelle
+komut=$(jq -er &#x27;.tool_input.command | select(type == &quot;string&quot;)&#x27;) || {
+  echo &quot;Geçersiz hook girdisi&quot; &gt;&amp;2
+  exit 2
+}
+if printf &#x27;%s&#x27; &quot;$komut&quot; | grep -qE &#x27;DROP TABLE|--force&#x27;
+then
+  echo &quot;Politika engelledi: yasak kalıp&quot; &gt;&amp;2
+  exit 2
+fi
+exit 0</pre>
+<p>2. <code>chmod +x .claude/hooks/yasak-komut.sh</code> ile çalıştırılabilir yap. 3. Üç girdiyi elle ver ve çıkış kodunu yazdır: - İzinli: <code>printf '%s' '{"tool_input":{"command":"git status"}}' | .claude/hooks/yasak-komut.sh</code>, ardından <code>echo $?</code>. Beklenen: 0. - Yasak: aynı komut, ama <code>git push --force</code>. Beklenen: 2 ve stderr'de gerekçe. - Bozuk: <code>printf '%s' '{bozuk' | .claude/hooks/yasak-komut.sh</code>, ardından <code>echo $?</code>. Beklenen: 2. 4. Betiği bilerek boz. <code>exit 2</code> satırlarından birini <code>exit 0</code> yap (önce yasak-kalıp dalını, sonra bozuk-girdi dalını). Üç girdiyi yeniden ver. İlgili satırın artık 0 döndüğünü ve testinin düştüğünü gör. Betiği geri al. 5. Hook'u <code>.claude/settings.json</code> içine bağla: <code>PreToolUse</code>, <code>matcher: "Bash"</code>, tip <code>command</code>, yol <code>${CLAUDE_PROJECT_DIR}/.claude/hooks/yasak-komut.sh</code>. Yeni oturumda Claude'dan zararsız bir komut ve <code>echo "--force"</code> içeren bir komut çalıştırmasını iste. İkincisinin engellendiğini ve Claude'un gerekçeyi okuduğunu gör.</p>
+<p><b>Bitti sayılması için:</b> üç satırlık bir tablo (girdi, beklenen kod, gerçek kod), bozulmuş sürümde düşen satırın kaydı ve gerçek oturumdaki engelin ekran görüntüsü ya da transkript alıntısı. Sonra deneme deposunu sil.</p>
+<h2 id="baglantilar">Bağlantılar</h2>
+<p>Kontrol listesi: <a href="../index.html#m-hook-1-k">8.1</a> <a href="../index.html#m-hook-2-k">8.2</a> <a href="../index.html#m-hook-3-k">8.3</a> <a href="../index.html#m-hook-4-k">8.4</a> <a href="../index.html#m-hook-5-k">8.5</a> <a href="../index.html#m-hook-6-k">8.6</a> <a href="../index.html#m-hook-7-k">8.7</a> <a href="../index.html#m-guvenlik-6-k">7.6</a>. Gerçek vakalar: D07, D08, <a href="../ekler/deneyimler.html">Gerçek deneyimlerden on ders</a>. Önceki bölümler: <a href="05-talimat-mimarisi.html">Bölüm 5: Talimat mimarisi: rica ile garanti</a>, <a href="06-izin-ve-guvenlik.html">Bölüm 6: İzin ve güvenlik: mod, kural, sandbox</a>, <a href="07-skill-ajan-mcp.html">Bölüm 7: Yeniden kullanım: skill, alt ajan, MCP, plugin</a>. Ekler: <a href="../ekler/komutlar.html">Komutlar ve kısayollar</a>, <a href="../ekler/sorun-giderme.html">Sorun giderme</a>.</p>
+<footer><a href="07-skill-ajan-mcp.html">← Bölüm 7: Yeniden kullanım: skill, alt ajan, MCP, plugin</a> · <a href="09-paralel-isler.html">Bölüm 9: Paralel işler: bağımsızlığı ölçmek →</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/rehber/08-hook-ile-garanti.md">Markdown sürümü</a></footer></main>
+</body>
+</html>

@@ -79,4 +79,4 @@ Kontrol listesi: [1.1](../README.md#1-talimat) [1.2](../README.md#1-talimat) [1.
 
 ---
 
-[← Bölüm 1](01-zihinsel-model.md) · [İçindekiler](README.md)
+[← Bölüm 4](04-kanitla-teslim.md) · [İçindekiler](README.md) · [Bölüm 6 →](06-izin-ve-guvenlik.md)

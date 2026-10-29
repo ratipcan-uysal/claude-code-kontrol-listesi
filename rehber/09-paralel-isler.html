@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Paralel çalışma yalnız sonuçları ve kaynakları gerçekten bağımsız işlerde kazandırır. Worktree dosya ve index çakışmasını çözer, port, tarayıcı, pano, simülatör ve makine yükü ortak kalır.">
+<title>Paralel işler: bağımsızlığı ölçmek · Claude Code kontrol listesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Düzen: tek sütun okuma alanı, üstte yapışkan ilerleme ve süzgeç çubuğu, geniş ekranda solda bölüm dizini */
+:root{
+ --bg:#f6f7f9;--yuzey:#ffffff;--fg:#17202c;--soft:#5b6472;--line:#e1e5eb;--kod:#eef1f5;
+ --acc:#1d4f91;--accbg:#e6eef9;--ile:#6a4a9c;--ilebg:#f0eaf8;--ok:#1f7a4d;
+ --f-baslik:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+ --f-govde:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+ --f-kod:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-govde);font-size:15px;line-height:1.55;margin:0}
+.sar{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;grid-template-columns:1fr;gap:32px}
+@media (min-width:980px){.sar{grid-template-columns:230px minmax(0,1fr)}}
+nav.dizin{display:none}
+@media (min-width:980px){nav.dizin{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);align-self:start;max-height:calc(100vh - 120px);overflow:auto;font-size:13px}}
+nav.dizin a{display:flex;justify-content:space-between;gap:8px;color:var(--soft);text-decoration:none;padding:4px 8px;border-radius:6px}
+nav.dizin a:hover,nav.dizin a:focus-visible{background:var(--accbg);color:var(--fg);outline:none}
+nav.dizin small{font-variant-numeric:tabular-nums}
+main{min-width:0}
+header.ust h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+header.ust p{color:var(--soft);max-width:65ch;margin:0 0 6px}
+.surum{font-family:var(--f-kod);font-size:12px;color:var(--soft)}
+.cubuk{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0;margin:20px 0 8px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.ilerleme{flex:1 1 220px;min-width:0}
+.ilerleme .etiket{font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
+.ilerleme .yol{height:6px;background:var(--line);border-radius:3px;margin-top:5px;overflow:hidden}
+.ilerleme .dolu{height:100%;width:0;background:var(--ok);transition:width .25s}
+.suzgec{display:flex;flex-wrap:wrap;gap:6px}
+.suzgec button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--yuzey);color:var(--fg);padding:5px 11px;border-radius:999px;cursor:pointer}
+.suzgec button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.suzgec button:focus-visible,.kopya:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+h2{font-family:var(--f-baslik);font-size:24px;letter-spacing:-.01em;margin:44px 0 6px;text-wrap:balance;scroll-margin-top:90px}
+h2 .no{color:var(--acc);margin-right:10px;font-variant-numeric:tabular-nums}
+.giris{color:var(--soft);max-width:68ch;margin:0 0 10px}
+details.okuma{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:8px}
+details.okuma summary{cursor:pointer;font-weight:600}
+details.okuma p{max-width:68ch}
+.sayilar{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.sayilar div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
+.sayilar b{display:block;font-family:var(--f-baslik);font-size:18px}
+.sayilar span{color:var(--soft);font-size:13px}
+.ilk10{list-style:none;padding:0;margin:8px 0 0;counter-reset:s;display:grid;gap:8px}
+.ilk10 li{counter-increment:s;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px;background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.ilk10 li::before{content:counter(s);font-family:var(--f-baslik);font-size:24px;font-weight:700;color:var(--acc);line-height:1}
+.ilk10 a{color:var(--fg);font-weight:600;text-decoration:none}.ilk10 a:hover{text-decoration:underline}
+.ilk10 .n{color:var(--soft);font-size:14px}
+.madde{display:grid;grid-template-columns:28px minmax(0,1fr);gap:4px 10px;padding:16px 0;border-top:1px solid var(--line)}
+.madde[hidden]{display:none}
+.madde input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--ok);cursor:pointer}
+.madde.yapildi .bas{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--line)}
+.bas{font-weight:600;font-size:16px;cursor:pointer}
+.no2{font-variant-numeric:tabular-nums;color:var(--soft);font-weight:500;margin-right:6px}
+.et{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:4px;margin-left:8px;vertical-align:2px}
+.temel{color:var(--acc);background:var(--accbg)}.ileri{color:var(--ile);background:var(--ilebg)}
+dl{display:grid;grid-template-columns:76px minmax(0,1fr);gap:4px 10px;margin:8px 0 0;font-size:14.5px}
+dt{color:var(--soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
+dd{margin:0;min-width:0}
+code{font-family:var(--f-kod);font-size:.88em;background:var(--kod);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.ornek{position:relative;margin-top:8px}
+.ornek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:0;overflow-x:auto;white-space:pre}
+.kopya{position:absolute;top:6px;right:6px;font:inherit;font-size:12px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:2px 9px;cursor:pointer}
+.bos-durum{color:var(--soft);padding:12px 0}
+footer{color:var(--soft);font-size:13px;margin-top:48px;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.ilerleme .dolu{transition:none}}
+
+a{color:var(--acc)}
+.madde,section.bolum{scroll-margin-top:var(--kaydirma,170px)}
+.kaynak{font-size:12px;color:var(--soft);margin:8px 0 0}
+.araclar{margin:14px 0}.araclar label{font-weight:600;font-size:13px;display:block}
+#ara{width:100%;font:inherit;color:var(--fg);background:var(--yuzey);border:1px solid var(--line);border-radius:8px;padding:10px;margin:5px 0}
+.islemler{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.islemler button,.islemler a{font:inherit;font-size:12px;padding:7px 9px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;cursor:pointer;text-decoration:none}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+#arama-sonuc,#bildirim{font-size:13px;color:var(--soft)}
+.ornek pre{padding-top:40px;white-space:pre-wrap;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+@media(max-width:480px){dl{grid-template-columns:1fr;gap:3px}dt{margin-top:7px}.sar{padding-inline:12px}.madde{gap:4px 6px}.cubuk{position:static}.et{margin-left:4px}nav.dizin{position:static}}
+@media print{.cubuk,.araclar,.dizin,.kopya,.ilk10,details.okuma{display:none!important}.sar{display:block;padding:0}body{background:white;color:#17202c}.madde{break-inside:avoid}.ornek pre{padding:10px}a{color:#1d4f91}}
+
+main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
+.ek .ust-bag{font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:18px}
+.ek h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+.ek h2{scroll-margin-top:16px}.ek h3{font-size:17px;margin:26px 0 4px}
+.ek p,.ek li{max-width:72ch}
+.ek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.tablo{overflow-x:auto;margin:10px 0 18px;border:1px solid var(--line);border-radius:8px}
+.tablo table{border-collapse:collapse;width:100%;font-size:14px;background:var(--yuzey)}
+.tablo th,.tablo td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
+.tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
+@media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
+ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
+ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+ul.ekler a{font-weight:600}
+ul.ekler span{display:block;color:var(--soft);font-size:14px}
+</style>
+<script>try{var t=localStorage.getItem("cc-kontrol-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main class="ek"><nav class="ust-bag" aria-label="Gezinme"><a href="../index.html">← Kontrol listesi</a><a href="index.html">Rehber içindekiler</a><a href="../index.html#ekler">Ekler</a></nav><p class="surum">Uzman · Bölüm 9</p><h1>Paralel işler: bağımsızlığı ölçmek</h1><p class="giris">Paralel çalışma yalnız sonuçları ve kaynakları gerçekten bağımsız işlerde kazandırır. Worktree dosya ve index çakışmasını çözer, port, tarayıcı, pano, simülatör ve makine yükü ortak kalır.</p><p class="surum">Belge kontrolü: 29 Ekim 2026</p>
+<h2 id="zihinsel-model-paralel-olmak-bagimsiz-olmak-demek-degildir">Zihinsel model: paralel olmak bağımsız olmak demek değildir</h2>
+<p>Aynı anda üç iş başlatmak, işi üç kat hızlandırmaz. Hızlanma yalnız işler gerçekten birbirinden bağımsızsa gelir. Bağımsızlık da işin başlığına bakarak değil, sonucuna bakarak ölçülür. Kendine şunu sor: A işinin sonucu, B işinin ne yapacağını değiştirir mi? Değiştirmiyorsa iş paralel olabilir. Değiştiriyorsa ikisini aynı anda başlatmak yalnız çakışma üretir.</p>
+<p>Ölçü iki katmanlıdır. Önce <b>sonuç bağımsızlığı</b>: iki işin çıktısı aynı dosyaya, aynı karara ya da birbirinin girdisine dokunuyor mu? Sonra <b>kaynak bağımsızlığı</b>: iki iş aynı git index'ini, aynı portu, aynı tarayıcı oturumunu, aynı panoyu ya da aynı simülatörü kullanıyor mu? Sonuçları bağımsız iki iş, ortak bir kaynak yüzünden yine de birbirini bozabilir.</p>
+<h2 id="uc-paralellik-bicimi">Üç paralellik biçimi</h2>
+<p>Claude Code'da paralel çalışmanın üç yolu var. Farkları bağlam, dosya sistemi ve bedel üzerinden okunur.</p>
+<div class="tablo"><table><thead><tr><th>Biçim</th><th>Bağlam</th><th>Dosyalar</th><th>En uygun iş</th></tr></thead><tbody><tr><td data-e="Biçim">Alt ajan</td><td data-e="Bağlam">Kendi penceresi, sana yalnız özet döner</td><td data-e="Dosyalar">Varsayılan olarak ana oturumla aynı dizin</td><td data-e="En uygun iş">Okuma ağırlıklı geniş araştırma</td></tr><tr><td data-e="Biçim">Ayrı oturum</td><td data-e="Bağlam">Tamamen ayrı konuşma</td><td data-e="Dosyalar">Aynı checkout, istersen ayrı worktree</td><td data-e="En uygun iş">Uzun, birbirinden kopuk işler</td></tr><tr><td data-e="Biçim">Worktree</td><td data-e="Bağlam">Oturumdan bağımsız bir dosya kopyası</td><td data-e="Dosyalar">Kendi dalı, kendi index'i</td><td data-e="En uygun iş">Aynı depoya yazan paralel işler</td></tr></tbody></table></div>
+<p>Üçü birbirini dışlamaz. Alt ajan ya da ayrı oturum, worktree içinde de çalışabilir. Belgeye göre <code>isolation: worktree</code> ayarlı bir alt ajan deponun yalıtılmış bir kopyasında çalışır ve değişiklik yapmazsa worktree otomatik silinir. Yalnız okuyan bir alt ajana worktree gerekmez. Dosya yazan her paralel işe gerekir.</p>
+<h2 id="worktree-nin-tam-olarak-ne-yaptigi">Worktree'nin tam olarak ne yaptığı</h2>
+<p><code>claude --worktree odeme-ekrani</code> komutu depoyu <code>.claude/worktrees/</code> altında yeni bir dala açar. Bu bir <b>taze checkout</b>'tur. İki sonucu var ve ikisi de sürpriz çıkarır.</p>
+<p><b>Varsayılan dal.</b> Belgeye göre yeni worktree, mevcut dalından değil deponun varsayılan dalından (genellikle <code>main</code>) açılır. Alt ajanların <code>isolation: worktree</code> kopyası da aynı kuralı izler. Yerelde commit'lediğin ama push etmediğin işler, ya da bir özellik dalındaki yarım iş worktree'de yoktur. İstersen <code>worktree.baseRef</code> ayarını <code>"head"</code> yaparsın. Bu ayar dal adı kabul etmez, yalnız <code>"fresh"</code> (varsayılan) ya da <code>"head"</code> alır.</p>
+<p><b>Ignore edilmiş dosyalar gelmez.</b> Worktree'ye yalnız git'in izlediği dosyalar gelir. <code>.env</code> gibi dosyaları otomatik taşımak için proje köküne <code>.worktreeinclude</code> yazarsın. Dosya <code>.gitignore</code> sözdizimini kullanır ve yalnız hem eşleşen hem ignore edilmiş dosyalar kopyalanır. Bağımlılıkları ise worktree'de yeniden kurman gerekir. Ayrıntı <a href="../ekler/dosyalar.html">Dosya konumları</a> sayfasında.</p>
+<p>Etkileşimli bir worktree oturumundan çıkarken Claude Code temiz worktree'yi siler, iş içerene sorar. <code>-p</code> ile koşan oturumlarda çıkış sorusu yoktur, yani temizlik de yoktur. Bu worktree'leri <code>git worktree remove</code> ile kendin kaldırırsın.</p>
+<h2 id="paylasilan-kaynaklar">Paylaşılan kaynaklar</h2>
+<p>Worktree yalnız dosya ve index çakışmasını çözer. Makinedeki geri kalan her şey hâlâ ortaktır.</p>
+<ul><li><b>Git index'i.</b> Aynı checkout'taki bütün oturumlar tek index'i paylaşır. Başkasının stage'ini senin commit'in alıp götürebilir. Ayrı worktree'nin index'i ayrıdır. <a href="../index.html#m-paralel-2-k">11.2</a></li><li><b>Port.</b> İki sunucu aynı porta bağlanamaz, ya da ikinci biri birincisini düşürür. Her projeye sabit ve ayrı port ver. <a href="../index.html#m-paralel-3-k">11.3</a></li><li><b>Tarayıcı oturumu.</b> Paylaşılan sekmeyi başka oturum öne getirir, sen kendi uygulamanı bozuk sanırsın. <a href="../index.html#m-paralel-3-k">11.3</a></li><li><b>Pano.</b> Makinede tek pano var. İki oturum değer yapıştırırsa biri ötekini ezer. Değeri doğrudan alana yaz, yazdıktan sonra geri oku.</li><li><b>Simülatör ve cihaz.</b> Tek simülatörü iki oturum sürerse ekrandaki durum her ikisine de yabancı olur.</li></ul>
+<p>Bu liste kapalı değil. Bir şey makinede tek bir örnek olarak duruyorsa, iki paralel iş için çakışma noktasıdır.</p>
+<h2 id="makine-yuku-ve-ajan-sayisi">Makine yükü ve ajan sayısı</h2>
+<p>Her paralel iş makinenin işlemcisini, belleğini ve diskini yer. Ajan sayısı "kaç tane açabilirim" sorusuyla değil, "kaç tane bağımsız iş var" sorusuyla belirlenir. Beş ajan başlatıp ancak iki gerçek bağımsız iş bulmuşsan, kalan üçü yük ve token harcar, hız kazandırmaz. Çok ajanlı iş akışı onlarca ajan çağırabilir ve belge bunun çok token harcadığını söyler. Kullanım farkına <code>/usage</code> ile bak. <a href="../index.html#m-paralel-6-k">11.6</a></p>
+<p>Yük ölçümü tek bir eşiğe bağlanmaz. Bir dakikalık yük ortalaması on beş dakikalığın birkaç katıysa yük o pencerede fırlamıştır. CPU, bellek baskısı ve disk birlikte izlenir. <a href="../index.html#m-paralel-4-k">11.4</a></p>
+<h2 id="birlestirmenin-bedeli">Birleştirmenin bedeli</h2>
+<p>Paralel iş, sonunda birleştirmeyi ister ve bu bedel ajan sayısıyla büyür. Her worktree ayrı bir dal olduğu için her biri ayrı incelenir, ayrı test edilir ve ana dala ayrı katılır. İki dal aynı dosyaya dokunduysa çakışmayı birisi çözer. Birleştirme maliyeti işi bölmenin kazancından büyükse, bölme. Bağımsızlığı ölçerken şunu da hesaba kat: işleri bitirdikten sonra birleştirme için harcayacağın süre, paralelliğin sana kazandırdığı süreyi aşıyor mu?</p>
+<h2 id="bulut-oturumu">Bulut oturumu</h2>
+<p>Makineyi yormadan paralel iş çalıştırmanın bir yolu, işi bulut oturumuna göndermektir. Bulut oturumu depoyu taze klonlar ve değişikliklerini <code>claude/</code> önekli bir dala yazar. Yerel dosyalarına, yerel simülatörüne ve yerel portuna erişemez. Yerel cihaz isteyen iş yerelde kalır. Bilgisayar uyusa bile ilerler. <a href="../index.html#m-paralel-5-k">11.5</a></p>
+<h2 id="karar-kurallari">Karar kuralları</h2>
+<ul><li><b>Önce sonucu sor.</b> B, A'nın çıktısına bağlıysa ikisini sırala. <a href="../index.html#m-paralel-6-k">11.6</a></li><li><b>Dosya yazan her paralel işe ayrı worktree ver.</b> Yalnız okuyan iş worktree'siz de olur. <a href="../index.html#m-paralel-1-k">11.1</a></li><li><b>Worktree'ye yerel commit gerekiyorsa</b> önce push et ya da <code>worktree.baseRef: "head"</code> kullan.</li><li><b>Port, tarayıcı, simülatör gibi tek örnekli kaynaklara sahip çıkan iş sayısını bire indir</b> ya da her işe ayrı kaynak ver.</li><li><b>Ajan sayısını bağımsız iş sayısına eşitle,</b> makine yüküne göre aşağı çek. <a href="../index.html#m-paralel-4-k">11.4</a></li><li><b>Birleştirmeyi baştan planla.</b> Hangi dal hangi sırayla girecek, yazmadan başlama.</li><li><b>Makineden bağımsız kalması gereken uzun işi buluta gönder.</b> <a href="../index.html#m-paralel-5-k">11.5</a></li></ul>
+<h2 id="hata-bicimleri">Hata biçimleri</h2>
+<p><b>Gerçek vaka D06: başka oturumun commit'i değişikliklerimi götürdü.</b> Değişiklikler stage edildi, ardından üç dakikalık bir derleme koştu. Bu arada aynı repoda çalışan başka bir oturum kendi raporunu commit'ledi ve commit index'in tamamını aldı. Dört dosya başka bir mesajın altına girdi, asıl commit "değişiklik yok" diye boş döndü. İçerik doğruydu, yalnız mesaj yanlıştı. Ders: stage ile commit tek komutta olsun, arada derleme gerekiyorsa ayrı worktree kullan. Ayrıntısı <a href="../ekler/deneyimler.html">Gerçek deneyimlerden on ders</a> sayfasında D06.</p>
+<p><b>Gerçek vaka D08: dört paralel oturum makineyi kilitledi.</b> Dört alt oturum ayrı worktree'lerde aynı anda derleme ve test koştu, başka projelerin derlemeleri de sürüyordu. Yük ortalaması 720'ye çıktı, sakin makinede 4'tü. Worktree dosyaları ayırmıştı, işlemciyi ayırmamıştı. "Ağır komutu kilitle sar" diye verilen metin talimatı yeni oturumlara ulaşmadı. Çalışan çözüm kesin katmandaydı: ağır komutları iki yuvalı kilitle koşturan bir sarmalayıcı ve sırasız ağır komutu reddeden bir hook. Ayrıntısı D08.</p>
+<p><b>Kurgu senaryo: iki özellik, tek ekran.</b> Ayşe iki ajanı iki worktree'de çalıştırır. Birine "profil ekranına avatar ekle", ötekine "profil ekranının yerleşimini yenile" der. Dosyalar ayrıdır, ama iki iş aynı ekranı yeniden yazıyor. Birleştirirken biri ötekinin işini siler. Sonuçlar bağımsız değildi, yalnız dosya adları ayrıydı.</p>
+<h2 id="alistirma-iki-bagimsiz-isi-iki-worktree-de-bitir">Alıştırma: iki bağımsız işi iki worktree'de bitir</h2>
+<p>Herhangi bir git deposunda yap, ama önce depoda en az bir commit olduğundan emin ol.</p>
+<p>1. Birbirine dokunmayan iki küçük iş seç. Örnek: biri README'ye bir bölüm ekler, öteki bir yardımcı fonksiyona test yazar. İkisinin de çıktısının diğerini etkilemediğini bir cümleyle yaz. 2. İki ayrı terminal aç. Birinde <code>claude --worktree is-bir</code>, ötekinde <code>claude --worktree is-iki</code> çalıştır. <code>git worktree list</code> çıktısını kaydet. 3. Her oturumda işi yaptır ve o oturumun worktree'sinde commit'le. Commit'ten önce <code>git diff --cached</code> ile kapsamı gör. 4. Ana kopyaya dön. İki dalı sırayla birleştir ve her birleştirmeden sonra testi koş. Çakışma çıkarsa nedenini kaydet. 5. <code>git worktree remove</code> ile iki worktree'yi kaldır.</p>
+<p><b>Bitti sayılması için:</b> <code>git worktree list</code> iki ayrı satır göstermiş olsun, <code>git log --stat</code> her işin kendi commit'inde yalnız kendi dosyalarını göstersin, birleştirmeden sonra test sayısı (sıfır değil) kayıtlı olsun.</p>
+<h2 id="baglantilar">Bağlantılar</h2>
+<p>Kontrol listesi: <a href="../index.html#m-paralel-1-k">11.1</a> <a href="../index.html#m-paralel-2-k">11.2</a> <a href="../index.html#m-paralel-3-k">11.3</a> <a href="../index.html#m-paralel-4-k">11.4</a> <a href="../index.html#m-paralel-5-k">11.5</a> <a href="../index.html#m-paralel-6-k">11.6</a>. Ekler: <a href="../ekler/deneyimler.html">Gerçek deneyimlerden on ders</a>, <a href="../ekler/dosyalar.html">Dosya konumları</a>, <a href="../ekler/komutlar.html">Komutlar ve kısayollar</a>. Sonraki bölüm: <a href="10-gozetimsiz-is.html">Bölüm 10: Gözetimsiz iş: sen yokken çalışan sistem</a>.</p>
+<footer><a href="08-hook-ile-garanti.html">← Bölüm 8: Hook ile garanti: olay, çıkış kodu, sınama</a> · <a href="10-gozetimsiz-is.html">Bölüm 10: Gözetimsiz iş: sen yokken çalışan sistem →</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/rehber/09-paralel-isler.md">Markdown sürümü</a></footer></main>
+</body>
+</html>

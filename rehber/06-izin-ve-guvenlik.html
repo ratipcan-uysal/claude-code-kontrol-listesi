@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="İzin modu, izin kuralı ve sandbox üç ayrı soruya cevap verir. Hangisinin neyi koruduğu, kuralın dar ve eşleşebilir yazılması ve gözetimsiz koşumda etkin modun doğrulanması.">
+<title>İzin ve güvenlik: mod, kural, sandbox · Claude Code kontrol listesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Düzen: tek sütun okuma alanı, üstte yapışkan ilerleme ve süzgeç çubuğu, geniş ekranda solda bölüm dizini */
+:root{
+ --bg:#f6f7f9;--yuzey:#ffffff;--fg:#17202c;--soft:#5b6472;--line:#e1e5eb;--kod:#eef1f5;
+ --acc:#1d4f91;--accbg:#e6eef9;--ile:#6a4a9c;--ilebg:#f0eaf8;--ok:#1f7a4d;
+ --f-baslik:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+ --f-govde:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+ --f-kod:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-govde);font-size:15px;line-height:1.55;margin:0}
+.sar{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;grid-template-columns:1fr;gap:32px}
+@media (min-width:980px){.sar{grid-template-columns:230px minmax(0,1fr)}}
+nav.dizin{display:none}
+@media (min-width:980px){nav.dizin{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);align-self:start;max-height:calc(100vh - 120px);overflow:auto;font-size:13px}}
+nav.dizin a{display:flex;justify-content:space-between;gap:8px;color:var(--soft);text-decoration:none;padding:4px 8px;border-radius:6px}
+nav.dizin a:hover,nav.dizin a:focus-visible{background:var(--accbg);color:var(--fg);outline:none}
+nav.dizin small{font-variant-numeric:tabular-nums}
+main{min-width:0}
+header.ust h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+header.ust p{color:var(--soft);max-width:65ch;margin:0 0 6px}
+.surum{font-family:var(--f-kod);font-size:12px;color:var(--soft)}
+.cubuk{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0;margin:20px 0 8px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.ilerleme{flex:1 1 220px;min-width:0}
+.ilerleme .etiket{font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
+.ilerleme .yol{height:6px;background:var(--line);border-radius:3px;margin-top:5px;overflow:hidden}
+.ilerleme .dolu{height:100%;width:0;background:var(--ok);transition:width .25s}
+.suzgec{display:flex;flex-wrap:wrap;gap:6px}
+.suzgec button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--yuzey);color:var(--fg);padding:5px 11px;border-radius:999px;cursor:pointer}
+.suzgec button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.suzgec button:focus-visible,.kopya:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+h2{font-family:var(--f-baslik);font-size:24px;letter-spacing:-.01em;margin:44px 0 6px;text-wrap:balance;scroll-margin-top:90px}
+h2 .no{color:var(--acc);margin-right:10px;font-variant-numeric:tabular-nums}
+.giris{color:var(--soft);max-width:68ch;margin:0 0 10px}
+details.okuma{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:8px}
+details.okuma summary{cursor:pointer;font-weight:600}
+details.okuma p{max-width:68ch}
+.sayilar{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.sayilar div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
+.sayilar b{display:block;font-family:var(--f-baslik);font-size:18px}
+.sayilar span{color:var(--soft);font-size:13px}
+.ilk10{list-style:none;padding:0;margin:8px 0 0;counter-reset:s;display:grid;gap:8px}
+.ilk10 li{counter-increment:s;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px;background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.ilk10 li::before{content:counter(s);font-family:var(--f-baslik);font-size:24px;font-weight:700;color:var(--acc);line-height:1}
+.ilk10 a{color:var(--fg);font-weight:600;text-decoration:none}.ilk10 a:hover{text-decoration:underline}
+.ilk10 .n{color:var(--soft);font-size:14px}
+.madde{display:grid;grid-template-columns:28px minmax(0,1fr);gap:4px 10px;padding:16px 0;border-top:1px solid var(--line)}
+.madde[hidden]{display:none}
+.madde input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--ok);cursor:pointer}
+.madde.yapildi .bas{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--line)}
+.bas{font-weight:600;font-size:16px;cursor:pointer}
+.no2{font-variant-numeric:tabular-nums;color:var(--soft);font-weight:500;margin-right:6px}
+.et{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:4px;margin-left:8px;vertical-align:2px}
+.temel{color:var(--acc);background:var(--accbg)}.ileri{color:var(--ile);background:var(--ilebg)}
+dl{display:grid;grid-template-columns:76px minmax(0,1fr);gap:4px 10px;margin:8px 0 0;font-size:14.5px}
+dt{color:var(--soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
+dd{margin:0;min-width:0}
+code{font-family:var(--f-kod);font-size:.88em;background:var(--kod);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.ornek{position:relative;margin-top:8px}
+.ornek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:0;overflow-x:auto;white-space:pre}
+.kopya{position:absolute;top:6px;right:6px;font:inherit;font-size:12px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:2px 9px;cursor:pointer}
+.bos-durum{color:var(--soft);padding:12px 0}
+footer{color:var(--soft);font-size:13px;margin-top:48px;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.ilerleme .dolu{transition:none}}
+
+a{color:var(--acc)}
+.madde,section.bolum{scroll-margin-top:var(--kaydirma,170px)}
+.kaynak{font-size:12px;color:var(--soft);margin:8px 0 0}
+.araclar{margin:14px 0}.araclar label{font-weight:600;font-size:13px;display:block}
+#ara{width:100%;font:inherit;color:var(--fg);background:var(--yuzey);border:1px solid var(--line);border-radius:8px;padding:10px;margin:5px 0}
+.islemler{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.islemler button,.islemler a{font:inherit;font-size:12px;padding:7px 9px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;cursor:pointer;text-decoration:none}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+#arama-sonuc,#bildirim{font-size:13px;color:var(--soft)}
+.ornek pre{padding-top:40px;white-space:pre-wrap;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+@media(max-width:480px){dl{grid-template-columns:1fr;gap:3px}dt{margin-top:7px}.sar{padding-inline:12px}.madde{gap:4px 6px}.cubuk{position:static}.et{margin-left:4px}nav.dizin{position:static}}
+@media print{.cubuk,.araclar,.dizin,.kopya,.ilk10,details.okuma{display:none!important}.sar{display:block;padding:0}body{background:white;color:#17202c}.madde{break-inside:avoid}.ornek pre{padding:10px}a{color:#1d4f91}}
+
+main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
+.ek .ust-bag{font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:18px}
+.ek h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+.ek h2{scroll-margin-top:16px}.ek h3{font-size:17px;margin:26px 0 4px}
+.ek p,.ek li{max-width:72ch}
+.ek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.tablo{overflow-x:auto;margin:10px 0 18px;border:1px solid var(--line);border-radius:8px}
+.tablo table{border-collapse:collapse;width:100%;font-size:14px;background:var(--yuzey)}
+.tablo th,.tablo td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
+.tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
+@media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
+ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
+ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+ul.ekler a{font-weight:600}
+ul.ekler span{display:block;color:var(--soft);font-size:14px}
+</style>
+<script>try{var t=localStorage.getItem("cc-kontrol-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main class="ek"><nav class="ust-bag" aria-label="Gezinme"><a href="../index.html">← Kontrol listesi</a><a href="index.html">Rehber içindekiler</a><a href="../index.html#ekler">Ekler</a></nav><p class="surum">Orta · Bölüm 6</p><h1>İzin ve güvenlik: mod, kural, sandbox</h1><p class="giris">İzin modu, izin kuralı ve sandbox üç ayrı soruya cevap verir. Hangisinin neyi koruduğu, kuralın dar ve eşleşebilir yazılması ve gözetimsiz koşumda etkin modun doğrulanması.</p><p class="surum">Belge kontrolü: 29 Ekim 2026</p>
+<h2 id="zihinsel-model-uc-ayri-soru-uc-ayri-katman">Zihinsel model: üç ayrı soru, üç ayrı katman</h2>
+<p>İzin ve güvenlik tek bir konu gibi görünür ama üç ayrı soruya cevap verir. Her sorunun cevabı farklı bir katmandan gelir. Katmanları karıştırırsan yanlış yere kural yazarsın.</p>
+<div class="tablo"><table><thead><tr><th>Soru</th><th>Katman</th><th>Kim uygular</th></tr></thead><tbody><tr><td data-e="Soru">Claude bu aracı sormadan kullanabilir mi?</td><td data-e="Katman">İzin modu ve izin kuralları</td><td data-e="Kim uygular">Claude Code</td></tr><tr><td data-e="Soru">Çalışan komut makinede neye erişebilir?</td><td data-e="Katman">Sandbox</td><td data-e="Kim uygular">İşletim sistemi</td></tr><tr><td data-e="Soru">Okuduğu metin Claude'u yönlendirebilir mi?</td><td data-e="Katman">Dış içeriğe güvenmeme alışkanlığı, onay noktaları</td><td data-e="Kim uygular">Sen ve auto modundaki sınıflandırıcı</td></tr></tbody></table></div>
+<p>İlk katmanı <a href="05-talimat-mimarisi.html">Bölüm 5: Talimat mimarisi: rica ile garanti</a> içinde gördün: izin kuralını Claude Code uygular, model uygulamaz. Belge bunu açık yazar: prompt ve CLAUDE.md Claude'un ne denediğini şekillendirir, Claude Code'un neye izin verdiğini değiştirmez. Bu bölüm o katmanı derinleştirir ve diğer ikisini yanına koyar.</p>
+<p>Kuralların nasıl bir araya geldiğini tek cümleyle hatırla: deny önce gelir, sonra ask, sonra allow. İlk eşleşen kazanır ve kuralın ne kadar özel olduğu sırayı değiştirmez. Geniş bir deny kuralı, dar bir allow kuralının açtığı kapıyı kapatır. Allow kuralıyla deny kuralından istisna çıkaramazsın. Bir PreToolUse hook'u "allow" dese bile deny ve ask kuralları yine değerlendirilir.</p>
+<h2 id="i-zin-modlari-hangisi-ne-zaman">İzin modları: hangisi ne zaman</h2>
+<p>Mod, kural yazılmamış durumda Claude'un neyi sormadan yapabileceğini belirler. Kurallar modun üstüne biner. Belgedeki tabloyu kendi cümlelerimle özetliyorum:</p>
+<div class="tablo"><table><thead><tr><th>Mod</th><th>Sormadan ne yapar</th><th>Ne zaman seç</th></tr></thead><tbody><tr><td data-e="Mod"><code>default</code> (arayüzde Manual)</td><td data-e="Sormadan ne yapar">Yalnız okuma</td><td data-e="Ne zaman seç">Hassas iş, tanımadığın kod</td></tr><tr><td data-e="Mod"><code>acceptEdits</code></td><td data-e="Sormadan ne yapar">Okuma, çalışma dizinindeki dosya düzenlemeleri, <code>mkdir</code>, <code>mv</code>, <code>cp</code> gibi basit dosya komutları</td><td data-e="Ne zaman seç">Sonucu <code>git diff</code> ile sonradan inceleyeceğin iş</td></tr><tr><td data-e="Mod"><code>plan</code></td><td data-e="Sormadan ne yapar">Okuma ve araştırma, düzenleme yok</td><td data-e="Ne zaman seç">Değiştirmeden önce depoyu anlamak</td></tr><tr><td data-e="Mod"><code>auto</code></td><td data-e="Sormadan ne yapar">Hemen her şey, ama arka planda bir sınıflandırıcı model her işlemi gözden geçirir</td><td data-e="Ne zaman seç">Yönünü güvendiğin uzun işler</td></tr><tr><td data-e="Mod"><code>dontAsk</code></td><td data-e="Sormadan ne yapar">Yalnız önceden izin verilenler, sorulacak her şey reddedilir</td><td data-e="Ne zaman seç">CI ve kilitli betikler</td></tr><tr><td data-e="Mod"><code>bypassPermissions</code></td><td data-e="Sormadan ne yapar">Hemen her şey, güvenlik kontrolleri kapalı</td><td data-e="Ne zaman seç">Yalnız yalıtılmış konteyner ya da sanal makine</td></tr></tbody></table></div>
+<p>Üç ayrıntı kararını değiştirir.</p>
+<ul><li><b><code>auto</code> güvenlik garantisi değildir.</b> Belge uyarıyı kendisi yazar: istem sayısını azaltır, hassas işlemde incelemenin yerini tutmaz. Belge, <code>auto</code>'nun v2.1.283 ve sonrasında terminal ve VS Code için yerleşik başlangıç modu olduğunu söylüyor. Yerel sürüm 2.1.284 bu eşiğin üstünde. Yani oturum senin seçmediğin bir modda açılmış olabilir. Başlangıçta durum çubuğuna bak.</li><li><b><code>dontAsk</code> kuralsız çalışmaz.</b> Hiçbir şey sormadığı için eksik allow girdisi sessiz ret demektir. CI'da bunu istersin, etkileşimli işte istemezsin.</li><li><b><code>bypassPermissions</code> her şeyi açmaz.</b> Allow kuralları bu modda etkisizdir ama deny kuralları yine çalışır. <code>rm -rf /</code> gibi tanınan kritik silmeler ve açık ask kuralları yine sorar. Belge bu modu internetsiz konteyner ve sanal makine için ayırır.</li></ul>
+<p>Başlangıç modu şu sırayla belirlenir: komut satırı bayrağı, sonra ayar dosyasındaki <code>defaultMode</code>, sonra yerleşik varsayılan. Bir tuzak var. Belgeye göre <code>.claude/settings.json</code> ya da <code>.claude/settings.local.json</code> içine <code>bypassPermissions</code> yazarsan değer etkisizdir ve oturum Manual başlar. <code>claude -p</code> ile açılan oturum ise yerleşik olarak <code>default</code> ile başlar.</p>
+<h2 id="dar-allow-girdisi">Dar allow girdisi</h2>
+<p>Kuralın genişliği riskini belirler. Üç davranışı bil.</p>
+<p><b>Yıldızı alt komuttan sonra koy.</b> <code>Bash(git log *)</code> yalnız <code>git log</code> komutlarını açar. <code>Bash(git *)</code> push, reset ve clean dahil bütün git'i açar. Belge, alt komuttan önce yıldız içeren allow kuralları için başlangıçta uyarı verdiğini söyler. <a href="../index.html#m-izin-3-k">6.3</a></p>
+<p><b>Bileşik komutta her parça ayrı değerlendirilir.</b> <code>Bash(npm test *)</code> kuralı <code>npm test &amp;&amp; curl ...</code> komutunun tamamını açmaz. <code>&amp;&amp;</code>, <code>||</code>, <code>|</code>, <code>&amp;</code>, noktalı virgül ve satır sonu ayırıcıdır. Her parça ayrı izinli olmalı. Bu yüzden komutu tek parçada yazmak sorudan kurtarır. <a href="../index.html#m-izin-4-k">6.4</a></p>
+<p><b>Sarmalayıcıların bir kısmı atlanır, bir kısmı atlanmaz.</b> <code>timeout</code>, <code>time</code>, <code>nice</code>, <code>nohup</code>, <code>stdbuf</code> ve bilinen güvenli birkaç ortam değişkeni atılır, yani <code>NODE_ENV=test npm test</code> yine <code>npm test</code> kuralına uyar. <code>npx</code>, <code>docker exec</code> ya da <code>devbox run</code> gibi ortam çalıştırıcıları atılmaz. <code>Bash(devbox run *)</code> yazarsan <code>devbox run rm -rf .</code> da geçer. Çözüm, çalıştırıcıyı ve iç komutu birlikte yazmaktır: <code>Bash(devbox run npm test)</code>.</p>
+<h3 id="komutu-motorun-eslestirebilecegi-bicimde-yaz">Komutu motorun eşleştirebileceği biçimde yaz</h3>
+<p>İzin motoru komut metnini statik eşleştirir. Metnin neye çözüleceğini bilemediği bir parça görünce kuralı uygulamaz ve sorar. <code>$(...)</code> ve <code>${...}</code> genişletmeleri, <code>source venv/bin/activate</code> ile aktive edilen ortamlar, bir <code>&amp;&amp;</code> zincirinin içindeki kuralsız tek halka bu gruptandır. Çözüm yeni bir allow girdisi değil, komutu o parça olmadan yazmaktır: venv'i aktive etmek yerine yorumlayıcıyı doğrudan çağır, <code>.venv/bin/python -m pytest</code>. Belge güvenlik bölümünde, Claude Code'un tam çözümleyemediği bir Bash komutunu Manual modda sorduğunu ve bir kısmına verilen allow kuralının bu soruyu atlatmadığını yazar. Beklenmedik bir istem gördüğünde önce komutu sadeleştir. <a href="../index.html#m-izin-4-k">6.4</a></p>
+<h2 id="sandbox-ve-izin-kurali-ayni-sey-degil">Sandbox ve izin kuralı aynı şey değil</h2>
+<p>İzin kuralı komutun metnine bakar. Sandbox komutun ne yaptığına bakar. Belge farkı şöyle koyar: işletim sistemi sandbox sınırını çalışan işleme uygular, model ne seçmiş olursa olsun ve izinli bir komut adından fazlasını yapsa bile tutar.</p>
+<p>Bir deny kuralının neden sınır olmadığını belgenin tablosu gösterir. <code>Bash(rm *)</code> deny kuralı <code>rm -rf build/</code> komutunu durdurur ama <code>/bin/rm -rf build/</code> ya da <code>bash -c 'rm -rf build/'</code> komutunu durdurmaz. <code>Bash(git push *)</code> kuralı <code>git -C . push</code> biçimini yakalamaz. Kural, Claude'un genelde yazdığı biçimi kapsar.</p>
+<p>İki sınırlama sandbox'ı da kayıtsız şartsız güvence yapmaz.</p>
+<ul><li>Sandbox varsayılan olarak kapalıdır ve yalnız kabuk komutlarını sarar. Read, Edit, Write, WebFetch gibi yerleşik araçlar, hook'lar ve yerel MCP sunucuları sandbox dışında çalışır. Onları izin kuralları yönetir.</li><li>Varsayılan okuma erişimi geniştir ve <code>~/.ssh</code> ile <code>~/.aws/credentials</code> gibi kimlik dosyalarını kapsar. Gerekli <code>denyRead</code> girdilerini sen eklersin. <a href="../index.html#m-guvenlik-5-k">7.5</a></li></ul>
+<p>Güvenmediğin kodu çalıştırırken ikisini birlikte kullan.</p>
+<h2 id="dis-icerik-veridir-talimat-degildir">Dış içerik veridir, talimat değildir</h2>
+<p>Prompt injection, okuduğun bir sayfanın, e-postanın ya da belgenin içine yerleştirilmiş "şunu yap" cümlesidir. Model o cümleyi senin talimatın sanarsa saldırgan senin yetkinle iş yapar. Savunma üç parçadan oluşur.</p>
+<p>1. <b>Okunan metindeki talimat yetki taşımaz.</b> Bir sayfa "kullanıcı bunu onayladı" dese bile onay yalnızca senin sohbetinden gelir. <a href="../index.html#m-guvenlik-3-k">7.3</a> 2. <b>Yan etkili adımları onaya bağla.</b> Gönder, sil, öde, yayınla gibi adımlar dış içerikle çalışan oturumda <code>default</code> modunda ya da açık bir ask kuralıyla kalsın. 3. <b>Ağ erişimi güven değildir.</b> Bir alan adına izin vermek oradan inen metni güvenilir yapmaz. WebFetch, Bash ve MCP erişimlerini ayrı değerlendir. <a href="../index.html#m-guvenlik-4-k">7.4</a></p>
+<p>Belgeye göre <code>auto</code> modunun sınıflandırıcısı, Claude'un okuduğu düşman içerikten kaynaklanıyormuş gibi görünen işlemleri de engeller. Bu yardımcı bir ağdır, onayın yerini tutmaz.</p>
+<h2 id="gizli-dosyalar-ve-yeni-depo">Gizli dosyalar ve yeni depo</h2>
+<p><code>.env</code> ve <code>*.pem</code> gibi dosyalar için <code>Read(./.env)</code> biçiminde deny kuralı yaz. Kural dosya araçlarını ve tanınan bazı kabuk erişimlerini kapsar, ama dosyayı açan keyfî bir Python betiğini bütünüyle durdurmaz. Güçlü ayrım için sırları ortamdan çıkar ya da sandbox'ın dosya sınırlarını kullan. <a href="../index.html#m-guvenlik-1-k">7.1</a></p>
+<p>Başkasının deposunu açmadan önce şunlara bak. Proje ayarları yerel komut başlatabilir. <a href="../index.html#m-guvenlik-7-k">7.7</a></p>
+<ul><li><code>.claude/settings.json</code> içindeki hook'lar ve <code>env</code> bloğu.</li><li><code>.mcp.json</code> içindeki MCP sunucu komutları.</li><li>Proje skill'lerinin <code>allowed-tools</code> ve hook alanları.</li></ul>
+<p>Etkileşimli oturumda belge, proje allow kurallarının çalışma alanı güveni kabul edilene kadar kullanılmadığını söyler. <code>claude -p</code> ise güven penceresini hiç göstermez. Orada depodaki hook'lar çalışır, <code>.mcp.json</code> sunucuları sormadan bağlanır. Tanımadığın depoda <code>claude -p</code> koşmadan önce <code>--bare</code> ya da <code>--setting-sources user</code> kullan.</p>
+<h2 id="gozetimsiz-kosumda-etkin-modu-dogrula">Gözetimsiz koşumda etkin modu doğrula</h2>
+<p>Kayıtlı vaka D01: zamanlanmış oturumların izinsiz ilerlemesi için <code>bypassPermissions</code> ayarlanmıştı. Bir projenin 43 oturum kaydındaki 345 mod değeri tarandı ve bu mod hiç görünmedi. Oturum hata vermeden varsayılan moda düşmüştü. Ders, ayarladığın modla oturumun açıldığı modun ayrı şeyler olması. Ayırıcı kanıt, oturum kaydındaki etkin mod değeridir, ayar dosyasındaki değer kanıt sayılmaz. Belge bu vakanın nedenini anlatmaz ama iki ilgili gerçeği yazar. Proje ayar dosyalarına yazılan <code>bypassPermissions</code> etkisizdir. <code>-p</code> oturumu güven penceresini hiç göstermediği için, klasör daha önce güvenilmediyse projenin allow kuralları da kullanılmaz. Hook girdisinde <code>permission_mode</code> alanı da bulunur, istersen bir hook modu log'a yazsın.</p>
+<p>Gözetimsiz iş kurarken sırayla şunu yap: modu bayrakla ver, etkin modu kayıttan oku, allow listesini zararsız bir komutla dene. Çalışmayan adımı sessizce geçme, nedenini yaz. <a href="../index.html#m-izin-7-k">6.7</a></p>
+<h2 id="karar-kurallari">Karar kuralları</h2>
+<ul><li><b>Hassas işte <code>default</code>, kendi gözden geçireceğin işte <code>acceptEdits</code>, yönünü güvendiğin uzun işte <code>auto</code>.</b> <code>bypassPermissions</code> yalnız yalıtılmış kutuda.</li><li><b>Tekrar eden istemi azaltmak için önce kaydı oku.</b> <code>/fewer-permission-prompts</code> transcript'lerinden salt okunur komut önerir. Her girdiyi tek tek oku. Yazma ya da yayın komutu içerenleri alma. <a href="../index.html#m-izin-6-k">6.6</a></li><li><b>Yıkıcı komutu deny'a koy ama sınır sanma.</b> Gerçek sınır gerekiyorsa sandbox ya da komut içeriğine bakan bir hook ekle. <a href="../index.html#m-izin-2-k">6.2</a></li><li><b>Allow kuralını alt komut düzeyinde yaz, yıldızı sona koy.</b> <a href="../index.html#m-izin-3-k">6.3</a></li><li><b>Bir komut allow'da olduğu halde soruyorsa içinde genişletme, aktivasyon ya da zincir ara.</b> <a href="../index.html#m-izin-4-k">6.4</a></li><li><b>Mod adını güvenlik kanıtı sayma.</b> Zararsız bir deneme komutuyla gerçek davranışı gör. <a href="../index.html#m-izin-7-k">6.7</a></li></ul>
+<h2 id="hata-bicimleri">Hata biçimleri</h2>
+<p><b>Gerçek vaka: ayarlanan mod, oturumun modu değildi.</b> D01 yukarıda. Ayrıntısı <a href="../ekler/deneyimler.html">Gerçek deneyimlerden on ders</a> sayfasında.</p>
+<p><b>Kurgu senaryo: geniş joker.</b> Deniz'in ekibi tekrar eden istemden bıkıp <code>Bash(git *)</code> ekler. Birkaç hafta sonra Claude bir birleştirme çözerken <code>git clean -fd</code> komutunu sormadan çalıştırır ve izlenmemiş dosyalar silinir. Kuralın amacı <code>git status</code>, <code>git diff</code> ve <code>git commit</code> idi. Dar liste bunları tek tek sayardı ve yıkıcı komutlar sorulurdu.</p>
+<h2 id="alistirma-bir-haftalik-kullanimdan-dar-bir-allow-listesi">Alıştırma: bir haftalık kullanımdan dar bir allow listesi</h2>
+<p>Herhangi bir git deposunda yap. Yazma ya da silme yok, yalnız ayar dosyası değişir.</p>
+<p>1. Bir hafta boyunca normal çalış. <code>/fewer-permission-prompts</code> oturum kayıtlarını tarar, ayrıca not tutman gerekmez. 2. Bir oturumda <code>/fewer-permission-prompts</code> çalıştır. Önerdiği listeyi dosyaya yazdırmadan önce ekrana getirt. 3. Her girdi için üç sütunlu bir tablo yap: girdi, neden güvenli, neyi yanlışlıkla açar. Örneğin <code>Bash(git status *)</code> için "yalnız okur", <code>Bash(npm run *)</code> için "package.json'daki her betiği açar, betikler incelenmiş mi?" 4. Gerekçesini yazamadığın girdiyi at. Yazma ya da yayın yapan girdiyi (<code>git push</code>, <code>deploy</code>) at. 5. Kalan listeye bir de <code>deny</code> bölümü ekle: en az <code>Read(./.env)</code> ve <code>Bash(git push *)</code>. 6. Listeyi <code>.claude/settings.json</code> içine koy. Yeni oturumda biri listede biri listede olmayan iki zararsız komutla dene ve beklenen davranışı gör.</p>
+<p><b>Bitti sayılması için:</b> her girdinin gerekçesini taşıyan tablo, atılan girdilerin listesi ve tek bir cümle: bu liste neyi bilerek açmıyor. İki denemenin sonucunu da ekle.</p>
+<h2 id="baglantilar">Bağlantılar</h2>
+<p>Kontrol listesi: <a href="../index.html#m-izin-1-k">6.1</a> <a href="../index.html#m-izin-2-k">6.2</a> <a href="../index.html#m-izin-3-k">6.3</a> <a href="../index.html#m-izin-4-k">6.4</a> <a href="../index.html#m-izin-5-k">6.5</a> <a href="../index.html#m-izin-6-k">6.6</a> <a href="../index.html#m-izin-7-k">6.7</a> <a href="../index.html#m-guvenlik-1-k">7.1</a> <a href="../index.html#m-guvenlik-3-k">7.3</a> <a href="../index.html#m-guvenlik-4-k">7.4</a> <a href="../index.html#m-guvenlik-5-k">7.5</a> <a href="../index.html#m-guvenlik-7-k">7.7</a>. Önceki bölüm: <a href="05-talimat-mimarisi.html">Bölüm 5: Talimat mimarisi: rica ile garanti</a>. Gerçek vaka: D01, <a href="../ekler/deneyimler.html">Gerçek deneyimlerden on ders</a>. Ekler: <a href="../ekler/komutlar.html">Komutlar ve kısayollar</a>, <a href="../ekler/sorun-giderme.html">Sorun giderme</a>.</p>
+<footer><a href="05-talimat-mimarisi.html">← Bölüm 5: Talimat mimarisi: rica ile garanti</a> · <a href="07-skill-ajan-mcp.html">Bölüm 7: Yeniden kullanım: skill, alt ajan, MCP, plugin →</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/rehber/06-izin-ve-guvenlik.md">Markdown sürümü</a></footer></main>
+</body>
+</html>

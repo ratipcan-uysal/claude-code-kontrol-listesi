@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="&quot;Geçti&quot; bir iddiadır. Sayı, kasten kırılan kontrol, önce ve sonra görüntü ve diff ile eşleşen rapor ise kanıttır. Teslim yerel, push ve yayın olarak üç ayrı aşamadır.">
+<title>Kanıtla teslim: iddiayı sayıya çevir · Claude Code kontrol listesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Düzen: tek sütun okuma alanı, üstte yapışkan ilerleme ve süzgeç çubuğu, geniş ekranda solda bölüm dizini */
+:root{
+ --bg:#f6f7f9;--yuzey:#ffffff;--fg:#17202c;--soft:#5b6472;--line:#e1e5eb;--kod:#eef1f5;
+ --acc:#1d4f91;--accbg:#e6eef9;--ile:#6a4a9c;--ilebg:#f0eaf8;--ok:#1f7a4d;
+ --f-baslik:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+ --f-govde:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+ --f-kod:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-govde);font-size:15px;line-height:1.55;margin:0}
+.sar{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;grid-template-columns:1fr;gap:32px}
+@media (min-width:980px){.sar{grid-template-columns:230px minmax(0,1fr)}}
+nav.dizin{display:none}
+@media (min-width:980px){nav.dizin{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);align-self:start;max-height:calc(100vh - 120px);overflow:auto;font-size:13px}}
+nav.dizin a{display:flex;justify-content:space-between;gap:8px;color:var(--soft);text-decoration:none;padding:4px 8px;border-radius:6px}
+nav.dizin a:hover,nav.dizin a:focus-visible{background:var(--accbg);color:var(--fg);outline:none}
+nav.dizin small{font-variant-numeric:tabular-nums}
+main{min-width:0}
+header.ust h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+header.ust p{color:var(--soft);max-width:65ch;margin:0 0 6px}
+.surum{font-family:var(--f-kod);font-size:12px;color:var(--soft)}
+.cubuk{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0;margin:20px 0 8px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.ilerleme{flex:1 1 220px;min-width:0}
+.ilerleme .etiket{font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
+.ilerleme .yol{height:6px;background:var(--line);border-radius:3px;margin-top:5px;overflow:hidden}
+.ilerleme .dolu{height:100%;width:0;background:var(--ok);transition:width .25s}
+.suzgec{display:flex;flex-wrap:wrap;gap:6px}
+.suzgec button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--yuzey);color:var(--fg);padding:5px 11px;border-radius:999px;cursor:pointer}
+.suzgec button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.suzgec button:focus-visible,.kopya:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+h2{font-family:var(--f-baslik);font-size:24px;letter-spacing:-.01em;margin:44px 0 6px;text-wrap:balance;scroll-margin-top:90px}
+h2 .no{color:var(--acc);margin-right:10px;font-variant-numeric:tabular-nums}
+.giris{color:var(--soft);max-width:68ch;margin:0 0 10px}
+details.okuma{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:8px}
+details.okuma summary{cursor:pointer;font-weight:600}
+details.okuma p{max-width:68ch}
+.sayilar{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.sayilar div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
+.sayilar b{display:block;font-family:var(--f-baslik);font-size:18px}
+.sayilar span{color:var(--soft);font-size:13px}
+.ilk10{list-style:none;padding:0;margin:8px 0 0;counter-reset:s;display:grid;gap:8px}
+.ilk10 li{counter-increment:s;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px;background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.ilk10 li::before{content:counter(s);font-family:var(--f-baslik);font-size:24px;font-weight:700;color:var(--acc);line-height:1}
+.ilk10 a{color:var(--fg);font-weight:600;text-decoration:none}.ilk10 a:hover{text-decoration:underline}
+.ilk10 .n{color:var(--soft);font-size:14px}
+.madde{display:grid;grid-template-columns:28px minmax(0,1fr);gap:4px 10px;padding:16px 0;border-top:1px solid var(--line)}
+.madde[hidden]{display:none}
+.madde input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--ok);cursor:pointer}
+.madde.yapildi .bas{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--line)}
+.bas{font-weight:600;font-size:16px;cursor:pointer}
+.no2{font-variant-numeric:tabular-nums;color:var(--soft);font-weight:500;margin-right:6px}
+.et{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:4px;margin-left:8px;vertical-align:2px}
+.temel{color:var(--acc);background:var(--accbg)}.ileri{color:var(--ile);background:var(--ilebg)}
+dl{display:grid;grid-template-columns:76px minmax(0,1fr);gap:4px 10px;margin:8px 0 0;font-size:14.5px}
+dt{color:var(--soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
+dd{margin:0;min-width:0}
+code{font-family:var(--f-kod);font-size:.88em;background:var(--kod);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.ornek{position:relative;margin-top:8px}
+.ornek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:0;overflow-x:auto;white-space:pre}
+.kopya{position:absolute;top:6px;right:6px;font:inherit;font-size:12px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:2px 9px;cursor:pointer}
+.bos-durum{color:var(--soft);padding:12px 0}
+footer{color:var(--soft);font-size:13px;margin-top:48px;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.ilerleme .dolu{transition:none}}
+
+a{color:var(--acc)}
+.madde,section.bolum{scroll-margin-top:var(--kaydirma,170px)}
+.kaynak{font-size:12px;color:var(--soft);margin:8px 0 0}
+.araclar{margin:14px 0}.araclar label{font-weight:600;font-size:13px;display:block}
+#ara{width:100%;font:inherit;color:var(--fg);background:var(--yuzey);border:1px solid var(--line);border-radius:8px;padding:10px;margin:5px 0}
+.islemler{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.islemler button,.islemler a{font:inherit;font-size:12px;padding:7px 9px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;cursor:pointer;text-decoration:none}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+#arama-sonuc,#bildirim{font-size:13px;color:var(--soft)}
+.ornek pre{padding-top:40px;white-space:pre-wrap;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+@media(max-width:480px){dl{grid-template-columns:1fr;gap:3px}dt{margin-top:7px}.sar{padding-inline:12px}.madde{gap:4px 6px}.cubuk{position:static}.et{margin-left:4px}nav.dizin{position:static}}
+@media print{.cubuk,.araclar,.dizin,.kopya,.ilk10,details.okuma{display:none!important}.sar{display:block;padding:0}body{background:white;color:#17202c}.madde{break-inside:avoid}.ornek pre{padding:10px}a{color:#1d4f91}}
+
+main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
+.ek .ust-bag{font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:18px}
+.ek h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+.ek h2{scroll-margin-top:16px}.ek h3{font-size:17px;margin:26px 0 4px}
+.ek p,.ek li{max-width:72ch}
+.ek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.tablo{overflow-x:auto;margin:10px 0 18px;border:1px solid var(--line);border-radius:8px}
+.tablo table{border-collapse:collapse;width:100%;font-size:14px;background:var(--yuzey)}
+.tablo th,.tablo td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
+.tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
+@media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
+ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
+ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+ul.ekler a{font-weight:600}
+ul.ekler span{display:block;color:var(--soft);font-size:14px}
+</style>
+<script>try{var t=localStorage.getItem("cc-kontrol-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main class="ek"><nav class="ust-bag" aria-label="Gezinme"><a href="../index.html">← Kontrol listesi</a><a href="index.html">Rehber içindekiler</a><a href="../index.html#ekler">Ekler</a></nav><p class="surum">Temel · Bölüm 4</p><h1>Kanıtla teslim: iddiayı sayıya çevir</h1><p class="giris">&quot;Geçti&quot; bir iddiadır. Sayı, kasten kırılan kontrol, önce ve sonra görüntü ve diff ile eşleşen rapor ise kanıttır. Teslim yerel, push ve yayın olarak üç ayrı aşamadır.</p><p class="surum">Belge kontrolü: 29 Ekim 2026</p>
+<h2 id="zihinsel-model-kanit-iddianin-yerini-tutmaz">Zihinsel model: kanıt, iddianın yerini tutmaz</h2>
+<p>Claude Code bir işi bitirdiğinde "tamamlandı, testler geçiyor" diyebilir. Bu cümle bir kanıt değil, bir iddiadır. <a href="01-zihinsel-model.html">Bölüm 1: Zihinsel model: döngü, bağlam ve harness</a> bölümündeki döngünün son evresi doğrulamadır ve belge açık söyler: yazdığı kodun çalıştığını gösterebilecek bir kanıt vermezsen tek doğrulayıcı sen kalırsın. Gözetmediğin bir oturumda ise elindeki tek kanıt budur.</p>
+<p>Bu bölümün tek ilkesi şu: teslim almadan önce "geçti" sözcüğünü bir sayıya, bir çıktıya ya da bir görüntüye çevir. Çevirebildiğin şey kanıttır. Çeviremediğin şey Claude'un anlatısıdır ve anlatı çoğu zaman doğrudur ama doğru olmadığı gün pahalıdır.</p>
+<h2 id="gecti-yerine-sayi">"Geçti" yerine sayı</h2>
+<p>Test aracı "başarılı" der. Bu tek sözcük iki çok farklı durumu örter: 200 test koştu ve geçti, ya da sıfır test koştu ve hiçbir şey bulmadığı için geçti. İkincisi yeşildir ama hiçbir şey ölçmemiştir. Bu yüzden her sonuçta durum satırının yanındaki sayıyı oku: kaç test koştu, kaç dosya tarandı, kaç satır değişti. Beklediğin sayıyla eşleşmiyorsa yeşil bir şey söylemiyor. <a href="../index.html#m-dogrulama-1-k">12.1</a></p>
+<h2 id="sifir-test-kosan-filtre">Sıfır test koşan filtre</h2>
+<p>Test araçları tek bir testi çalıştırmak için bir filtre kabul eder. Filtre hiçbir testle eşleşmezse bazı araçlar hata vermez ve boş koşuyu başarılı sayar. Süitin okunur adını verirsen eşleşme olmayabilir. Tip ya da fonksiyon adıyla filtrelersen eşleşir ve çıktıda sayı sıfırın üstüne çıkar. Sözdizimi araca göre değişir, ilke değişmez: filtreli koşunun sonunda test sayısı sıfırdan büyük olmalı.</p>
+<p><b>Gerçek vaka D02.</b> Test komutuna süitin okunur adı filtre olarak verildi, eşleşen test olmadı ve çıktı "başarılı" dedi. Rapora "test geçiyor" diye girmek üzereydi. Aynı gün iki benzer yeşil daha çıktı: hiçbir dosya bulamadığı için geçen bir lint ve penceresi dar olduğu için körleşen bir lint. Üçünün ortak yanı, durum satırının doğru, kapsamın boş olmasıdır. Ayrıntısı <a href="../ekler/deneyimler.html">Gerçek deneyimlerden on ders</a> sayfasında D02. <a href="../index.html#m-dogrulama-1-k">12.1</a></p>
+<h2 id="yeni-kontrolu-hatayi-geri-koyarak-sinamak">Yeni kontrolü hatayı geri koyarak sınamak</h2>
+<p>Claude yeni bir test, lint kuralı ya da doğrulama betiği yazdıysa onun çalıştığını göstermek için bir tek yol var: kontrolün yakalaması gereken hatayı kasten geri koy ve kontrolün düştüğünü gör. Düşmüyorsa kontrol hiçbir şeye bakmıyor demektir. Sonra hatayı çıkar ve kontrolün yeşile döndüğünü gör. Bu üç adımlık döngü (yeşil, kasten kır, kırmızı, düzelt, yeşil) bir kontrolün gerçekten çalıştığının tek kanıtıdır. <a href="../index.html#m-dogrulama-2-k">12.2</a></p>
+<p><b>Gerçek vaka D08 (yan örnek).</b> Ağır komutları reddeden bir hook 16 vakalık bir testle sınandı ve sıfır yanlış verdi. Test gerçekten bakıyor mu diye hafif komut istisnası kasten bozuldu ve test iki yanlış verdi. Düşen test, testin işe yaradığını gösterdi. Ayrıntısı D08.</p>
+<h2 id="gorsel-degisikligi-once-sonra-gormek">Görsel değişikliği önce/sonra görmek</h2>
+<p>Bir arayüz, bir slayt ya da bir grafik değiştiyse metin raporu yetmez. Claude "düğmeyi hizaladım" diyebilir ve düğme hâlâ kaymış olabilir. Değişiklikten önce bir ekran görüntüsü al, sonra bir tane daha al ve yan yana bak. Belge <code>/verify</code> komutunu önerir: Claude uygulamayı derler, çalıştırır ve sonuca bakar, testlerin ve tip kontrolünün kaçırdığı sorunları yakalar. Görüntü yoksa "ne değişmiş ki" sorusunun cevabı da yoktur. <a href="../index.html#m-dogrulama-5-k">12.5</a></p>
+<h2 id="alt-ajan-raporunu-kanitla-eslestirmek">Alt ajan raporunu kanıtla eşleştirmek</h2>
+<p>Alt ajan kendi penceresinde çalışır ve ana oturuma bir özet döner. Özet, ajanın yaptığı şeyin anlatısıdır. "Dört dosyayı güncelledim ve testler geçti" cümlesini üç şeyle eşleştir: <code>git diff --stat</code> gerçekten dört dosya mı gösteriyor, test çıktısında sayı var mı, alt ajanın dokunduğunu söylediği her dosyada değişiklik görünüyor mu? Eşleşmeyen her parça bir soru işaretidir. Bunu kendin yapamıyorsan ayrı bir doğrulayıcı ajana "bu rapordaki her iddiayı kanıtla kontrol et" diye ver, ama yine ondan da çıktı iste. <a href="../index.html#m-dogrulama-3-k">12.3</a></p>
+<p><b>Gerçek vaka D10.</b> Bir denetim notu "uygulama yalnız bir ülkede satışta" diyordu, not oturuma yapıştırıldı ve karar bu cümleye dayandı. Yönetim panelinde uygulama 175 ülkedeydi. Aynı oturumda bir sürüm notundaki "hepsinin görseli var" iddiası da 11 eksik görselle çürüdü. Rapor ne kadar özenli yazılmış olursa olsun, değişebilen bir durumu kaynağında kontrol etmeden aktarma. Ayrıntısı D10. <a href="../index.html#m-dogrulama-3-k">12.3</a></p>
+<h2 id="bagimsiz-inceleme-ve-uc-satir">Bağımsız inceleme ve üç satır</h2>
+<p>Kendi yazdığın işi kendin incelemek zayıf bir kontroldür, çünkü aynı varsayımlarla bakarsın. Önemli bir değişikliği teslimden önce <code>/code-review</code> ile geçir. Komut güncel dalı ya da bir PR'ı, dalı veya yolu inceler. <code>--fix</code> bayrağı bulguları çalışma ağacına uygulatır, <code>--comment</code> ise GitHub'da satır içi yorum bırakır. Belgenin bir uyarısı da var: kendi yazdığın inceleme prompt'unda "stili atla" kısmını silme, yoksa inceleyici her zaman bir şey bulur ve bulgu listesi gürültüyle dolar. <a href="../index.html#m-dogrulama-6-k">12.6</a></p>
+<p>İş bitince ayrıca Claude'dan üç satır iste: neyi kaçırmış olabilir, hangi iddiası en zayıf, hangi kararı gerekçesiz. Bu satırlar övgüyü değil kırma denemesini tetikler. <a href="../index.html#m-dogrulama-4-k">12.4</a></p>
+<h2 id="commit-kapsami-ve-teslim-asamalari">Commit kapsamı ve teslim aşamaları</h2>
+<p>Bir commit tek bir mantıklı parça olsun. Kaynak kodu Git'te dursun ve commit'e neyin gireceğini sen tanımla. Başka bir oturum ya da başka bir iş aynı depoya yazıyorsa stage ve commit'i tek komutta yap. <b>Gerçek vaka D06:</b> değişiklikler stage edildi, üç dakikalık bir derleme sürerken başka bir oturum kendi raporunu commit'ledi ve commit index'in tamamını aldı. Dört dosya yanlış bir mesajın altına girdi. Kanıt <code>git log --stat</code> çıktısındaydı. <a href="../index.html#m-git-1-k">15.1</a></p>
+<p>Teslimin üç ayrı aşaması var ve her birini kendi kanıtıyla adlandır:</p>
+<div class="tablo"><table><thead><tr><th>Aşama</th><th>Anlamı</th><th>Kanıt</th></tr></thead><tbody><tr><td data-e="Aşama">Yerel</td><td data-e="Anlamı">Değişiklik bu makinede çalışıyor</td><td data-e="Kanıt">Test sayısı, çıktı, görüntü</td></tr><tr><td data-e="Aşama">Push</td><td data-e="Anlamı">Değişiklik uzak depoda</td><td data-e="Kanıt">Dal adı, commit kimliği, CI sonucu</td></tr><tr><td data-e="Aşama">Yayın</td><td data-e="Anlamı">Kullanıcı artık görüyor</td><td data-e="Kanıt">Yayındaki sürümün kendisine bakılmış olması</td></tr></tbody></table></div>
+<p>"Bitti" demek bu üçünden hangisini kastettiğini söylemeden anlamsızdır. Push ve deploy yetkisini hedefe ve kapsama bağla: bir dala push izni vermek başka bir dala ya da yayına izin vermek demek değildir. <a href="../index.html#m-dogrulama-7-k">12.7</a> <a href="../index.html#m-git-3-k">15.3</a></p>
+<h2 id="karar-kurallari">Karar kuralları</h2>
+<ul><li><b>"Geçti" gördüğünde sayıyı ara.</b> Sayı yoksa ya da sıfırsa kontrol boştur.</li><li><b>Yeni kontrolü kasten kırarak sına.</b> Düşmeyen kontrolü bitmiş sayma.</li><li><b>Görsel işte iki görüntü iste.</b> Önce, sonra, yan yana.</li><li><b>Alt ajan raporunu diff ve çıktıyla eşleştir.</b> Eşleşmeyen parçayı geri sor.</li><li><b>Önemli değişikliği ayrı bir gözle incele.</b> <code>/code-review</code>, gerekirse <code>--fix</code>.</li><li><b>Teslim aşamasını adlandır.</b> Yerel, push ya da yayın. Her birinin kendi kanıtı var.</li></ul>
+<h2 id="hata-bicimleri">Hata biçimleri</h2>
+<p><b>Kurgu senaryo: yeşil ama boş.</b> Ayşe, Claude'a bir hata düzelttirir ve yeni bir test yazdırır. Claude "yeni test geçiyor" der. Ayşe testi çalıştırır, yeşil görür, commit'ler. Haftalar sonra aynı hata geri gelir. Test dosyasının adı yanlış desenle başladığı için hiç keşfedilmemiş, hiç koşmamıştır. Hatayı geri koyup testin düştüğünü görmüş olsaydı sorun o gün çıkardı.</p>
+<p><b>Kurgu senaryo: raporun fazlası.</b> Emre bir alt ajana "tüm modülleri güncelle" der. Rapor altı modülü sayar. <code>git diff --stat</code> dördünü gösterir. İki modül hiç değişmemiştir ve rapor iki satırı niyetle değil beklentiyle yazmıştır.</p>
+<h2 id="alistirma-kasten-bozulan-testin-gercekten-dustugunu-goster">Alıştırma: kasten bozulan testin gerçekten düştüğünü göster</h2>
+<p>Bunu bir deneme deposunda ya da kendi çalışma dalında yap, işin sonunda değişiklikleri geri al.</p>
+<p>1. Küçük bir fonksiyon seç ve Claude'dan onun için bir test yazmasını iste. 2. Testi kendi başına koştur. Durum satırının yanındaki test sayısını yaz. Sayı 1 ya da üstü olmalı, sıfırsa filtreni düzelt. 3. Fonksiyonun içine kasten bir hata koy, ör. bir <code>+</code> işaretini <code>-</code> yap. Testi yeniden koştur ve kırmızı olduğunu gör. 4. Test kırmızı olmadıysa testin yanlış şeye baktığını biliyorsun. Claude'a testin neden yakalamadığını sor ve testi düzelt. 5. Hatayı geri al, testi yeniden koştur ve yeşile döndüğünü gör. Bir sorun çıktıysa hepsini <code>git restore .</code> ile temizle.</p>
+<p><b>Bitti sayılması için:</b> üç çıktı: yeşil koşu (test sayısıyla), kasten bozulmuş koşu (kırmızı) ve düzeltilmiş koşu (yeşil), her birinin yanında test sayısı. Bir cümle: bu test gerçekten neye bakıyor.</p>
+<h2 id="baglantilar">Bağlantılar</h2>
+<p>Kontrol listesi: <a href="../index.html#m-dogrulama-1-k">12.1</a> <a href="../index.html#m-dogrulama-2-k">12.2</a> <a href="../index.html#m-dogrulama-3-k">12.3</a> <a href="../index.html#m-dogrulama-4-k">12.4</a> <a href="../index.html#m-dogrulama-5-k">12.5</a> <a href="../index.html#m-dogrulama-6-k">12.6</a> <a href="../index.html#m-dogrulama-7-k">12.7</a> <a href="../index.html#m-git-1-k">15.1</a> <a href="../index.html#m-git-3-k">15.3</a>. Önceki bölüm: <a href="03-oturumu-yonetmek.html">Bölüm 3: Oturum: masayı doğru yönetmek</a>. Ekler: <a href="../ekler/deneyimler.html">Gerçek deneyimlerden on ders</a>, <a href="../ekler/komutlar.html">Komutlar ve kısayollar</a>.</p>
+<footer><a href="03-oturumu-yonetmek.html">← Bölüm 3: Oturum: masayı doğru yönetmek</a> · <a href="05-talimat-mimarisi.html">Bölüm 5: Talimat mimarisi: rica ile garanti →</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/rehber/04-kanitla-teslim.md">Markdown sürümü</a></footer></main>
+</body>
+</html>

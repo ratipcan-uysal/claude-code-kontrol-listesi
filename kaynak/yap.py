@@ -171,6 +171,9 @@ def pdf():
             o.append(("</div>" if j == 2 else "") + madde_pdf(i, j, m))
         if len(mad) == 1: o.append("</div>")
         o.append("</section>")
+    for b in REHBER:
+        o.append(f'<section class="bolum ilk ek"><h2>Rehber {b["no"]} · {b["baslik"]}</h2><p class="giris">{SEVIYELER[b["seviye"]]} · {esc(b["ozet"])}</p>'
+                 + md_html(ref_html(re.sub(r"\]\((\d\d-)", "](" + SAYFA + r"rehber/\1", ic_bag(b["md"], "html").replace('](../ekler/', '](' + SAYFA + 'ekler/')), SAYFA), b["ad"] + "-") + "</section>")
     for e in EKLER:
         o.append(f'<section class="bolum ilk ek"><h2>Ek · {e["baslik"]}</h2><p class="giris">{e["ozet"]} Belge kontrolü: {EK_TARIH}.</p>'
                  + md_html(ref_html(e["md"], SAYFA), e["ad"] + "-") + "</section>")
@@ -423,9 +426,14 @@ def metin(h):
     return re.sub(r"\n\s*\n+", "\n\n", html.unescape(t)).strip()
 
 def md_satir(t):
-    t = re.sub(r"<code>(.*?)</code>", lambda m: "`" + html.unescape(m.group(1)) + "`", t)
+    kodlar = []
+    def sakla(m):
+        kodlar.append("`" + html.unescape(m.group(1)) + "`")
+        return f"\0{len(kodlar)-1}\0"
+    t = re.sub(r"<code>(.*?)</code>", sakla, t)
     t = re.sub(r"</?b>", "**", t)
-    return html.unescape(re.sub(r"<[^>]+>", "", t))
+    t = html.unescape(re.sub(r"<[^>]+>", "", t))
+    return re.sub(r"\0(\d+)\0", lambda m: kodlar[int(m.group(1))], t)
 
 def readme():
     o = [f"# {BASLIK}", "", f"{len(BOLUMLER)} bölüm, {N} madde. Her maddede neden, nasıl, kopyalanabilir örnek ve doğrulama.", "",

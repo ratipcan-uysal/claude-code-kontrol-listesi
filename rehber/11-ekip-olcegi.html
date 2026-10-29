@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Ekip dosyası bir öneri, yönetilen ayar bir kuraldır. Ayarı, skill&#x27;i ve plugin&#x27;i kimin yazdığını, kimin incelediğini ve kimin çalıştırdığını bilmek ekip ölçeğinin temel sorusudur.">
+<title>Ekip ölçeği: ortak ayar, dağıtım ve güven · Claude Code kontrol listesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Düzen: tek sütun okuma alanı, üstte yapışkan ilerleme ve süzgeç çubuğu, geniş ekranda solda bölüm dizini */
+:root{
+ --bg:#f6f7f9;--yuzey:#ffffff;--fg:#17202c;--soft:#5b6472;--line:#e1e5eb;--kod:#eef1f5;
+ --acc:#1d4f91;--accbg:#e6eef9;--ile:#6a4a9c;--ilebg:#f0eaf8;--ok:#1f7a4d;
+ --f-baslik:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+ --f-govde:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+ --f-kod:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-govde);font-size:15px;line-height:1.55;margin:0}
+.sar{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;grid-template-columns:1fr;gap:32px}
+@media (min-width:980px){.sar{grid-template-columns:230px minmax(0,1fr)}}
+nav.dizin{display:none}
+@media (min-width:980px){nav.dizin{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);align-self:start;max-height:calc(100vh - 120px);overflow:auto;font-size:13px}}
+nav.dizin a{display:flex;justify-content:space-between;gap:8px;color:var(--soft);text-decoration:none;padding:4px 8px;border-radius:6px}
+nav.dizin a:hover,nav.dizin a:focus-visible{background:var(--accbg);color:var(--fg);outline:none}
+nav.dizin small{font-variant-numeric:tabular-nums}
+main{min-width:0}
+header.ust h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+header.ust p{color:var(--soft);max-width:65ch;margin:0 0 6px}
+.surum{font-family:var(--f-kod);font-size:12px;color:var(--soft)}
+.cubuk{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0;margin:20px 0 8px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.ilerleme{flex:1 1 220px;min-width:0}
+.ilerleme .etiket{font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
+.ilerleme .yol{height:6px;background:var(--line);border-radius:3px;margin-top:5px;overflow:hidden}
+.ilerleme .dolu{height:100%;width:0;background:var(--ok);transition:width .25s}
+.suzgec{display:flex;flex-wrap:wrap;gap:6px}
+.suzgec button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--yuzey);color:var(--fg);padding:5px 11px;border-radius:999px;cursor:pointer}
+.suzgec button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.suzgec button:focus-visible,.kopya:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+h2{font-family:var(--f-baslik);font-size:24px;letter-spacing:-.01em;margin:44px 0 6px;text-wrap:balance;scroll-margin-top:90px}
+h2 .no{color:var(--acc);margin-right:10px;font-variant-numeric:tabular-nums}
+.giris{color:var(--soft);max-width:68ch;margin:0 0 10px}
+details.okuma{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:8px}
+details.okuma summary{cursor:pointer;font-weight:600}
+details.okuma p{max-width:68ch}
+.sayilar{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.sayilar div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
+.sayilar b{display:block;font-family:var(--f-baslik);font-size:18px}
+.sayilar span{color:var(--soft);font-size:13px}
+.ilk10{list-style:none;padding:0;margin:8px 0 0;counter-reset:s;display:grid;gap:8px}
+.ilk10 li{counter-increment:s;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px;background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.ilk10 li::before{content:counter(s);font-family:var(--f-baslik);font-size:24px;font-weight:700;color:var(--acc);line-height:1}
+.ilk10 a{color:var(--fg);font-weight:600;text-decoration:none}.ilk10 a:hover{text-decoration:underline}
+.ilk10 .n{color:var(--soft);font-size:14px}
+.madde{display:grid;grid-template-columns:28px minmax(0,1fr);gap:4px 10px;padding:16px 0;border-top:1px solid var(--line)}
+.madde[hidden]{display:none}
+.madde input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--ok);cursor:pointer}
+.madde.yapildi .bas{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--line)}
+.bas{font-weight:600;font-size:16px;cursor:pointer}
+.no2{font-variant-numeric:tabular-nums;color:var(--soft);font-weight:500;margin-right:6px}
+.et{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:4px;margin-left:8px;vertical-align:2px}
+.temel{color:var(--acc);background:var(--accbg)}.ileri{color:var(--ile);background:var(--ilebg)}
+dl{display:grid;grid-template-columns:76px minmax(0,1fr);gap:4px 10px;margin:8px 0 0;font-size:14.5px}
+dt{color:var(--soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
+dd{margin:0;min-width:0}
+code{font-family:var(--f-kod);font-size:.88em;background:var(--kod);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.ornek{position:relative;margin-top:8px}
+.ornek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:0;overflow-x:auto;white-space:pre}
+.kopya{position:absolute;top:6px;right:6px;font:inherit;font-size:12px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:2px 9px;cursor:pointer}
+.bos-durum{color:var(--soft);padding:12px 0}
+footer{color:var(--soft);font-size:13px;margin-top:48px;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.ilerleme .dolu{transition:none}}
+
+a{color:var(--acc)}
+.madde,section.bolum{scroll-margin-top:var(--kaydirma,170px)}
+.kaynak{font-size:12px;color:var(--soft);margin:8px 0 0}
+.araclar{margin:14px 0}.araclar label{font-weight:600;font-size:13px;display:block}
+#ara{width:100%;font:inherit;color:var(--fg);background:var(--yuzey);border:1px solid var(--line);border-radius:8px;padding:10px;margin:5px 0}
+.islemler{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.islemler button,.islemler a{font:inherit;font-size:12px;padding:7px 9px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;cursor:pointer;text-decoration:none}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+#arama-sonuc,#bildirim{font-size:13px;color:var(--soft)}
+.ornek pre{padding-top:40px;white-space:pre-wrap;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+@media(max-width:480px){dl{grid-template-columns:1fr;gap:3px}dt{margin-top:7px}.sar{padding-inline:12px}.madde{gap:4px 6px}.cubuk{position:static}.et{margin-left:4px}nav.dizin{position:static}}
+@media print{.cubuk,.araclar,.dizin,.kopya,.ilk10,details.okuma{display:none!important}.sar{display:block;padding:0}body{background:white;color:#17202c}.madde{break-inside:avoid}.ornek pre{padding:10px}a{color:#1d4f91}}
+
+main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
+.ek .ust-bag{font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:18px}
+.ek h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+.ek h2{scroll-margin-top:16px}.ek h3{font-size:17px;margin:26px 0 4px}
+.ek p,.ek li{max-width:72ch}
+.ek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.tablo{overflow-x:auto;margin:10px 0 18px;border:1px solid var(--line);border-radius:8px}
+.tablo table{border-collapse:collapse;width:100%;font-size:14px;background:var(--yuzey)}
+.tablo th,.tablo td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
+.tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
+@media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
+ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
+ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+ul.ekler a{font-weight:600}
+ul.ekler span{display:block;color:var(--soft);font-size:14px}
+</style>
+<script>try{var t=localStorage.getItem("cc-kontrol-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main class="ek"><nav class="ust-bag" aria-label="Gezinme"><a href="../index.html">← Kontrol listesi</a><a href="index.html">Rehber içindekiler</a><a href="../index.html#ekler">Ekler</a></nav><p class="surum">Uzman · Bölüm 11</p><h1>Ekip ölçeği: ortak ayar, dağıtım ve güven</h1><p class="giris">Ekip dosyası bir öneri, yönetilen ayar bir kuraldır. Ayarı, skill&#x27;i ve plugin&#x27;i kimin yazdığını, kimin incelediğini ve kimin çalıştırdığını bilmek ekip ölçeğinin temel sorusudur.</p><p class="surum">Belge kontrolü: 29 Ekim 2026</p>
+<h2 id="zihinsel-model-yapilandirma-bir-bagimliliktir">Zihinsel model: yapılandırma bir bağımlılıktır</h2>
+<p>Tek başına çalışırken <code>.claude/settings.json</code> senin dosyandır. Ekipte çalışırken bu dosya git ile herkesin makinesine gider ve ilk oturumda ne yapacağına sen karar vermezsin, depoyu klonlayan karar verir. Bu yüzden ekip ölçeğinde tek soru şudur: bu dosyayı kim yazdı, kim inceledi, kim çalıştırıyor?</p>
+<p>Claude Code ayarı dört sahiple okur. Öncelik yukarıdan aşağıdır: yönetilen ayarlar, komut satırı, <code>settings.local.json</code>, <code>settings.json</code>, kullanıcı ayarları. Üstteki sahip alttakini ezer.</p>
+<div class="tablo"><table><thead><tr><th>Sahip</th><th>Dosya</th><th>Kime ulaşır</th><th>Kim değiştirir</th></tr></thead><tbody><tr><td data-e="Sahip">Kurum</td><td data-e="Dosya"><code>managed-settings.json</code> (sistem dizini), MDM profili ya da claude.ai konsolu</td><td data-e="Kime ulaşır">Politikanın ulaştığı herkes</td><td data-e="Kim değiştirir">Yönetici</td></tr><tr><td data-e="Sahip">Ekip</td><td data-e="Dosya"><code>.claude/settings.json</code></td><td data-e="Kime ulaşır">Depoyu klonlayan herkes</td><td data-e="Kim değiştirir">Pull request</td></tr><tr><td data-e="Sahip">Kişi, bu proje</td><td data-e="Dosya"><code>.claude/settings.local.json</code></td><td data-e="Kime ulaşır">Yalnız sen</td><td data-e="Kim değiştirir">Sen</td></tr><tr><td data-e="Sahip">Kişi, her proje</td><td data-e="Dosya"><code>~/.claude/settings.json</code></td><td data-e="Kime ulaşır">Yalnız sen</td><td data-e="Kim değiştirir">Sen</td></tr></tbody></table></div>
+<p>Belgenin ince bir ayrımı var ve ekip kurarken en çok bu yanıltır: depoda duran ayar her zaman hemen işlemez. <code>permissions.allow</code> kuralları, <code>additionalDirectories</code> ve <code>extraKnownMarketplaces</code> girdileri, her ekip üyesi klasöre güven verdikten sonra geçerli olur. O zamana dek yeni gelen hâlâ izin sorusu görür. Sınırlayan kurallar (<code>deny</code>, <code>ask</code>) bundan etkilenmez, çünkü yetki vermezler. Kısacası: ekip dosyası bir öneridir, kurum dosyası bir kuraldır. Bunun ayrıntısı bölüm <a href="05-talimat-mimarisi.html">Bölüm 5: Talimat mimarisi: rica ile garanti</a> ve <a href="06-izin-ve-guvenlik.html">Bölüm 6: İzin ve güvenlik: mod, kural, sandbox</a> içinde.</p>
+<h2 id="karar-kurallari">Karar kuralları</h2>
+<p><b>Ortak olanı commit'le, kişisel olanı yerelde tut.</b> Ekibin izin listesi, hook'ları ve ortak plugin'leri <code>settings.json</code>'a gider. Kendi modelin, kendi kısayolların <code>settings.local.json</code>'a. Claude Code yerel dosyayı oluşturduğunda onu git dışında bırakır. Dosyayı elle oluşturduysan <code>.gitignore</code>'a kendin eklemelisin. Bir ekip dosyası senin tercihinle çakışırsa kendi yerel dosyanda ezersin, commit gerekmez. <a href="../index.html#m-ekip-1-k">10.1</a></p>
+<p><b>CLAUDE.md'ye kod gibi davran.</b> Proje CLAUDE.md'sindeki bir satır bütün ekibin oturumunu değiştirir. Değişikliği pull request'ten geçir, gerekçesini commit mesajına yaz. Aksi hâlde altı ay sonra kimse bir kuralın neden orada durduğunu bilmez ve silmeye cesaret edemez. Kişisel tercihler <code>CLAUDE.local.md</code>'ye gider, o da gitignore'dadır. Büyük monorepoda başka ekiplerin CLAUDE.md dosyaları seni de etkiler, <code>claudeMdExcludes</code> ile hariç tutabilirsin. <a href="../index.html#m-ekip-2-k">10.2</a></p>
+<p><b>Tekrar eden işi skill'e çevir, dağıtımı büyüklüğe göre seç.</b> Bir depoya özgü prosedür <code>.claude/skills/</code> altında commit'lenir ve klonlayan herkes alır. Birden çok depoda aynı skill lazımsa plugin yap. Plugin, skill'leri, hook'ları ve MCP sunucularını tek birim olarak taşıyan bir dizindir. Bir marketplace de plugin'leri listeleyen bir kataloktur. Depoya ekleyebilirsin, kurum çapında da dağıtabilirsin. <a href="../index.html#m-ekip-3-k">10.3</a></p>
+<p><b>Kuralı Claude'a değil, makineye uygulat.</b> Kurumun "şu dosya okunmasın" dediği şey <code>managed-settings.json</code> içinde <code>permissions.deny</code> olarak durur. <code>allowManagedPermissionRulesOnly: true</code> ile kullanıcı, proje ve yerel dosyalardaki izin kuralları devre dışı kalır. CLAUDE.md burada yetmez, bölüm <a href="05-talimat-mimarisi.html">Bölüm 5: Talimat mimarisi: rica ile garanti</a> bunun nedenini anlatıyor.</p>
+<p><b>Yönetilen ayarı yayma yöntemini altyapına göre seç.</b> Dört yol var: claude.ai konsolundan sunucu tarafı yönetim, macOS ve Windows için MDM, sistem dizinine bırakılan dosya ve Windows kullanıcı kaydı. Dosya yoluysa macOS'ta <code>/Library/Application Support/ClaudeCode/</code>, Linux'ta <code>/etc/claude-code/</code> altına koyarsın. Birkaç ekip aynı politikayı paylaşıyorsa her ekip kendi dosyasını <code>managed-settings.d/</code> dizinine koyar. Dosyalar alfabetik sırayla birleşir, bu yüzden <code>10-telemetri.json</code> ve <code>20-guvenlik.json</code> gibi numaralı adlar sıra verir. Listeler birleşir, tekil değerlerde sonraki dosya kazanır. Aynı makineye birden çok kaynak ulaşırsa varsayılan davranış en yüksek öncelikli tek kaynağı kullanmaktır, hepsini birleştirmek için <code>managedSourcesBehavior: "merge"</code> gerekir (v2.1.242 ve sonrası). Politikanın gerçekten işlediğini <code>/status</code> içindeki <code>Setting sources</code> satırından doğrula.</p>
+<p><b>Duyuruyu hatırlatma için kullan, kural için değil.</b> <code>companyAnnouncements</code> ayarı başlangıçta kurumun duyurusunu gösterir. Birden çok duyuru varsa her oturumda rastgele biri çıkar. İyi bir duyuru kısa bir hatırlatmadır: "Müşteri verisi yalnız kurum hesabıyla." Zorlama yoktur, yalnız görünürlük sağlar.</p>
+<p><b>Hesap ve veri sınırını baştan çiz.</b> Şirket işini şirketin onayladığı hesapla yap, çünkü veri politikası hesap türüne bağlı. Belgeye göre Team, Enterprise ve API gibi ticari hesaplarda Anthropic, Claude Code'a gönderilen kod ve prompt'larla model eğitmez (müşteri açıkça aksini seçmedikçe). Free, Pro ve Max hesaplarında eğitim izni ayarı geçerlidir. İç alan adı, müşteri verisi ve iç depo adresleri hiçbir kişisel hesaba ve özel depoya gitmesin. Paylaşmadan önce tarama yaptır. <a href="../index.html#m-guvenlik-2-k">7.2</a></p>
+<p><b>Yeni depodaki hook ve MCP ayarını çalıştırmadan önce oku.</b> Ortak hook'lar ekip için en güçlü araçtır ve tam bu yüzden en riskli olanıdır: hook senin yetkinle kabukta komut çalıştırır. Belgenin tablosu şunu söyler: ayar dosyalarındaki hook'lar, <code>env</code> bloğu ve <code>apiKeyHelper</code> gibi yardımcı komutlar, güven verilmemiş klasörde <code>claude -p</code> ile çalıştırıldığında da kullanılır, çünkü <code>-p</code> güven penceresini hiç göstermez. Bu yüzden tanımadığın bir depoyu otomasyonda çalıştırmadan önce <code>.claude/settings.json</code>, hook betikleri ve <code>.mcp.json</code> içeriğini oku. <a href="../index.html#m-guvenlik-7-k">7.7</a></p>
+<p><b>Onboarding'i üret, elle yazma.</b> <code>/team-onboarding</code> son 30 günlük oturum geçmişinden, komutlardan ve MCP kullanımından bir rehber üretir. Yeni ekip üyesi bunu ilk mesaj olarak yapıştırabilir. Team ve Enterprise aboneleri için paylaşılabilir bir bağlantı da döner. Çıktıyı yine de bir insan okusun: geçmişten çıkan alışkanlık ekibin istediği alışkanlık olmayabilir.</p>
+<h2 id="hata-bicimleri">Hata biçimleri</h2>
+<p><b>Kurgu senaryo: "bende çalışıyordu".</b> Selin'in ekibi <code>.claude/settings.json</code> dosyasına bir izin listesi koyar ve herkesin sormadan test çalıştıracağını varsayar. Yeni katılan Emre depoyu klonlar, güven penceresini kapatıp <code>claude -p</code> ile bir betik koşturur. Allow kuralları uygulanmaz, betik izin sorusunda takılır, stderr'e düşen <code>this workspace has not been trusted</code> uyarısını da kimse okumaz. Çözüm ekip dosyasını suçlamak değil, yeni gelenin ilk adımına "klasörü interaktif aç, güven penceresindeki kuralları oku" maddesini koymaktır.</p>
+<p><b>Kurgu senaryo: duyuru kural sanıldı.</b> Barış, <code>companyAnnouncements</code> içine "<code>.env</code> dosyasını okuma" yazar ve işi bitmiş sayar. Duyuru yalnız başlangıçta görünür, hiçbir okumayı engellemez. Doğru yer yönetilen <code>permissions.deny</code> kuralıdır.</p>
+<p><b>Gerçek vaka: katman bölünmesi.</b> <a href="../ekler/deneyimler.html">Gerçek deneyimlerden on ders</a> sayfasındaki D07, bir kuralın "kesin" sandığın katmana hiç ulaşmadığını gösterir. Proje dışı bir import, onay proje yoluna bağlı olduğu için headless koşumda yüklenmedi. Ekip ölçeğinde aynı örüntü şöyle görünür: bir kişide çalışan yapılandırma, başka bir kişinin makinesinde sessizce eksik kalır. Ayırıcı kanıt, kuralı gerçekten çalıştıran oturumda "bu kural ne diyor?" diye sormaktır.</p>
+<p><b>Plugin deposu ayarıyla yetinmek.</b> Marketplace girdisi göreli yolla listelenmiş bir plugin, deponun ayarından kurulur. Plugin dış bir kaynağa işaret ediyorsa yalnız ayarla kurulmaz. Her katılımcı önce <code>claude plugin install &lt;ad&gt;@&lt;marketplace&gt; --scope project</code> komutunu çalıştırır, o zamana dek "enabled in project settings but isn't installed" uyarısını görür.</p>
+<h2 id="alistirma-ekip-paketi-ve-temiz-klon">Alıştırma: ekip paketi ve temiz klon</h2>
+<p>Bunu bir deneme deposunda yap.</p>
+<p>1. Depoda <code>.claude/settings.json</code> oluştur. İçine bir <code>permissions.deny</code> kuralı koy, örneğin <code>Read(./.env)</code>, ve <code>permissions.allow</code> altına yalnız bir salt okunur komut ekle. 2. Depoya bir skill ekle: <code>.claude/skills/ozet/SKILL.md</code>. Skill, açıklaması "değişen dosyaları özetler" olan üç satırlık bir prosedür olsun. 3. <code>.claude/settings.local.json</code> oluştur ve kendi kişisel bir tercihini yaz. Dosyanın git dışında kaldığını <code>git status</code> ile gör. 4. Her şeyi commit'le, ardından depoyu başka bir dizine klonla: <code>git clone &lt;depo&gt; ../temiz-klon</code>. 5. Temiz klonda yeni bir oturum aç. Güven penceresindeki kuralları oku, kabul et, sonra <code>/ozet</code> komutunu çalıştır. <code>.env</code> okumasını dene ve reddedildiğini gör. 6. Aynı skill'i bir plugin'e çevir: <code>ekip-paketi/.claude-plugin/plugin.json</code> ve <code>ekip-paketi/skills/ozet/SKILL.md</code>. <code>claude --plugin-dir ./ekip-paketi</code> ile yükle. Skill artık <code>/ekip-paketi:ozet</code> adıyla görünür.</p>
+<p><b>Bitti sayılması için:</b> temiz klondan alınmış üç kanıt: güven penceresinin listelediği kurallar, <code>/ozet</code> çıktısı ve reddedilen <code>.env</code> okuması. Altına bir cümle yaz: kişisel tercihin klona geçmediğini nereden gördün.</p>
+<h2 id="baglantilar">Bağlantılar</h2>
+<p>Kontrol listesi: <a href="../index.html#m-ekip-1-k">10.1</a> <a href="../index.html#m-ekip-2-k">10.2</a> <a href="../index.html#m-ekip-3-k">10.3</a> <a href="../index.html#m-guvenlik-2-k">7.2</a> <a href="../index.html#m-guvenlik-7-k">7.7</a>. Önceki bölüm: <a href="10-gozetimsiz-is.html">Bölüm 10: Gözetimsiz iş: sen yokken çalışan sistem</a>. Ekler: <a href="../ekler/dosyalar.html">Dosya konumları</a>, <a href="../ekler/komutlar.html">Komutlar ve kısayollar</a>, <a href="../ekler/deneyimler.html">Gerçek deneyimlerden on ders</a>.</p>
+<footer><a href="10-gozetimsiz-is.html">← Bölüm 10: Gözetimsiz iş: sen yokken çalışan sistem</a> · <a href="12-sistemi-iyilestirmek.html">Bölüm 12: Sistemi iyileştirmek: hatayı katmana yazmak →</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/rehber/11-ekip-olcegi.md">Markdown sürümü</a></footer></main>
+</body>
+</html>

@@ -679,7 +679,7 @@ Aynı tarifi üçüncü kez yazıyorsan, o tarif bir dosyaya aittir. Skill gerek
   - **Dayanak:** [Alt ajanlar](https://code.claude.com/docs/en/sub-agents)
 - [ ] **9.2 Üçüncü kez anlattığın işi skill'e çevir.** `İleri`
   - **Neden:** Tarif her seferinde biraz farklı anlatılır, sonuç da farklı çıkar.
-  - **Nasıl:** `~/.claude/skills//SKILL.md`.
+  - **Nasıl:** `~/.claude/skills/<ad>/SKILL.md`.
 
     ```
     ---

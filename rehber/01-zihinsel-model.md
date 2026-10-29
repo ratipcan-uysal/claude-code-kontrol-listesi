@@ -80,4 +80,4 @@ Kontrol listesi: [2.1](../README.md#2-baglam) [2.2](../README.md#2-baglam) [2.3]
 
 ---
 
-[İçindekiler](README.md) · [Bölüm 5 →](05-talimat-mimarisi.md)
+[İçindekiler](README.md) · [Bölüm 2 →](02-is-vermek.md)
