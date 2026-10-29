@@ -1,9 +1,9 @@
 {
-  "browser": "156.0.8078.73",
+  "browser": "156.0.8078.74",
   "base": "http://127.0.0.1:8770",
   "results": [
     {
-      "name": "113 madde",
+      "name": "118 madde",
       "status": "PASS"
     },
     {
@@ -23,11 +23,11 @@
       "status": "PASS"
     },
     {
-      "name": "İleri filtre 88",
+      "name": "İleri filtre 93",
       "status": "PASS"
     },
     {
-      "name": "Yapılmamış filtre 112",
+      "name": "Yapılmamış filtre 117",
       "status": "PASS"
     },
     {

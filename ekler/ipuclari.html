@@ -152,6 +152,8 @@ ul.ekler span{display:block;color:var(--soft);font-size:14px}
 /doctor prompt-audit .claude/skills/deploy</pre>
 <h3 id="claude-md-ye-baglam-harcamayan-not-yaz">CLAUDE.md'ye bağlam harcamayan not yaz</h3>
 <p>CLAUDE.md içindeki <code>&lt;!-- ... --&gt;</code> blok yorumları bağlama girmeden silinir. Bakımcıya not, kuralın gerekçesini ya da tarihini bırakırsın, modelin dikkati dağılmaz. <a href="../index.html#m-bilgi-4-k">18.4</a></p>
+<h3 id="cevapta-modelin-ic-akil-yurutmesini-isteme">Cevapta modelin iç akıl yürütmesini isteme</h3>
+<p>Anthropic'in Opus 5.5 rehberine göre modelden iç akıl yürütmesini cevapta aynen yazmasını istemek reddedilebilir ve güvenlik denetiminin işaretlediği kategorilerden biridir. Kayıtlı talimatlarında böyle bir satır varsa sil. Gerçekten gereken şeyi iste: "Bu yaklaşımı neden seçtiğini üç cümlede açıkla."</p>
 <h3 id="sikistirmadan-sonra-ne-kalir">Sıkıştırmadan sonra ne kalır</h3>
 <p><code>/compact</code> sonrasında proje kökündeki CLAUDE.md diskten yeniden yüklenir. Kaybolan yalnız konuşmada verdiğin talimattır. Oturum boyunca geçerli kalması gereken bir kuralı sohbete değil dosyaya yaz. <a href="../index.html#m-baglam-6-k">2.6</a></p>
 <h3 id="buyuk-depoda-ilgisiz-claude-md-leri-disla">Büyük depoda ilgisiz CLAUDE.md'leri dışla</h3>
@@ -166,6 +168,10 @@ ul.ekler span{display:block;color:var(--soft);font-size:14px}
 <p><code>Ctrl+G</code> girdiyi varsayılan metin editöründe açar. Çok paragraflı bir brief'i terminal satırında yazmaktan kolaydır. <code>/config</code> içinden Claude'un son cevabını da editöre yorum olarak getirebilirsin.</p>
 <h3 id="ana-isi-bolmeden-soru-sor">Ana işi bölmeden soru sor</h3>
 <p><code>/btw neden bu kütüphaneyi seçtin?</code> cevabı gösterir ama konuşmaya eklemez. Bağlam büyümez, ana iş yön değiştirmez.</p>
+<h3 id="gorseli-yeniden-yazma-kendisini-ver">Görseli yeniden yazma, kendisini ver</h3>
+<p>Bir grafik, diyagram ya da ekran görüntüsündeki sayıları elle yazmak yerine görseli ver: <code>Ctrl+V</code> panodan yapıştırır, dosya yolunu da verebilirsin. Sonra belirli bir soru sor: "Bu servislerden hangileri ödeme API'sini doğrudan çağırıyor?" Opus 5.5 rehberine göre model okları, kutuları ve iki sürüm arasındaki farkı daha doğru okuyor.</p>
+<h3 id="uzun-belgeyi-tutarsizlik-icin-taramaya-ver">Uzun belgeyi tutarsızlık için taramaya ver</h3>
+<p>Uzun bir plan, rapor ya da sunumu Claude'a verip kendi içindeki çelişkileri buldur: "Bu belgede kendisiyle çelişen sayı, tarih ve adları bul. Her sorunu alıntıla ve nerede olduğunu söyle." Alıntı istemek, sorunun gerçekten orada olup olmadığını senin kontrol etmeni kolaylaştırır. <a href="../index.html#m-dogrulama-4-k">12.4</a></p>
 <h3 id="kod-blogunu-tek-tusla-al">Kod bloğunu tek tuşla al</h3>
 <p><code>/copy</code> son cevabı panoya kopyalar. Cevapta birden çok kod bloğu varsa seçici açılır, <code>w</code> ile seçtiğini dosyaya yazar. SSH üzerinden pano çalışmıyorsa işe yarar.</p>
 <h3 id="bitis-kosulu-olan-is-icin-goal">Bitiş koşulu olan iş için <code>/goal</code></h3>

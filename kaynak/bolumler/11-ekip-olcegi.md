@@ -11,7 +11,7 @@ Claude Code ayarı dört sahiple okur. Öncelik yukarıdan aşağıdır: yöneti
 | Kişi, bu proje | `.claude/settings.local.json` | Yalnız sen | Sen |
 | Kişi, her proje | `~/.claude/settings.json` | Yalnız sen | Sen |
 
-Belgenin ince bir ayrımı var ve ekip kurarken en çok bu yanıltır: depoda duran ayar her zaman hemen işlemez. `permissions.allow` kuralları, `additionalDirectories` ve `extraKnownMarketplaces` girdileri, her ekip üyesi klasöre güven verdikten sonra geçerli olur. O zamana dek yeni gelen hâlâ izin sorusu görür. Sınırlayan kurallar (`deny`, `ask`) bundan etkilenmez, çünkü yetki vermezler. Kısacası: ekip dosyası bir öneridir, kurum dosyası bir kuraldır. Bunun ayrıntısı bölüm {{bolum:5}} ve {{bolum:6}} içinde.
+Belgenin ince bir ayrımı var ve ekip kurarken en çok bu yanıltır: depoda duran ayar her zaman hemen işlemez. `permissions.allow` kuralları, `additionalDirectories` ve `extraKnownMarketplaces` girdileri, her ekip üyesi klasöre güven verdikten sonra geçerli olur. O zamana dek yeni gelen hâlâ izin sorusu görür. Sınırlayan kurallar (`deny`, `ask`) bundan etkilenmez, çünkü yetki vermezler. Kısacası: ekip dosyası bir öneridir, kurum dosyası bir kuraldır. Ayrıntısı için {{bolum:5}} ve {{bolum:6}}.
 
 ## Karar kuralları
 
@@ -21,7 +21,7 @@ Belgenin ince bir ayrımı var ve ekip kurarken en çok bu yanıltır: depoda du
 
 **Tekrar eden işi skill'e çevir, dağıtımı büyüklüğe göre seç.** Bir depoya özgü prosedür `.claude/skills/` altında commit'lenir ve klonlayan herkes alır. Birden çok depoda aynı skill lazımsa plugin yap. Plugin, skill'leri, hook'ları ve MCP sunucularını tek birim olarak taşıyan bir dizindir. Bir marketplace de plugin'leri listeleyen bir kataloktur. Depoya ekleyebilirsin, kurum çapında da dağıtabilirsin. [[10.3]]
 
-**Kuralı Claude'a değil, makineye uygulat.** Kurumun "şu dosya okunmasın" dediği şey `managed-settings.json` içinde `permissions.deny` olarak durur. `allowManagedPermissionRulesOnly: true` ile kullanıcı, proje ve yerel dosyalardaki izin kuralları devre dışı kalır. CLAUDE.md burada yetmez, bölüm {{bolum:5}} bunun nedenini anlatıyor.
+**Kuralı Claude'a değil, makineye uygulat.** Kurumun "şu dosya okunmasın" dediği şey `managed-settings.json` içinde `permissions.deny` olarak durur. `allowManagedPermissionRulesOnly: true` ile kullanıcı, proje ve yerel dosyalardaki izin kuralları devre dışı kalır. CLAUDE.md burada yetmez, nedenini {{bolum:5}} anlatıyor.
 
 **Yönetilen ayarı yayma yöntemini altyapına göre seç.** Dört yol var: claude.ai konsolundan sunucu tarafı yönetim, macOS ve Windows için MDM, sistem dizinine bırakılan dosya ve Windows kullanıcı kaydı. Dosya yoluysa macOS'ta `/Library/Application Support/ClaudeCode/`, Linux'ta `/etc/claude-code/` altına koyarsın. Birkaç ekip aynı politikayı paylaşıyorsa her ekip kendi dosyasını `managed-settings.d/` dizinine koyar. Dosyalar alfabetik sırayla birleşir, bu yüzden `10-telemetri.json` ve `20-guvenlik.json` gibi numaralı adlar sıra verir. Listeler birleşir, tekil değerlerde sonraki dosya kazanır. Aynı makineye birden çok kaynak ulaşırsa varsayılan davranış en yüksek öncelikli tek kaynağı kullanmaktır, hepsini birleştirmek için `managedSourcesBehavior: "merge"` gerekir (v2.1.242 ve sonrası). Politikanın gerçekten işlediğini `/status` içindeki `Setting sources` satırından doğrula.
 

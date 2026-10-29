@@ -323,6 +323,8 @@ IC = re.compile(r"\{\{(ek|bolum):([a-z0-9-]+)\}\}")
 def validate_rehber(rehber=REHBER):
     nolar = {str(b["no"]) for b in rehber}
     for b in rehber:
+        if re.search(r"[Bb]ölüm \{\{bolum:", b["md"]):
+            raise ValueError(f"Bölüm bağlantısı zaten 'Bölüm n' yazar, önüne 'bölüm' ekleme ({b['ad']})")
         for tur, ad in IC.findall(b["md"]):
             if (tur == "ek" and ad not in {e["ad"] for e in EKLER}) or (tur == "bolum" and ad not in nolar):
                 raise ValueError(f"Geçersiz rehber bağlantısı: {tur}:{ad} ({b['ad']})")

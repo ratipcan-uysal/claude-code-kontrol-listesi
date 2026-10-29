@@ -15,7 +15,7 @@ Yerel Claude Code 2.1.284 için sürüm ve yardım çıktısı kontrol edildi. G
 | [Alt ajanlar](https://code.claude.com/docs/en/sub-agents) | 2.4, 5.1, 9.1, 11.6 |
 | [Headless kullanım](https://code.claude.com/docs/en/headless) | 2.5, 5.6, 14.2, 14.6, 14.7 |
 | [Hedefler](https://code.claude.com/docs/en/goal) | 3.1 |
-| [Model ve effort](https://code.claude.com/docs/en/model-config) | 5.2, 5.3, 5.6 |
+| [Model ve effort](https://code.claude.com/docs/en/model-config) | 5.2, 5.3, 5.6, 5.7 |
 | [Kullanım ve maliyet](https://code.claude.com/docs/en/costs) | 5.4, 19.1, 19.5 |
 | [Advisor](https://code.claude.com/docs/en/advisor) | 5.5 |
 | [İzinler](https://code.claude.com/docs/en/permissions) | 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 7.1, 15.3 |
@@ -35,6 +35,7 @@ Yerel Claude Code 2.1.284 için sürüm ve yardım çıktısı kontrol edildi. G
 | [Ayar referansı](https://code.claude.com/docs/en/settings-reference) | 15.4 |
 | [Genel bakış](https://code.claude.com/docs/en/overview) | 19.6 |
 | [Oturumlar](https://code.claude.com/docs/en/sessions) | 2.7 |
+| [Opus 5.5 rehberi](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/) (Anthropic blogu, 22 Eylül 2026) | 3.8, 12.8, 13.7, 16.5 |
 
 26 kaynağın erişimi ve içerik özeti [kaynak kaydında](dogrulama/kaynaklar.json) tutulur. Sayfaların tam metni depoya kopyalanmaz. Erişim kontrolü, listelenen özelliğin canlı kullanım testi değildir.
 

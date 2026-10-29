@@ -30,7 +30,8 @@ KAYNAKLAR = {'memory': {'ad': 'Talimat ve bellek', 'url': 'https://code.claude.c
  'checkpointing': {'ad': 'Checkpoint', 'url': 'https://code.claude.com/docs/en/checkpointing'},
  'settings-reference': {'ad': 'Ayar referansı', 'url': 'https://code.claude.com/docs/en/settings-reference'},
  'overview': {'ad': 'Genel bakış', 'url': 'https://code.claude.com/docs/en/overview'},
- 'sessions': {'ad': 'Oturumlar', 'url': 'https://code.claude.com/docs/en/sessions'}}
+ 'sessions': {'ad': 'Oturumlar', 'url': 'https://code.claude.com/docs/en/sessions'},
+ 'opus55': {'ad': 'Opus 5.5 rehberi', 'url': 'https://claude.dev/blog/getting-the-most-out-of-opus-5-5/'}}
 
 BOLUMLER = [
 ('talimat', 'Talimat katmanları', 'Yeni oturumun konuşma bağlamı yenidir; talimat dosyaları ve otomatik bellek oturumlar arasında bilgi taşıyabilir. Kalıcı kuralları kısa tut, ayrıntılı prosedürleri ilgili işe taşınacak dosyalara ayır.', [
@@ -194,6 +195,13 @@ M("Uzun bir brief'i yapıştırmadan önce eksiklerini buldur.",
   'ileri',
   'Bu brief’te sonucu değiştiren belirsizlikleri ve çelişkileri listele.\nHer biri için öneri, gerekçe ve karar sahibini yaz.\nGeri alınabilir teknik ayrıntıları varsayım olarak belirtip ilerle.',
   []),
+M('Ne zaman devam edip ne zaman durup soracağını yaz.',
+  'Uzun işte Claude bazen sıradaki adımı söyleyip durur, "devam edeyim mi?" diye sorar ya da işi bekletmeyen seçenekler sunar. Durmalarını adlandıran talimata uyar.',
+  'CLAUDE.md\'ye kısa bir kural ekle: girdin gerekmeyen adımda devam etsin, durum notunu bir sonraki eylemle aynı mesaja koysun. Yalnız sensiz ilerleyemiyorsa ya da yıkıcı bir adımdan önce dursun. Eşli çalışmada tersini isteyebilirsin: başta tek satırlık plan, sonda kısa özet.',
+  'Uzun bir işte gereksiz "devam edeyim mi?" sayısı düştü. Yıkıcı komutlar için izin istemi hâlâ açık, kural onun yerine geçmiyor.',
+  'ileri',
+  'Girdim gerekmeyen adımda devam et. Durum notunu sıradaki eyleminle aynı mesaja koy.\nYalnız bensiz ilerleyemiyorsan ya da yıkıcı bir adımdan önce dur:\nveri silmek, force push, bu deponun dışında bir şeyi değiştirmek.',
+  ['opus55']),
 ]),
 
 ('prompt', 'Prompt yazımı: önce ve sonra', 'İyi bir istek uzun olmak zorunda değil. Dört şey taşıması yeter: amaç, "iyi"nin tanımı, bağlam ve çıktının biçimi. Aşağıdaki örnekler aynı isteğin zayıf ve güçlü hâlleri.', [
@@ -270,6 +278,13 @@ M('Model değişikliğini aynı görevle karşılaştır.',
   'ileri',
   'for m in sonnet opus; do\n  claude -p "$(cat gorev.md)" --model $m --output-format json \\\n    --no-session-persistence > sonuc-$m.json\ndone',
   ['model-config', 'headless']),
+M('Model değişirse fark et ve nasıl geri döneceğini bil.',
+  'Bir güvenlik sınıflandırıcısı isteği işaretlerse Claude Code oturumu varsayılan olarak daha eski bir modele geçirir ve iş orada sürer. Denetim konuşmadaki dosya ve arama sonuçlarına da bakar, neden son mesaj olmayabilir.',
+  'Geçiş bildirimini gör. Geri dönmek için <code>/model</code>, son mesajı düzeltip yeniden denemek için boş girdide Esc Esc, yanlış işaretse <code>/feedback</code>. Önce sorulsun istiyorsan <code>/config</code> içinde "Switch models when a message is flagged" ayarını "Ask each time" yap ya da <code>switchModelsOnFlag: false</code>.',
+  'Gözetimsiz koşumda bu ayarın etkisini biliyorsun: <code>false</code> iken headless koşumda işaretlenen istek hata olarak biter, varsayılanda ise iş sessizce eski modelde sürer.',
+  'ileri',
+  None,
+  ['model-config', 'settings-reference']),
 ]),
 
 ('izin', 'İzinler', 'İzin listesi tekrarlanan yetkili işlemleri kolaylaştırır. Etkin mod, yönetilen politika, hook ve sandbox da sonucu etkiler. Bir allow kuralı komutun her girdide güvenli olduğunu kanıtlamaz.', [
@@ -606,6 +621,13 @@ M('Teslim aşamasını kanıtıyla adlandır.',
   'ileri',
   None,
   []),
+M('Rapor biçimini sabitle, önce senden bekleneni oku.',
+  'Uzun bir işin sonunda asıl önemli kısım çoğu zaman Claude\'un senden beklediği karar ya da onaydır. Özetin içinde kaybolursa iş orada bekler.',
+  'Uzun koşum bitince önce Claude\'un seni beklediği bir şey var mı ona bak, sonra özetin geri kalanını oku. Biçimi CLAUDE.md\'de sabitle, ör. her koşumu "Bende bekleyen, Değişen, Bulunan" başlıklarıyla bitirsin.',
+  'Son birkaç uzun koşumun raporunda bekleyen karar ilk satırda. Okumadan geçtiğin bekleyen karar kalmadı.',
+  'ileri',
+  'Her uzun koşumu üç başlıkla bitir:\nBende bekleyen: senden gereken karar ya da onay, yoksa "yok"\nDeğişen: ne yaptın\nBulunan: fark edip dokunmadığın şeyler',
+  ['opus55']),
 ]),
 
 ('gozetimsiz', 'Gözetimsiz koşum', '"Ben yatıyorum, sabaha bitir" dediğin iş, sabah çalışan bir sonuç bırakmalı. Gece boyu izin ekranında beklemek ya da sessizce ölmek en pahalı başarısızlık.', [
@@ -651,6 +673,13 @@ M('Geçici derleme ve bağımlılıkları görev sonunda hedefli temizle.',
   'ileri',
   None,
   []),
+M('Uzun işin görev listesini dosyada tuttur.',
+  'Uzun koşum bağlam penceresini doldurur ve eski turlar özetlenir. Konuşmadaki liste özetle kaybolabilir, dosyadaki liste kalır.',
+  'İşin başında Claude\'dan görev listesini bir dosyada tutmasını, her adım bitince işaretlemesini ve yeni bulduğu işi eklemesini iste. Durumu konuşma geçmişinden değil dosyadan oku.',
+  'Koşum sırasında dosya güncel: biten adımlar işaretli, yeni bulunan iş eklenmiş. Sıkıştırmadan sonra da aynı dosyadan devam ediyor.',
+  'ileri',
+  'Görev listesini TASKS.md içinde tut. Her adım bitince işaretle, yeni bulduğun işi ekle.',
+  ['opus55']),
 ]),
 
 ('rutin', 'Rutinler ve zamanlama', 'Tekrarlanan işi elle tetiklemek unutulur. Ama bilgisayar kapanınca ölen bir rutin de güvenilir değildir.', [
@@ -765,6 +794,13 @@ M('Tasarım dilini bir kez yaz, her turda yeniden anlatma.',
   'ileri',
   None,
   []),
+M('Tasarım isteğinde istemediğin kalıpları adıyla yaz.',
+  'Yön verilmezse model birkaç varsayılan stile döner. "Jenerik görünmesin" gibi genel bir talimat çoğu zaman bir varsayılanı başkasıyla değiştirir.',
+  'İstemediğin kalıpları tek tek say: arka plan rengi, başlıktaki vurgu biçimi, bölüm numarası etiketleri, düğme biçimi. Sonra Claude\'un yerine ne seçtiğine bak. O da istemediğin bir şeyse listeye ekle ve yeniden iste.',
+  'Yeni sürüm listedeki kalıpların hiçbirini içermiyor. Listen her turda uzadı, aynı istemediğin kalıp ikinci kez gelmedi.',
+  'ileri',
+  'Kişisel bir web sitesi yap, içerik yer tutucu olsun.\nŞunları kullanma: krem ya da kırık beyaz arka plan, başlıkta italik vurgulu kelime,\n"01 / 02 / 03" bölüm etiketleri, monospace etiketler, hap biçimli düğmeler.',
+  ['opus55']),
 ]),
 
 ('mobil', 'Mobil ve simülatör', 'iOS ya da Android uygulaması geliştiriyorsan simülatör en çok kullanılan araç olur. Paylaşılan cihaz, elle tıklama ve açık kalan simülatör en sık zaman kaybı.', [

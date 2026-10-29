@@ -53,6 +53,8 @@ Sınırı bil. Belgeye göre rewind yalnız Claude'un dosya araçlarıyla düzen
 
 `Esc` Claude'u işin ortasında durdurur ve o ana kadarki her şeyi korur. Belge ilk dakikayı izlemeyi önerir: Claude yanlış yöne giderse hemen `Esc` bas ve yönlendir. Geç kalırsan yanlış yönde yüz satır üretilir.
 
+Yön vermek için her zaman durdurman gerekmez. Claude çalışırken mesajını yazıp Enter'a basarsan mesaj sıraya girer ve çalışan iş onu alır, ör. "eski uç noktaların adlarını takma ad olarak da koru". Anthropic'in Opus 5.5 rehberi bunun gerekçesini koşumların uzamasıyla açıklar: uzun bir koşumu yeniden başlatmak daha pahalıdır. Yön tamamen yanlışsa yine `Esc`.
+
 `/btw` ise ana işi bölmeden kısa bir soru sormaya yarar. Soru ve cevap konuşma geçmişine girmez, bu yüzden bağlamı şişirmez. Claude cevabı yalnız o anda konuşmada olan bilgiden verir, yeni dosya okumaz. Yani "az önce hangi yapılandırma dosyasından söz etmiştin?" iyi bir `/btw` sorusudur. "Şu dosyada ne var?" değildir.
 
 ## Karar kuralları

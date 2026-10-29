@@ -1,3 +1,12 @@
+# 30 Ekim 2026: Opus 5.5 rehberinden eklemeler
+
+Kaynak: Anthropic'in "Getting the most out of Opus 5.5" yazısı (22 Eylül 2026). Ürün davranışı resmî belgeyle karşılaştırıldı.
+
+- Beş yeni madde, 113'ten 118'e: 3.8 ne zaman devam edip ne zaman durup soracağını yazmak, 5.7 model değişimini fark edip geri dönmek, 12.8 rapor biçimini sabitlemek, 13.7 uzun işin görev listesini dosyada tutmak, 16.5 tasarımda istenmeyen kalıpları adıyla yazmak.
+- Rehber: bölüm 3'e çalışan işe mesaj eklemek, bölüm 12'ye Opus 5.5 ile "think carefully" satırlarını budama örneği.
+- İpuçları: cevapta iç akıl yürütmeyi istememek, görseli yeniden yazmamak, uzun belgeyi tutarsızlık için taratmak.
+- Rehberde "bölüm {{bolum:n}}" kalıbı çift "Bölüm" üretiyordu. Dört yer düzeltildi, derleyici artık bu kalıbı reddediyor.
+
 # 29 Ekim 2026: Claude Code rehberi
 
 Kontrol listesine üç seviyeli, alıştırmalı bir rehber eklendi: 13 bölüm, yaklaşık 15 bin kelime.

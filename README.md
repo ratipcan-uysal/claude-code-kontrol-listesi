@@ -1,6 +1,6 @@
 # Claude Code'u iyi kullanmanın kontrol listesi
 
-19 bölüm, 113 madde. Her maddede neden, nasıl, kopyalanabilir örnek ve doğrulama.
+19 bölüm, 118 madde. Her maddede neden, nasıl, kopyalanabilir örnek ve doğrulama.
 
 - **Web sürümü** (işaretlenebilir, süzgeçli): https://ratipcan-uysal.github.io/claude-code-kontrol-listesi/
 - **PDF:** [claude-code-kontrol-listesi.pdf](claude-code-kontrol-listesi.pdf)
@@ -13,7 +13,7 @@ Bu liste tekrar işi azaltmak, kapsamı belirlemek ve sonucu kanıtla teslim alm
 
 **Neden** gerekçeyi, **nasıl** uygulama yolunu, **doğrula** beklenen kanıtı gösterir. Başlangıç onlusu ve temel/ileri etiketleri editoryal öneridir; ölçülmüş getiri sıralaması değildir.
 
-**Temel** 25, **ileri** 88 madde vardır. Teknik davranışların yanında resmî kaynak bağlantısı bulunur; bağlantısız maddeler iş akışı önerisidir. Örnekler kendi projenin araçlarına ve yetkisine uyarlanmalıdır.
+**Temel** 25, **ileri** 93 madde vardır. Teknik davranışların yanında resmî kaynak bağlantısı bulunur; bağlantısız maddeler iş akışı önerisidir. Örnekler kendi projenin araçlarına ve yetkisine uyarlanmalıdır.
 
 Kaynaklar 21 Ekim 2026'da kontrol edildi, yeni altı madde ve ekler 29 Ekim 2026'da. Yerel CLI 2.1.284 için yalnız sürüm ve yardım çıktısı alındı; listelenen bütün Claude özellikleri canlı çalıştırılmadı. CLI, Desktop, bulut ve sağlayıcı farklarını ilgili belgede kontrol et.
 
@@ -36,20 +36,20 @@ Bir kutuyu işaretlemek kişisel ilerleme kaydıdır; otomatik doğrulama veya g
 
 1. [Talimat katmanları](#1-talimat) (8)
 2. [Bağlam yönetimi](#2-baglam) (7)
-3. [Görev verme](#3-gorev) (7)
+3. [Görev verme](#3-gorev) (8)
 4. [Prompt yazımı: önce ve sonra](#4-prompt) (4)
-5. [Model, effort ve maliyet](#5-model) (6)
+5. [Model, effort ve maliyet](#5-model) (7)
 6. [İzinler](#6-izin) (7)
 7. [Güvenlik ve gizlilik](#7-guvenlik) (7)
 8. [Hook'lar](#8-hook) (7)
 9. [Skill, komut, ajan, MCP](#9-yeniden) (8)
 10. [Ekiple kullanım](#10-ekip) (3)
 11. [Paralel çalışma](#11-paralel) (6)
-12. [Doğrulama](#12-dogrulama) (7)
-13. [Gözetimsiz koşum](#13-gozetimsiz) (6)
+12. [Doğrulama](#12-dogrulama) (8)
+13. [Gözetimsiz koşum](#13-gozetimsiz) (7)
 14. [Rutinler ve zamanlama](#14-rutin) (7)
 15. [Git ve yayın](#15-git) (4)
-16. [Tasarım ve arayüz](#16-tasarim) (4)
+16. [Tasarım ve arayüz](#16-tasarim) (5)
 17. [Mobil ve simülatör](#17-mobil) (5)
 18. [Bilgi birikimi](#18-bilgi) (4)
 19. [Bakım ritmi](#19-bakim) (6)
@@ -319,6 +319,18 @@ Bir isteğin kalitesi, en çok neyin "bitti" sayılacağının açıklığına b
 
   - **Doğrula:** Ürün davranışı veya dış taahhüt değiştiren kararlar çözülmüş; bağımsız işler gereksiz beklemiyor.
   - **Dayanak:** İş akışı önerisi
+- [ ] **3.8 Ne zaman devam edip ne zaman durup soracağını yaz.** `İleri`
+  - **Neden:** Uzun işte Claude bazen sıradaki adımı söyleyip durur, "devam edeyim mi?" diye sorar ya da işi bekletmeyen seçenekler sunar. Durmalarını adlandıran talimata uyar.
+  - **Nasıl:** CLAUDE.md'ye kısa bir kural ekle: girdin gerekmeyen adımda devam etsin, durum notunu bir sonraki eylemle aynı mesaja koysun. Yalnız sensiz ilerleyemiyorsa ya da yıkıcı bir adımdan önce dursun. Eşli çalışmada tersini isteyebilirsin: başta tek satırlık plan, sonda kısa özet.
+
+    ```
+    Girdim gerekmeyen adımda devam et. Durum notunu sıradaki eyleminle aynı mesaja koy.
+    Yalnız bensiz ilerleyemiyorsan ya da yıkıcı bir adımdan önce dur:
+    veri silmek, force push, bu deponun dışında bir şeyi değiştirmek.
+    ```
+
+  - **Doğrula:** Uzun bir işte gereksiz "devam edeyim mi?" sayısı düştü. Yıkıcı komutlar için izin istemi hâlâ açık, kural onun yerine geçmiyor.
+  - **Dayanak:** [Opus 5.5 rehberi](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/)
 
 <a id="4-prompt"></a>
 ## 4. Prompt yazımı: önce ve sonra
@@ -440,6 +452,11 @@ Her işe en güçlü modeli ve en yüksek düşünme bütçesini vermek limiti e
 
   - **Doğrula:** Karar tablosunda her görev için iki modelin ölçüt sonucu, `num_turns` ve `total_cost_usd` var. Tek koşumluk farkı kesin sonuç sayma.
   - **Dayanak:** [Model ve effort](https://code.claude.com/docs/en/model-config) · [Headless kullanım](https://code.claude.com/docs/en/headless)
+- [ ] **5.7 Model değişirse fark et ve nasıl geri döneceğini bil.** `İleri`
+  - **Neden:** Bir güvenlik sınıflandırıcısı isteği işaretlerse Claude Code oturumu varsayılan olarak daha eski bir modele geçirir ve iş orada sürer. Denetim konuşmadaki dosya ve arama sonuçlarına da bakar, neden son mesaj olmayabilir.
+  - **Nasıl:** Geçiş bildirimini gör. Geri dönmek için `/model`, son mesajı düzeltip yeniden denemek için boş girdide Esc Esc, yanlış işaretse `/feedback`. Önce sorulsun istiyorsan `/config` içinde "Switch models when a message is flagged" ayarını "Ask each time" yap ya da `switchModelsOnFlag: false`.
+  - **Doğrula:** Gözetimsiz koşumda bu ayarın etkisini biliyorsun: `false` iken headless koşumda işaretlenen istek hata olarak biter, varsayılanda ise iş sessizce eski modelde sürer.
+  - **Dayanak:** [Model ve effort](https://code.claude.com/docs/en/model-config) · [Ayar referansı](https://code.claude.com/docs/en/settings-reference)
 
 <a id="6-izin"></a>
 ## 6. İzinler
@@ -860,6 +877,19 @@ Aynı anda çok oturum çalıştırmak güçlü bir kaldıraç. Ama her paylaş�
   - **Nasıl:** PASS, FAIL, NOT_RUN ve BLOCKED durumlarını ilgili komut, tarih ve sürümle kaydet; dış hedefi tekrar oku.
   - **Doğrula:** Build geçti diye cihaz testi, upload oldu diye canlı yayın geçti denmiyor.
   - **Dayanak:** İş akışı önerisi
+- [ ] **12.8 Rapor biçimini sabitle, önce senden bekleneni oku.** `İleri`
+  - **Neden:** Uzun bir işin sonunda asıl önemli kısım çoğu zaman Claude'un senden beklediği karar ya da onaydır. Özetin içinde kaybolursa iş orada bekler.
+  - **Nasıl:** Uzun koşum bitince önce Claude'un seni beklediği bir şey var mı ona bak, sonra özetin geri kalanını oku. Biçimi CLAUDE.md'de sabitle, ör. her koşumu "Bende bekleyen, Değişen, Bulunan" başlıklarıyla bitirsin.
+
+    ```
+    Her uzun koşumu üç başlıkla bitir:
+    Bende bekleyen: senden gereken karar ya da onay, yoksa "yok"
+    Değişen: ne yaptın
+    Bulunan: fark edip dokunmadığın şeyler
+    ```
+
+  - **Doğrula:** Son birkaç uzun koşumun raporunda bekleyen karar ilk satırda. Okumadan geçtiğin bekleyen karar kalmadı.
+  - **Dayanak:** [Opus 5.5 rehberi](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/)
 
 <a id="13-gozetimsiz"></a>
 ## 13. Gözetimsiz koşum
@@ -913,6 +943,16 @@ Aynı anda çok oturum çalıştırmak güçlü bir kaldıraç. Ama her paylaş�
   - **Nasıl:** Başta kesin yolları kaydet. Kullanım bitince logları ve teslim dosyalarını koruyup yalnız göreve ait yeniden üretilebilir artıkları kaldır.
   - **Doğrula:** Silinen yol yok; kaynak, release arşivi, sonuç ve paylaşılan cache korunmuş.
   - **Dayanak:** İş akışı önerisi
+- [ ] **13.7 Uzun işin görev listesini dosyada tuttur.** `İleri`
+  - **Neden:** Uzun koşum bağlam penceresini doldurur ve eski turlar özetlenir. Konuşmadaki liste özetle kaybolabilir, dosyadaki liste kalır.
+  - **Nasıl:** İşin başında Claude'dan görev listesini bir dosyada tutmasını, her adım bitince işaretlemesini ve yeni bulduğu işi eklemesini iste. Durumu konuşma geçmişinden değil dosyadan oku.
+
+    ```
+    Görev listesini TASKS.md içinde tut. Her adım bitince işaretle, yeni bulduğun işi ekle.
+    ```
+
+  - **Doğrula:** Koşum sırasında dosya güncel: biten adımlar işaretli, yeni bulunan iş eklenmiş. Sıkıştırmadan sonra da aynı dosyadan devam ediyor.
+  - **Dayanak:** [Opus 5.5 rehberi](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/)
 
 <a id="14-rutin"></a>
 ## 14. Rutinler ve zamanlama
@@ -1053,6 +1093,18 @@ Tasarımda en pahalı döngü "beğenmedim, tekrar dene". Onu kısaltan şey ara
   - **Nasıl:** Projede tasarım ilkeleri dosyası ya da tasarım skill'i.
   - **Doğrula:** Yeni oturumda tasarım dili sorulunca dosyadan cevap gelmeli.
   - **Dayanak:** İş akışı önerisi
+- [ ] **16.5 Tasarım isteğinde istemediğin kalıpları adıyla yaz.** `İleri`
+  - **Neden:** Yön verilmezse model birkaç varsayılan stile döner. "Jenerik görünmesin" gibi genel bir talimat çoğu zaman bir varsayılanı başkasıyla değiştirir.
+  - **Nasıl:** İstemediğin kalıpları tek tek say: arka plan rengi, başlıktaki vurgu biçimi, bölüm numarası etiketleri, düğme biçimi. Sonra Claude'un yerine ne seçtiğine bak. O da istemediğin bir şeyse listeye ekle ve yeniden iste.
+
+    ```
+    Kişisel bir web sitesi yap, içerik yer tutucu olsun.
+    Şunları kullanma: krem ya da kırık beyaz arka plan, başlıkta italik vurgulu kelime,
+    "01 / 02 / 03" bölüm etiketleri, monospace etiketler, hap biçimli düğmeler.
+    ```
+
+  - **Doğrula:** Yeni sürüm listedeki kalıpların hiçbirini içermiyor. Listen her turda uzadı, aynı istemediğin kalıp ikinci kez gelmedi.
+  - **Dayanak:** [Opus 5.5 rehberi](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/)
 
 <a id="17-mobil"></a>
 ## 17. Mobil ve simülatör

@@ -93,6 +93,10 @@ Bundan bir deneme yöntemi çıkar. Belgede bu döngü olarak yazmıyor, bir iş
 
 CLAUDE.md içindeki `<!-- ... -->` blok yorumları bağlama girmeden silinir. Bakımcıya not, kuralın gerekçesini ya da tarihini bırakırsın, modelin dikkati dağılmaz. [18.4](../README.md#18-bilgi)
 
+### Cevapta modelin iç akıl yürütmesini isteme
+
+Anthropic'in Opus 5.5 rehberine göre modelden iç akıl yürütmesini cevapta aynen yazmasını istemek reddedilebilir ve güvenlik denetiminin işaretlediği kategorilerden biridir. Kayıtlı talimatlarında böyle bir satır varsa sil. Gerçekten gereken şeyi iste: "Bu yaklaşımı neden seçtiğini üç cümlede açıkla."
+
 ### Sıkıştırmadan sonra ne kalır
 
 `/compact` sonrasında proje kökündeki CLAUDE.md diskten yeniden yüklenir. Kaybolan yalnız konuşmada verdiğin talimattır. Oturum boyunca geçerli kalması gereken bir kuralı sohbete değil dosyaya yaz. [2.6](../README.md#2-baglam)
@@ -122,6 +126,14 @@ Bir monorepoda başka ekiplerin CLAUDE.md dosyaları da yüklenir. `claudeMdExcl
 ### Ana işi bölmeden soru sor
 
 `/btw neden bu kütüphaneyi seçtin?` cevabı gösterir ama konuşmaya eklemez. Bağlam büyümez, ana iş yön değiştirmez.
+
+### Görseli yeniden yazma, kendisini ver
+
+Bir grafik, diyagram ya da ekran görüntüsündeki sayıları elle yazmak yerine görseli ver: `Ctrl+V` panodan yapıştırır, dosya yolunu da verebilirsin. Sonra belirli bir soru sor: "Bu servislerden hangileri ödeme API'sini doğrudan çağırıyor?" Opus 5.5 rehberine göre model okları, kutuları ve iki sürüm arasındaki farkı daha doğru okuyor.
+
+### Uzun belgeyi tutarsızlık için taramaya ver
+
+Uzun bir plan, rapor ya da sunumu Claude'a verip kendi içindeki çelişkileri buldur: "Bu belgede kendisiyle çelişen sayı, tarih ve adları bul. Her sorunu alıntıla ve nerede olduğunu söyle." Alıntı istemek, sorunun gerçekten orada olup olmadığını senin kontrol etmeni kolaylaştırır. [12.4](../README.md#12-dogrulama)
 
 ### Kod bloğunu tek tuşla al
 
