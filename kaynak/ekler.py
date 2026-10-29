@@ -514,7 +514,7 @@ Boş metin o atfı gizler. `sessionUrl: false` bulut oturumlarındaki oturum ba�
 
 ### Ortam değişkenini ayar dosyasına koy
 
-`settings.json` içindeki `env` alanı her oturuma ve alt süreçlere ortam değişkeni verir. Kabuk profilini kirletmeden, projeye özel değer tanımlamak için kullanılır.
+`settings.json` içindeki `env` alanı her oturuma ve alt süreçlere ortam değişkeni verir. Kabuk profilini kirletmeden projeye özel değer tanımlarsın.
 
 ```json
 { "env": { "BASH_DEFAULT_TIMEOUT_MS": "300000" } }
@@ -538,6 +538,18 @@ alias claude-is='CLAUDE_CONFIG_DIR=~/.claude-is claude'
 
 `DISABLE_TELEMETRY` değişkeni tanımlı olduğu sürece, değeri `0` ya da `false` olsa bile telemetri kapalı kalır. Yeniden açmak için değişkeni kaldırmak gerekir. Bu değişken `/skill-doctor` gibi bazı özellikleri de kapatır.
 
+### Güncellemeleri bir hafta geriden al
+
+`autoUpdatesChannel: "stable"` otomatik güncellemeyi yaklaşık bir hafta geriden ve büyük gerilemesi olan sürümleri atlayarak yapar. Varsayılan `latest`. Gözetimsiz koşumların bir sabah yeni sürümle bozulmasını istemiyorsan kullan. [[19.6]]
+
+```json
+{ "autoUpdatesChannel": "stable" }
+```
+
+### Cevap dilini sabitle
+
+`language` ayarına yazdığın değer Claude'a "hep bu dilde cevap ver" diye iletilir. Ses dikteyi ve otomatik oturum başlıklarını da etkiler. Değer doğrulanmaz, `"Türkçe"` yazman yeter.
+
 ## Talimatlar
 
 ### Yeni model çıkınca talimatlarını buda
@@ -557,11 +569,23 @@ Bundan bir deneme yöntemi çıkar. Belgede bu döngü olarak yazmıyor, bir iş
 
 ### CLAUDE.md'ye bağlam harcamayan not yaz
 
-CLAUDE.md içindeki `<!-- ... -->` blok yorumları bağlama girmeden silinir. Bakımcıya not, kuralın gerekçesi ya da tarih bırakmak için kullanılır, modelin dikkatini dağıtmaz. [[18.4]]
+CLAUDE.md içindeki `<!-- ... -->` blok yorumları bağlama girmeden silinir. Bakımcıya not, kuralın gerekçesini ya da tarihini bırakırsın, modelin dikkati dağılmaz. [[18.4]]
 
 ### Sıkıştırmadan sonra ne kalır
 
 `/compact` sonrasında proje kökündeki CLAUDE.md diskten yeniden yüklenir. Kaybolan yalnız konuşmada verdiğin talimattır. Oturum boyunca geçerli kalması gereken bir kuralı sohbete değil dosyaya yaz. [[2.6]]
+
+### Büyük depoda ilgisiz CLAUDE.md'leri dışla
+
+Bir monorepoda başka ekiplerin CLAUDE.md dosyaları da yüklenir. `claudeMdExcludes` glob ya da mutlak yolla bunları dışarıda bırakır. Değerler katmanlar arasında birleşir. Kurumun yönetilen CLAUDE.md'si dışlanamaz.
+
+```json
+{ "claudeMdExcludes": ["**/legacy/**/CLAUDE.md"] }
+```
+
+### Ek dizinin talimatını da yükle
+
+`--add-dir` ya da `/add-dir` ile eklenen dizinin skill'leri yüklenir ama CLAUDE.md'si yüklenmez. O dizinin kuralları da geçerli olsun istiyorsan `CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1` ver. [[1.5]]
 
 ## Oturum
 
@@ -584,6 +608,48 @@ CLAUDE.md içindeki `<!-- ... -->` blok yorumları bağlama girmeden silinir. Ba
 ### Bitiş koşulu olan iş için `/goal`
 
 `/goal bütün testler geçiyor ve lint temiz` Claude'u koşul sağlanana kadar turdan tura çalıştırır. Her turdan sonra ayrı bir model koşulu değerlendirir. Koşul doğrulanabilir olmalı. [[3.1]]
+
+### Konuşmanın yalnız bir kısmını sıkıştır
+
+`/rewind` menüsünde geri sarmanın yanında "Summarize from here" seçeneği var. Seçtiğin mesajdan sonrasını özetler, öncesini olduğu gibi bırakır. `/compact` bütün konuşmayı özetler. Baştaki kararlar önemliyse ve sondaki uzun deneme gereksizse bu daha az ayrıntı kaybettirir. [[2.6]]
+
+### Yazdığın taslağı kaybetme
+
+Girdide yazı varken Esc Esc yazıyı siler ama geçmişe kaydeder, yukarı okla geri gelir. Yarım bir prompt'u kenara koyup başka bir şey sormak için `Ctrl+S`: girdiyi saklar, boş girdide tekrar basınca geri getirir.
+
+### Prompt'u silmeden model değiştir
+
+macOS'ta `Option+P`, diğerlerinde `Alt+P` modeli değiştirir ve yazdığın girdi yerinde kalır. Option kısayolları için terminalde Option tuşunu Meta olarak ayarlaman gerekir. `/model` seçicisinde `s` tuşu seçimi yalnız bu oturum için yapar, varsayılanı değiştirmez. [[5.2]]
+
+### Kabuk komutunu Claude'a sormadan çalıştır
+
+Satır başına `!` koyarsan komut doğrudan çalışır ve çıktısı oturuma eklenir. `! git status` Claude'un bir tur harcamasından ucuzdur ve Claude çıktıyı görür. Uzun süren komutu `Ctrl+B` arka plana alır.
+
+### Kayıt dosyasından oturum aç
+
+`claude --resume` oturum kimliği yerine bir `.jsonl` kayıt yolunu da kabul eder. 2.1.223 ve sonrasında kimlik araması bütün projeleri tarar, oturumu hangi dizinde açtığını hatırlaman gerekmez.
+
+### Hedef oturumla birlikte geri gelir
+
+`/goal` ile koyduğun hedef `--continue` ya da `--resume` ile dönünce geri yüklenir. Kaldırmak için `/goal clear`. Zaman aralığıyla tekrar için `/loop`, ayar dosyasında kalıcı bir koşul için Stop hook'u var. [[14.5]]
+
+## Bağlam ve çıktı
+
+### Büyük araç çıktısının sınırları
+
+Bash çıktısı varsayılan olarak 30.000 karakterde kesilir, `BASH_MAX_OUTPUT_LENGTH` ile 150.000'e kadar çıkar. MCP aracı çıktısının sınırı 25.000 token, `MAX_MCP_OUTPUT_TOKENS` ile değişir. Sınırı büyütmek bağlamı da büyütür. Büyük çıktıyı dosyaya yazdırıp ilgili kısmını okutmak çoğu zaman daha iyidir. [[2.5]]
+
+### Çıktı token'ını büyütmenin bedeli
+
+`CLAUDE_CODE_MAX_OUTPUT_TOKENS` tek cevabın uzunluk sınırını büyütür. Ama bu pay bağlamdan ayrılır, otomatik sıkıştırma daha erken tetiklenir. Uzun dosya yazdırırken işe yarar, her oturumda açık bırakma.
+
+### Headless koşuma bütçe koy
+
+`claude -p` ile `--max-budget-usd` tahmini harcama sınıra gelince koşumu durdurur. Döngüye giren bir betiğin sabaha kadar harcamasını önler. Tur sınırı için `--max-turns` var, ama yerel 2.1.284 yardım çıktısında görünmüyor, kullanmadan önce dene. [[14.2]]
+
+### Sistem prompt'una ekle, değiştirme
+
+`--append-system-prompt` ve `--append-system-prompt-file` varsayılan sistem prompt'unun sonuna metin ekler. `--system-prompt` ise tamamını değiştirir, araç kullanım talimatları dahil. Çoğu iş için ekleme yeter.
 
 ## Hata ayıklama
 
@@ -617,9 +683,51 @@ Alt ajan tanımında `isolation: worktree` onu geçici bir worktree'de çalışt
 
 `/import codex`, `/import gemini` ve `/import cursor` o aracın talimatlarını, MCP sunucularını, komutlarını, ajanlarını ve skill'lerini getirir. Önce `--dry-run` ile ne geleceğini gör.
 
+### Skill'i yalnız ilgili dosyada yükle
+
+Skill frontmatter'ındaki `paths` alanı skill'i yalnız eşleşen dosyalarla çalışırken otomatik yükler. `user-invocable: false` skill'i `/` menüsünden gizler, yalnız Claude çağırır. Sadece arka plan bilgisi taşıyan skill için uygundur. [[9.3]]
+
+### Alt ajanı CLAUDE.md'siz başlat
+
+Alt ajan tanımında `omitClaudeMd: true` onu kullanıcı, proje ve yerel CLAUDE.md olmadan başlatır. Bağımsız bir inceleme ajanının senin varsayımlarınla yüklenmesini istemiyorsan işe yarar. 2.1.271 ve sonrasında var. [[9.1]]
+
+### Gitignore'daki dosyaları worktree'ye taşı
+
+Yeni worktree'de `.env` gibi git'in yok saydığı dosyalar olmaz, uygulama açılmaz. Proje kökündeki `.worktreeinclude` dosyasına yazdığın desenler yeni worktree'ye kopyalanır. [[11.1]]
+
+### MCP onaylarını sıfırla
+
+`.mcp.json` sunucularına verdiğin "evet" ya da "hayır" kalıcıdır. Yanlış cevapladıysan `claude mcp reset-project-choices`. Yalnız kendi verdiğin MCP yapılandırmasını kullanmak için `--strict-mcp-config` ile `--mcp-config`. [[9.7]]
+
+### Arka plan hook'u Claude'u uyandırabilir
+
+`async: true` hook engelleyemez. `asyncRewake` ise arka planda çalışır ve çıkış kodu 2 ile Claude'u boştayken bile uyandırır, çıktısı sistem notu olarak gelir. Uzun bir testin sonucunu beklemeden çalışmaya devam edip bitince haber almak için. [[8.6]]
+
 ### Kendi kullanımını gör
 
 `/insights` son oturumlarından bir rapor üretir: hangi projelerde ne yaptığın, nerede takıldığın, hangi özellikleri denemediğin. Rapor `~/.claude/usage-data/report.html` dosyasına yazılır. [[19.5]]
+
+## Ekip ve güvenlik
+
+### Her komutu denetim için sar
+
+`CLAUDE_CODE_SHELL_PREFIX` Bash komutlarını, hook'ları, durum satırını ve yerel MCP sunucularını verdiğin komutla sarar. Kurum, çalıştırılan her komutu bununla günlüğe yazar.
+
+### Politikayı ekipler arasında böl
+
+Yönetilen ayar dizinindeki `managed-settings.d/` altına konan `*.json` dosyaları alfabetik sırayla birleşir. Güvenlik ekibi `10-guvenlik.json`, platform ekibi `20-platform.json` yazar, aynı dosyayı paylaşmaz.
+
+### Ekibe açılışta duyuru göster
+
+`companyAnnouncements` bir metin dizisidir. Claude Code açılırken bunlardan birini gösterir. Yeni bir kuralı, iç dokümanın adresini ya da bakım saatini duyurmak için. [[10.3]]
+
+### Prompt geçmişi süre dolunca silinmez
+
+Konuşma kayıtları `cleanupPeriodDays` sonunda silinir, ama yazdığın prompt'ların tutulduğu `~/.claude/history.jsonl` silinmez. Bir prompt'a gizli bilgi yapıştırdıysan o dosyada kalır. [[7.1]]
+
+### Hook'ları kapatmak durum satırını da kapatır
+
+`disableAllHooks: true` bütün hook'ları kapatır. Durum satırı ve dosya önerisi komutu da aynı mekanizmayla çalıştığı için onlar da kapanır. Bir hook'u geçici olarak devre dışı bırakmak istiyorsan yalnız onu kaldır.
 """
 
 EKLER = [
@@ -630,7 +738,7 @@ EKLER = [
  dict(ad="dosyalar", baslik="Dosya konumları",
       ozet="Ayar, talimat, bellek, skill, MCP, plugin ve oturum verisi nerede durur, ne işe yarar, git'e girer mi.", md=DOSYALAR),
  dict(ad="ipuclari", baslik="İpuçları ve püf noktaları",
-      ozet="Gözden kaçan ayarlar ve tuzaklar: commit imzası, talimat budama, prompt-audit, safe-mode, hook if alanı.", md=IPUCLARI),
+      ozet="Gözden kaçan ayarlar, kısayollar ve tuzaklar: commit imzası, talimat budama, prompt-audit, kısmi sıkıştırma, hook if alanı, ekip politikası.", md=IPUCLARI),
  dict(ad="deneyimler", baslik="Gerçek deneyimlerden on ders",
       ozet="Tarihli ölçüm defterinden anonimleştirilmiş vakalar: gözlenen, ders, ayırıcı kanıt ve sınır.", md=DENEYIMLER),
  dict(ad="sozluk", baslik="Terimler sözlüğü",

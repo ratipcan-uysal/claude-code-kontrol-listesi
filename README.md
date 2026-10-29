@@ -59,7 +59,7 @@ Bir kutuyu işaretlemek kişisel ilerleme kaydıdır; otomatik doğrulama veya g
 - [Komutlar ve kısayollar](ekler/komutlar.md): Slash komutları işe göre, en çok işe yarayan CLI bayrakları, klavye kısayolları ve sık karıştırılan çiftler.
 - [Sorun giderme](ekler/sorun-giderme.md): Belirti, ilk ayırıcı kontrol ve sonraki adım. Talimat, izin, hook, bağlam, genişletme ve koşum sorunları.
 - [Dosya konumları](ekler/dosyalar.md): Ayar, talimat, bellek, skill, MCP, plugin ve oturum verisi nerede durur, ne işe yarar, git'e girer mi.
-- [İpuçları ve püf noktaları](ekler/ipuclari.md): Gözden kaçan ayarlar ve tuzaklar: commit imzası, talimat budama, prompt-audit, safe-mode, hook if alanı.
+- [İpuçları ve püf noktaları](ekler/ipuclari.md): Gözden kaçan ayarlar, kısayollar ve tuzaklar: commit imzası, talimat budama, prompt-audit, kısmi sıkıştırma, hook if alanı, ekip politikası.
 - [Gerçek deneyimlerden on ders](ekler/deneyimler.md): Tarihli ölçüm defterinden anonimleştirilmiş vakalar: gözlenen, ders, ayırıcı kanıt ve sınır.
 - [Terimler sözlüğü](ekler/sozluk.md): Listede geçen terimlerin bir cümlelik karşılıkları, konu başına gruplanmış.
 

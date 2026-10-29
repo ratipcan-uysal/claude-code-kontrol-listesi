@@ -4,6 +4,7 @@
 
 - 1.8 ayarın hangi katmandan geldiği, 2.7 devam, dallandırma ve temiz başlangıç, 5.6 modeli aynı görevle karşılaştırma, 8.6 engelleyen hook'u async yapmama, 8.7 hook sırası varsaymama, 14.7 makineye aktarılacak sonucu şemayla tanımlama.
 - Altı ek: komutlar ve kısayollar, sorun giderme, dosya konumları, ipuçları ve püf noktaları, gerçek deneyimlerden on ders, terimler sözlüğü. Her ek ilgili maddelere bağlanıyor. Ekler web sayfası, Markdown ve PDF olarak üretiliyor.
+- İpuçları eki 48 maddeye çıktı: ayarlar, talimatlar, oturum, bağlam ve çıktı, hata ayıklama, genişletme, ekip ve güvenlik.
 - Dar ekranda ek tabloları kart olarak diziliyor.
 - Yapısal testler 11'e, tarayıcı kontrolleri 44'e çıktı.
 

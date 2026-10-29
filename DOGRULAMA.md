@@ -8,7 +8,7 @@
 | Hata yakalayan test | PASS | Geçersiz `[[3.99]]` ek bağlantısı reddediliyor. Test geçerli numarayla bozulunca düştü |
 | Sayfa işlevleri | PASS | 44 tarayıcı kontrolü: eski 30'a ek olarak altı ek sayfası, ekten maddeye bağlantı, 1440 ve 320 px taşma. Taşma kontrolü dosya konumları ekinde 320 px'te uzun yolu yakaladı, düzeltildi |
 | Görsel inceleme | PASS | Komutlar eki masaüstü, dört ek 320 px, Ekler bölümü, madde 2.7 ve PDF ek sayfaları açılıp bakıldı |
-| PDF | PASS | 48 A4 sayfa. Altı ek başlığı metinde var |
+| PDF | PASS | 50 A4 sayfa. Altı ek başlığı metinde var |
 | Ürün iddiaları | PASS | Yeni maddeler ve ekler resmî belgeyle karşılaştırıldı. Belgede bulunmayan iddialar yazılmadı |
 | Claude özelliklerinin canlı koşumu | NOT_RUN | Yeni maddelerdeki komutlar ve bayraklar bu görevde çalıştırılmadı |
 | Canlı yayın | NOT_RUN | Değişiklik yerel commit'te, push yapılmadı |
