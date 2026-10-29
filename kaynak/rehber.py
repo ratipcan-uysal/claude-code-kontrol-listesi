@@ -56,6 +56,8 @@ REHBER = [
       ozet="Her başarısızlığın adresi bağlam, model kararı ya da harness'tir ve ders doğru katmana yazılır. Üçüncü tekrar kural olur, bakım ritmi ve önce ve sonra karşılaştırması sistemi sağlıklı tutar."),
  dict(no=13, ad="13-bitirme-projesi", seviye="uzman", baslik="Bitirme projesi: her adımda kanıt",
       ozet="Kendi seçtiğin küçük ve gerçek bir işi plan, uygulama, doğrulama ve teslim aşamalarından geçirirsin. Her aşamada önceki bölümlerin becerisini kullanır ve bir kanıt dosyası bırakırsın."),
+ dict(no=14, ad="14-projects", seviye="uzman", baslik="Projects: koordinatör ve thread'ler",
+      ozet="Proje, işi thread'lere bölen tek bir konuşmadır. Her thread repoyu temiz klonlayan bir bulut oturumudur ve makinendeki hook, izin ve skill'leri değil, proje talimatını, belleğini, connector'larını ve ortamını alır."),
 ]
 REHBER.sort(key=lambda b: b["no"])
 

@@ -4,7 +4,7 @@ from html.parser import HTMLParser
 import yap
 class Tests(unittest.TestCase):
  def test_current_content(self):
-  yap.validate();self.assertEqual(yap.N,118);self.assertEqual(yap.NT,25)
+  yap.validate();self.assertEqual(yap.N,125);self.assertEqual(yap.NT,25)
  def test_missing_verification_fails(self):
   b=copy.deepcopy(yap.BOLUMLER);b[0][3][0]['d']=''
   with self.assertRaisesRegex(ValueError,'Eksik'):yap.validate(b)

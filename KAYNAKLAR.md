@@ -35,6 +35,8 @@ Yerel Claude Code 2.1.284 için sürüm ve yardım çıktısı kontrol edildi. G
 | [Ayar referansı](https://code.claude.com/docs/en/settings-reference) | 15.4 |
 | [Genel bakış](https://code.claude.com/docs/en/overview) | 19.6 |
 | [Oturumlar](https://code.claude.com/docs/en/sessions) | 2.7 |
+| [Projects](https://code.claude.com/docs/en/claude-projects) | 20.1, 20.2, 20.6, 20.7 |
+| [Bulut ortamları](https://code.claude.com/docs/en/cloud-environments) | 20.3, 20.4, 20.5 |
 | [Opus 5.5 rehberi](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/) (Anthropic blogu, 22 Eylül 2026) | 3.8, 12.8, 13.7, 16.5 |
 
 26 kaynağın erişimi ve içerik özeti [kaynak kaydında](dogrulama/kaynaklar.json) tutulur. Sayfaların tam metni depoya kopyalanmaz. Erişim kontrolü, listelenen özelliğin canlı kullanım testi değildir.

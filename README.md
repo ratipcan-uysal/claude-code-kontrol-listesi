@@ -1,6 +1,6 @@
 # Claude Code'u iyi kullanmanın kontrol listesi
 
-19 bölüm, 118 madde. Her maddede neden, nasıl, kopyalanabilir örnek ve doğrulama.
+20 bölüm, 125 madde. Her maddede neden, nasıl, kopyalanabilir örnek ve doğrulama.
 
 - **Web sürümü** (işaretlenebilir, süzgeçli): https://ratipcan-uysal.github.io/claude-code-kontrol-listesi/
 - **PDF:** [claude-code-kontrol-listesi.pdf](claude-code-kontrol-listesi.pdf)
@@ -13,7 +13,7 @@ Bu liste tekrar işi azaltmak, kapsamı belirlemek ve sonucu kanıtla teslim alm
 
 **Neden** gerekçeyi, **nasıl** uygulama yolunu, **doğrula** beklenen kanıtı gösterir. Başlangıç onlusu ve temel/ileri etiketleri editoryal öneridir; ölçülmüş getiri sıralaması değildir.
 
-**Temel** 25, **ileri** 93 madde vardır. Teknik davranışların yanında resmî kaynak bağlantısı bulunur; bağlantısız maddeler iş akışı önerisidir. Örnekler kendi projenin araçlarına ve yetkisine uyarlanmalıdır.
+**Temel** 25, **ileri** 100 madde vardır. Teknik davranışların yanında resmî kaynak bağlantısı bulunur; bağlantısız maddeler iş akışı önerisidir. Örnekler kendi projenin araçlarına ve yetkisine uyarlanmalıdır.
 
 Kaynaklar 21 Ekim 2026'da kontrol edildi, yeni altı madde ve ekler 29 Ekim 2026'da. Yerel CLI 2.1.284 için yalnız sürüm ve yardım çıktısı alındı; listelenen bütün Claude özellikleri canlı çalıştırılmadı. CLI, Desktop, bulut ve sağlayıcı farklarını ilgili belgede kontrol et.
 
@@ -53,6 +53,7 @@ Bir kutuyu işaretlemek kişisel ilerleme kaydıdır; otomatik doğrulama veya g
 17. [Mobil ve simülatör](#17-mobil) (5)
 18. [Bilgi birikimi](#18-bilgi) (4)
 19. [Bakım ritmi](#19-bakim) (6)
+20. [Projects](#20-projects) (7)
 
 ## Rehber
 
@@ -1245,6 +1246,47 @@ Ayarlar, kurallar ve izin listeleri zamanla eskir. Küçük ve düzenli bakım, 
   - **Nasıl:** `claude --version`, `claude --help` ve ilgili komut menüsünü kontrol et; sürüm yükseltmesini kurulum yöntemine göre yap.
   - **Doğrula:** Rapor ortamı ve erişilemeyen özelliği belirtir; belge kontrolü canlı çalışma testi sayılmaz.
   - **Dayanak:** [Genel bakış](https://code.claude.com/docs/en/overview)
+
+<a id="20-projects"></a>
+## 20. Projects
+
+Projects, işi kendi bulut oturumlarında koşan thread'lere bölen tek bir konuşmadır. Herkese açık beta olarak Pro ve Max'te kademeli açılıyor, terminal CLI ve IDE eklentilerinde yok. Thread'ler makinendeki ayarları değil, projenin ayarlarını alır, bu yüzden işin çoğu kurulumda biter.
+
+- [ ] **20.1 Proje talimatını thread'in bilmesi gerekenle sınırla, repo CLAUDE.md'sini tekrar etme.** `İleri`
+  - **Neden:** Proje talimatı her yeni thread'e ve proje konuşmasına gider. Repo CLAUDE.md'si de thread repoyu klonlayınca zaten okunur. Aynı bilgi iki yerde durursa bağlamı doldurur ve zamanla birbirinden kopar.
+  - **Nasıl:** Belgenin önerdiği içerik: projenin amacı, işin nerede olduğu (repo, dal, PR adlandırması), thread'in işini nasıl kontrol edeceği, bir şey eksik olunca ne yapacağı, neyin önce onay isteyeceği. Sınır 16.000 karakter. Değişiklik yalnız yeni thread'lere ulaşır, çalışanlara ulaşmaz.
+  - **Doğrula:** Talimatta repo CLAUDE.md'sindeki komut ve kuralların kopyası yok. Yeni açılan bir thread'e "işini nasıl kontrol edersin?" diye sorunca talimattaki cevabı veriyor.
+  - **Dayanak:** [Projects](https://code.claude.com/docs/en/claude-projects)
+- [ ] **20.2 Repodaki hook, izin ve plugin ayarlarının thread'e gelmediğini hesaba kat.** `İleri`
+  - **Neden:** Proje thread'i repoyu klonlar ama reponun `.claude/` altındaki skill'lerini, hook'larını, izin kurallarını, `.mcp.json` sunucularını ve plugin ayarlarını yüklemez. Yerelde seni koruyan hook orada yoktur.
+  - **Nasıl:** Thread'lerde gereken plugin'i Project settings > Plugins altından ekle. Connector'lar claude.ai hesabından gelir ve her thread'de kullanılabilir. Proje konuşmasının kendisinde connector yoktur, bir connector gerektiren işi bir thread'e ver.
+  - **Doğrula:** Thread'de beklediğin plugin ve connector çalışıyor. Yerel hook'una dayanan bir güvenceyi proje için ayrıca kurmuşsun ya da bu güvencenin orada olmadığını yazmışsın.
+  - **Dayanak:** [Projects](https://code.claude.com/docs/en/claude-projects)
+- [ ] **20.3 Ortamın ağ erişimini Trusted bırak, yalnız gereken alan adını aç.** `İleri`
+  - **Neden:** Thread'ler bulut ortamında koşar. Varsayılan Trusted düzeyi paket kayıt defterlerine ve izinli alan adlarına erişir, başka hiçbir yere değil. Full erişim, bir thread'in okuduğu kötü niyetli bir içeriğin veriyi her yere göndermesine kapı açar.
+  - **Nasıl:** Bir iç API ya da başka bir alan adı gerekiyorsa Full yerine Custom seç ve yalnız o alan adını ekle. Varsayılan listeyi de istiyorsan "Also include default list" kutusunu işaretle.
+  - **Doğrula:** Ortam ayarında ağ düzeyi Trusted ya da yalnız gereken alan adlarıyla Custom. Full seçilmemiş.
+  - **Dayanak:** [Bulut ortamları](https://code.claude.com/docs/en/cloud-environments)
+- [ ] **20.4 Sırrı ortam değişkenine değil ağ sırrı olarak koy.** `İleri`
+  - **Neden:** Ortam değişkenini ortamı kullanan herkes, Claude ve çalıştırdığı her komut okuyabilir. Ağ sırrında ise anahtar oturuma girmez: Anthropic'in proxy'si onu yalnız listelediğin alan adlarına giden isteklere ekler.
+  - **Nasıl:** Bölge, proje kimliği, servis adresi gibi yapılandırma ortam değişkenine. API anahtarı ağ sırrına, hangi alan adlarına ekleneceğiyle birlikte. Proxy GitHub, `api.anthropic.com` ve paket kayıt defterlerine giden isteklere anahtar eklemez, o durumlar için belgeye bak. Ağ sırrı yalnız Anthropic'in barındırdığı ortamlarda var.
+  - **Doğrula:** Ortam değişkenleri listesinde anahtar, token ya da parola yok. Sırrı kullanan istek çalışıyor ve sır sohbete hiç yapıştırılmadı.
+  - **Dayanak:** [Bulut ortamları](https://code.claude.com/docs/en/cloud-environments)
+- [ ] **20.5 Ortamı kurulum betiğiyle hazırla, betiği kısa tut.** `İleri`
+  - **Neden:** Her thread'in paketleri baştan kurması token ve zaman harcar. Kurulum betiği yaklaşık beş dakikada biterse dosya sistemi önbelleğe alınır ve sonraki oturumlar yaklaşık yedi gün onu kullanır.
+  - **Nasıl:** Paket kurulumunu betiğe koy. Betik ortam değişkenleri ayarlanmadan önce çalışır. Arka plan süreçleri ve başlatılmış veritabanları önbelleğe girmez, onları her oturumda başlat. Betik sıfırdan farklı çıkarsa oturum hiç başlamaz.
+  - **Doğrula:** İkinci thread kurulumu yeniden yapmadan başladı. Betik sıfır çıkış koduyla bitiyor ve süresi beş dakikanın altında.
+  - **Dayanak:** [Bulut ortamları](https://code.claude.com/docs/en/cloud-environments)
+- [ ] **20.6 Koordinatörün ve thread'lerin modelini ve effort'unu bilinçli seç, Usage'i izle.** `İleri`
+  - **Neden:** Yeni bir proje her thread'i Opus ile yüksek effort'ta koşar. Belgeye göre planını en hızlı tüketen budur. Projenin kullanımı diğer Claude Code oturumlarınla aynı plan limitine sayılır.
+  - **Nasıl:** Project settings içinde thread modeli ve effort'u ile proje konuşmasının modeli ve effort'u ayrı ayrı ayarlanır. Basit işlerde thread effort'unu düşür, tek bir zor görev için o görevde başka model iste. Usage sekmesi thread ve model başına token kullanımını gösterir.
+  - **Doğrula:** Usage sekmesine bakıp en çok harcayan thread'leri biliyorsun. Model ve effort seçimi işin zorluğuna göre değiştirilmiş, varsayılanda kalmamış.
+  - **Dayanak:** [Projects](https://code.claude.com/docs/en/claude-projects)
+- [ ] **20.7 Önce Waiting on you grubunu oku, onayı thread'in içinde ver.** `İleri`
+  - **Neden:** Onay bekleyen ya da hata alan thread Waiting on you grubunda durur ve sen bakana kadar ilerlemez. Proje konuşmasına yazdığın "devam et" thread'e ulaşmaz.
+  - **Nasıl:** Overview'u açınca önce Waiting on you grubuna bak, onayı ilgili thread'in içinde ver. İş akışı önerisi: her PR için ayrı thread aç, bir değişikliğin neden öyle yapıldığını sonradan bulmak kolaylaşır.
+  - **Doğrula:** Waiting on you grubunda bekleyen thread kalmadı. Her açık PR'ın hangi thread'den geldiği belli.
+  - **Dayanak:** [Projects](https://code.claude.com/docs/en/claude-projects)
 
 ## Kaynak ve doğrulama
 

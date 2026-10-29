@@ -1,3 +1,11 @@
+# 30 Ekim 2026: Projects
+
+Dayanak resmî belge: [Projects](https://code.claude.com/docs/en/claude-projects) ve [bulut ortamları](https://code.claude.com/docs/en/cloud-environments). Konu seçimi bir topluluk yazısından geldi, iddialar belgeyle karşılaştırıldı. Yazıdaki günlük thread sınırı (200) belgeyle çelişiyordu, belgede 500. Belgede olmayan sayılar eklenmedi.
+
+- Kontrol listesine 20. bölüm, yedi madde: proje talimatı, repo ayarlarının thread'e gelmemesi, ağ erişimi, ağ sırrı, kurulum betiği, model ve effort ile Usage, Waiting on you.
+- Rehbere 14. bölüm: Projects, koordinatör ve thread'ler.
+- Sorun gidermeye üç satır: GitHub App, thread onayı, proje konuşmasında connector olmaması.
+
 # 30 Ekim 2026: Opus 5.5 rehberinden eklemeler
 
 Kaynak: Anthropic'in "Getting the most out of Opus 5.5" yazısı (22 Eylül 2026). Ürün davranışı resmî belgeyle karşılaştırıldı.

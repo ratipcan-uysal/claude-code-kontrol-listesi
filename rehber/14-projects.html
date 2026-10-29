@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Proje, işi thread&#x27;lere bölen tek bir konuşmadır. Her thread repoyu temiz klonlayan bir bulut oturumudur ve makinendeki hook, izin ve skill&#x27;leri değil, proje talimatını, belleğini, connector&#x27;larını ve ortamını alır.">
+<title>Projects: koordinatör ve thread'ler · Claude Code kontrol listesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Düzen: tek sütun okuma alanı, üstte yapışkan ilerleme ve süzgeç çubuğu, geniş ekranda solda bölüm dizini */
+:root{
+ --bg:#f6f7f9;--yuzey:#ffffff;--fg:#17202c;--soft:#5b6472;--line:#e1e5eb;--kod:#eef1f5;
+ --acc:#1d4f91;--accbg:#e6eef9;--ile:#6a4a9c;--ilebg:#f0eaf8;--ok:#1f7a4d;
+ --f-baslik:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+ --f-govde:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+ --f-kod:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-govde);font-size:15px;line-height:1.55;margin:0}
+.sar{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;grid-template-columns:1fr;gap:32px}
+@media (min-width:980px){.sar{grid-template-columns:230px minmax(0,1fr)}}
+nav.dizin{display:none}
+@media (min-width:980px){nav.dizin{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);align-self:start;max-height:calc(100vh - 120px);overflow:auto;font-size:13px}}
+nav.dizin a{display:flex;justify-content:space-between;gap:8px;color:var(--soft);text-decoration:none;padding:4px 8px;border-radius:6px}
+nav.dizin a:hover,nav.dizin a:focus-visible{background:var(--accbg);color:var(--fg);outline:none}
+nav.dizin small{font-variant-numeric:tabular-nums}
+main{min-width:0}
+header.ust h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+header.ust p{color:var(--soft);max-width:65ch;margin:0 0 6px}
+.surum{font-family:var(--f-kod);font-size:12px;color:var(--soft)}
+.cubuk{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0;margin:20px 0 8px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.ilerleme{flex:1 1 220px;min-width:0}
+.ilerleme .etiket{font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
+.ilerleme .yol{height:6px;background:var(--line);border-radius:3px;margin-top:5px;overflow:hidden}
+.ilerleme .dolu{height:100%;width:0;background:var(--ok);transition:width .25s}
+.suzgec{display:flex;flex-wrap:wrap;gap:6px}
+.suzgec button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--yuzey);color:var(--fg);padding:5px 11px;border-radius:999px;cursor:pointer}
+.suzgec button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.suzgec button:focus-visible,.kopya:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+h2{font-family:var(--f-baslik);font-size:24px;letter-spacing:-.01em;margin:44px 0 6px;text-wrap:balance;scroll-margin-top:90px}
+h2 .no{color:var(--acc);margin-right:10px;font-variant-numeric:tabular-nums}
+.giris{color:var(--soft);max-width:68ch;margin:0 0 10px}
+details.okuma{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:8px}
+details.okuma summary{cursor:pointer;font-weight:600}
+details.okuma p{max-width:68ch}
+.sayilar{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.sayilar div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
+.sayilar b{display:block;font-family:var(--f-baslik);font-size:18px}
+.sayilar span{color:var(--soft);font-size:13px}
+.ilk10{list-style:none;padding:0;margin:8px 0 0;counter-reset:s;display:grid;gap:8px}
+.ilk10 li{counter-increment:s;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px;background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.ilk10 li::before{content:counter(s);font-family:var(--f-baslik);font-size:24px;font-weight:700;color:var(--acc);line-height:1}
+.ilk10 a{color:var(--fg);font-weight:600;text-decoration:none}.ilk10 a:hover{text-decoration:underline}
+.ilk10 .n{color:var(--soft);font-size:14px}
+.madde{display:grid;grid-template-columns:28px minmax(0,1fr);gap:4px 10px;padding:16px 0;border-top:1px solid var(--line)}
+.madde[hidden]{display:none}
+.madde input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--ok);cursor:pointer}
+.madde.yapildi .bas{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--line)}
+.bas{font-weight:600;font-size:16px;cursor:pointer}
+.no2{font-variant-numeric:tabular-nums;color:var(--soft);font-weight:500;margin-right:6px}
+.et{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:4px;margin-left:8px;vertical-align:2px}
+.temel{color:var(--acc);background:var(--accbg)}.ileri{color:var(--ile);background:var(--ilebg)}
+dl{display:grid;grid-template-columns:76px minmax(0,1fr);gap:4px 10px;margin:8px 0 0;font-size:14.5px}
+dt{color:var(--soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
+dd{margin:0;min-width:0}
+code{font-family:var(--f-kod);font-size:.88em;background:var(--kod);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.ornek{position:relative;margin-top:8px}
+.ornek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:0;overflow-x:auto;white-space:pre}
+.kopya{position:absolute;top:6px;right:6px;font:inherit;font-size:12px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:2px 9px;cursor:pointer}
+.bos-durum{color:var(--soft);padding:12px 0}
+footer{color:var(--soft);font-size:13px;margin-top:48px;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.ilerleme .dolu{transition:none}}
+
+a{color:var(--acc)}
+.madde,section.bolum{scroll-margin-top:var(--kaydirma,170px)}
+.kaynak{font-size:12px;color:var(--soft);margin:8px 0 0}
+.araclar{margin:14px 0}.araclar label{font-weight:600;font-size:13px;display:block}
+#ara{width:100%;font:inherit;color:var(--fg);background:var(--yuzey);border:1px solid var(--line);border-radius:8px;padding:10px;margin:5px 0}
+.islemler{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.islemler button,.islemler a{font:inherit;font-size:12px;padding:7px 9px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;cursor:pointer;text-decoration:none}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+#arama-sonuc,#bildirim{font-size:13px;color:var(--soft)}
+.ornek pre{padding-top:40px;white-space:pre-wrap;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+@media(max-width:480px){dl{grid-template-columns:1fr;gap:3px}dt{margin-top:7px}.sar{padding-inline:12px}.madde{gap:4px 6px}.cubuk{position:static}.et{margin-left:4px}nav.dizin{position:static}}
+@media print{.cubuk,.araclar,.dizin,.kopya,.ilk10,details.okuma{display:none!important}.sar{display:block;padding:0}body{background:white;color:#17202c}.madde{break-inside:avoid}.ornek pre{padding:10px}a{color:#1d4f91}}
+
+main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
+.ek .ust-bag{font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:18px}
+.ek h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+.ek h2{scroll-margin-top:16px}.ek h3{font-size:17px;margin:26px 0 4px}
+.ek p,.ek li{max-width:72ch}
+.ek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.tablo{overflow-x:auto;margin:10px 0 18px;border:1px solid var(--line);border-radius:8px}
+.tablo table{border-collapse:collapse;width:100%;font-size:14px;background:var(--yuzey)}
+.tablo th,.tablo td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
+.tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
+@media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
+ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
+ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+ul.ekler a{font-weight:600}
+ul.ekler span{display:block;color:var(--soft);font-size:14px}
+</style>
+<script>try{var t=localStorage.getItem("cc-kontrol-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main class="ek"><nav class="ust-bag" aria-label="Gezinme"><a href="../index.html">← Kontrol listesi</a><a href="index.html">Rehber içindekiler</a><a href="../index.html#ekler">Ekler</a></nav><p class="surum">Uzman · Bölüm 14</p><h1>Projects: koordinatör ve thread'ler</h1><p class="giris">Proje, işi thread&#x27;lere bölen tek bir konuşmadır. Her thread repoyu temiz klonlayan bir bulut oturumudur ve makinendeki hook, izin ve skill&#x27;leri değil, proje talimatını, belleğini, connector&#x27;larını ve ortamını alır.</p><p class="surum">Belge kontrolü: 29 Ekim 2026</p>
+<h2 id="zihinsel-model-bir-koordinator-cok-thread-ortak-makine-yok">Zihinsel model: bir koordinatör, çok thread, ortak makine yok</h2>
+<p><a href="09-paralel-isler.html">Bölüm 9: Paralel işler: bağımsızlığı ölçmek</a> paralel işi kendi makinende nasıl yöneteceğini anlattı. Projects aynı sorunu bir kademe yukarıdan çözer: paralel oturumları sen değil Claude başlatır ve izler. Belge bunu public beta olarak tanımlıyor. Yalnız Pro ve Max planlarında var, Team ve Enterprise'da henüz yok. Terminal CLI'da, VS Code ve JetBrains'te de yok. Projects'e claude.ai/code'dan, masaüstü uygulamasından ya da mobil uygulamadan girersin.</p>
+<p>Proje, tek ve uzun süren bir konuşmadır. Belgeye göre Claude burada koordinatör gibi davranır: gelen işi alır, hangisinin thread olacağına karar verir, her thread'in ne yaptığını takip eder. Thread'ler işçidir. Her biri kendi bağlam penceresi olan ayrı bir oturumdur. Çoğu zaman bir bulut oturumudur, kendi dalında çalışır ve iş gerektirirse pull request açar. Koordinatör thread'lerin raporunu görür, attıkları her adımı görmez.</p>
+<p>Ana fikir: <b>thread'ler senin makinende değil, temiz bir bulut ortamında doğar.</b> Her cloud thread şunlarla başlar:</p>
+<ul><li>Projenin repoları ve dosyaları, proje talimatı ve proje belleği.</li><li>Her reponun kökündeki <code>CLAUDE.md</code>, <code>.claude/CLAUDE.md</code> ve yola özel olmayan <code>.claude/rules/</code> dosyaları.</li><li>claude.ai hesabındaki connector'lar.</li><li>Projenin cloud environment'ı: ağ erişimi, ortam değişkenleri, network secret'lar ve kurulum betiği.</li></ul>
+<p>Belgeye göre thread'ler reponun skill'lerini, <code>.mcp.json</code> dosyasını, <code>.claude/settings.json</code> içindeki izin kurallarını, hook'larını ve <code>env</code> bloğunu yüklemez. Yani <a href="08-hook-ile-garanti.html">Bölüm 8: Hook ile garanti: olay, çıkış kodu, sınama</a> ve <a href="06-izin-ve-guvenlik.html">Bölüm 6: İzin ve güvenlik: mod, kural, sandbox</a> kurduğun garantilerin çoğu thread'e ulaşmaz. Normal bir bulut oturumu tek repolu olduğunda repo ayarlarını okur, proje thread'i okumaz.</p>
+<h2 id="kurulum-kontrolu-ilk-thread-den-once">Kurulum kontrolü: ilk thread'den önce</h2>
+<p>Belgenin ön koşulları kısa.</p>
+<ul><li><b>Plan.</b> Pro ya da Max olacak, kenar çubuğunda <b>Projects</b> görünecek (doğrudan ya da <b>More</b> altında).</li><li><b>GitHub.</b> Kod github.com'da olacak. GitHub Enterprise Server, GitLab ve Bitbucket belgede dışarıda. Bağlı GitHub hesabının push erişimi olacak ve <b>Claude GitHub App</b> repoya kurulu olacak. <code>/web-setup</code> ile bağladığın token diğer bulut oturumlarına yeter, projenin thread'lerine yetmez. Bir organizasyonun reposunu yalnız organizasyon sahibi kurabilir. SSO zorunluysa Claude uygulamasına organizasyon için ayrıca izin vermen gerekir.</li><li><b>Bağlantı hatası.</b> Belgedeki üç mesaj (erişim yok, klonlama başarısız, "Claude can't access") aynı yere çıkar: App kurulu mu, askıda mı, hesaba bağlı mı. Mesajdaki <b>Install GitHub App</b> ya da <b>Select repositories on GitHub</b> düğmesine bas, sonra <b>Check again</b>.</li><li><b>Connector'lar.</b> İşin ihtiyaç duyduğu MCP sunucusu claude.ai connector listesinde bağlı görünmeli.</li></ul>
+<h2 id="ortam-ve-sirlar-thread-e-ne-verirsin">Ortam ve sırlar: thread'e ne verirsin</h2>
+<p><b>Repo seçimi.</b> Belgenin önerisi: sık dokunduğun bir iki repoyu projeye ekle, geri kalanını proje talimatında adlandır. Eklediğin repo her thread'de klonlanır ve <code>CLAUDE.md</code>'si baştan yüklenir. Eklemediğin repoyu, ilk görev gerektirdiğinde thread kendine ekleyebilir. Ama klonlama görevin ortasında olur, o reponun <code>CLAUDE.md</code>'si thread başlarken yoktu. Klasör eklersen proje yalnız ilk 100 dosyanın ve en fazla 200 MB'ın kopyasını alır, projede en çok 10 klasör olur. Yüzlerce dosya yüklemek yerine ayıkla.</p>
+<p><b>Proje talimatı.</b> Belgedeki sınır 16.000 karakter. Talimat her yeni thread'e ve proje konuşmasındaki Claude'a gider. Belge şu içeriği öneriyor: projenin amacı, işin nerede olduğu (repo, başlangıç dalı, PR adlandırma), thread'in işini nasıl kontrol edeceği, eksik bir şey olunca ne yapacağı, neyin önce onayını isteyeceği. Reponun kendi kuralları o reponun <code>CLAUDE.md</code>'sine gider, talimatta tekrar edilmez (<a href="05-talimat-mimarisi.html">Bölüm 5: Talimat mimarisi: rica ile garanti</a>). Birden çok doğruluk kaynağı varsa çelişkide hangisinin kazanacağını yazmak belgede geçmiyor, bu bir iş akışı önerisi. Yazarsan yine de işe yarar, çünkü thread'ler birbirini göremez.</p>
+<p><b>Proje belleği.</b> Bu, makinendeki otomatik bellek değil. Ayrı bir <code>MEMORY.md</code> dizini ve dosyaları var. Claude'dan bir kararı ya da tuzağı "hatırlamasını" istersin. Her cloud thread dizini başta okur, diğer dosyaları gerektiğinde açar. <b>Project settings &gt; Memory</b> altında dosyaları okur, düzenler, silersin. Eskiyen kayıt yanlış bilgiyi kalıcı yapar. Düzenli temizlemek belgede yok, iş akışı önerisi (<a href="12-sistemi-iyilestirmek.html">Bölüm 12: Sistemi iyileştirmek: hatayı katmana yazmak</a>). Makinende koşan thread proje belleğini yüklemez, talimatı yükler.</p>
+<p><b>Model ve effort.</b> Belgeye göre yeni proje her yerde Opus kullanır. Thread'ler yüksek effort, koordinatör düşük effort çalışır. Ayarlar Thread model, Thread effort, Coordinator model ve Coordinator effort. Belge ilk toplu işten önce bunlara bakmanı öneriyor. Tek bir görev için ayrı model istersen görevde yazarsın.</p>
+<p><b>Ortam.</b> Ortamı bir kez kurarsın, bütün thread'ler onu kullanır. Varsayılan ağ düzeyi <b>Trusted</b>: paket kayıt defterleri, GitHub ve bulut SDK'ları gibi izinli alan adları. Başka bir alan adı lazımsa <b>Custom</b> seçip listeyi sen yazarsın. Ortam değişkeni ile network secret farkı önemli:</p>
+<div class="tablo"><table><thead><tr><th></th><th>Ortam değişkeni</th><th>Network secret</th></tr></thead><tbody><tr><td data-e="">Kim okur</td><td data-e="Ortam değişkeni">Ortamı kullanan herkes</td><td data-e="Network secret">Oturum anahtarı hiç görmez</td></tr><tr><td data-e="">Nasıl çalışır</td><td data-e="Ortam değişkeni">Oturumda sıradan değişken olur</td><td data-e="Network secret">Anthropic'in proxy'si, listelediğin host'lara giden isteğe anahtarı ekler</td></tr><tr><td data-e="">Ne zaman</td><td data-e="Ortam değişkeni">Gizli olmayan ayar</td><td data-e="Network secret">API anahtarı ve token</td></tr></tbody></table></div>
+<p>Network secret Pro, Max, Team ve Enterprise'ta var, yalnız Anthropic-hosted ortamda çalışır. Proxy bazı isteklere anahtar eklemez (GitHub, Anthropic API, genel paket kayıt defterleri gibi). Bu durumda anahtar ortam değişkeninde kalır.</p>
+<p><b>Kurulum betiği.</b> Yeni cloud oturumu başlarken Claude Code'dan önce çalışır, root olarak, Ubuntu 24.04'te. Sıfırdan farklı çıkarsa oturum başlamaz. Yaklaşık beş dakika altında biterse Anthropic dosya sistemini önbelleğe alır, sonraki oturumlar betiği atlar. Önbellek yaklaşık yedi gün yaşar, betiği ya da izinli host'ları değiştirince yeniden kurulur. Önbellek dosya sistemi görüntüsüdür: yüklü paketler kalır, arka planda çalışan süreç, başlatılmış veritabanı kalmaz. Betik çalışırken ortam değişkenleri henüz ayarlı değildir.</p>
+<p><b>Connector ve plugin.</b> Thread'ler MCP araçlarını claude.ai hesabındaki connector'lardan alır. Her thread hepsini kullanabilir, proje başına kurulum yok. Proje konuşmasının kendisinde connector yoktur, connector isteyen işi thread'e görev olarak ver. Plugin'ler <b>Project settings &gt; Plugins</b> altından eklenir. Reponun <code>.claude/settings.json</code> dosyasında açık plugin'ler bulut thread'ine yüklenmez. Skill'ler için de aynı: repoda commit'lenen skill yüklenmez, hesabında açtığın skill'ler yüklenir.</p>
+<h2 id="karar-kurallari">Karar kuralları</h2>
+<ul><li><b>Projects mi, başka yol mu?</b> Hedef tek oturumu aşıyor, günlerce görev üretiyor ve makinen kapalıyken de ilerlemesi gerekiyorsa proje. Tek göreve tek bulut oturumu yeter. Her görev yerel makineni istiyorsa yerel oturum ya da agent view. Konuşmasız, takvime bağlı tek iş için scheduled task. Bir oturum içi yan işe alt ajan (<a href="07-skill-ajan-mcp.html">Bölüm 7: Yeniden kullanım: skill, alt ajan, MCP, plugin</a>). Belge beş yolu yan yana karşılaştırıyor. <a href="../index.html#m-paralel-5-k">11.5</a> <a href="../index.html#m-rutin-1-k">14.1</a></li><li><b>Dosya yazan her thread kendi dalında zaten yalıtılı.</b> Worktree'yi yalnız kendi makinende koşan thread için düşün. Belge aynı klasöre iki thread yazarsa birbirini ezebileceğini söylüyor. <a href="09-paralel-isler.html">Bölüm 9: Paralel işler: bağımsızlığı ölçmek</a> <a href="../index.html#m-paralel-1-k">11.1</a></li><li><b>Talimatı ilk toplu işten önce yaz, tek küçük thread ile sına.</b> Belgenin "ilk toplu iş" sırası bu. Sonra "önce öner, onayımı bekle" ve "aynı anda en fazla iki thread" gibi sınırları gevşet. Bu sınırlar tercihtir, zorlama değildir.</li><li><b>Her PR'a ayrı thread</b> belgede yok. Belge her thread'in kendi dalında çalıştığını söylüyor. Bunu bir iş akışı önerisi olarak al: tek thread'e yığılmış iki PR, birbirinin CI hatasını da miras alır.</li><li><b>Thread'ler yanlış varsayım yaptıysa görevi değil boşluğu düzelt.</b> Koordinatöre "her açık thread için ne istediğimi, neyi varsaydığını, neyi bulamadığını listele" de. Eksiği talimata ya da ortama bir kez yaz, sonra tek thread gönder. <a href="../index.html#m-gozetimsiz-1-k">13.1</a></li><li><b>Kullanımı proje ayarlarında oku.</b> <b>Project settings &gt; Usage</b> thread ve model bazında token'ı, konuşmaya giden payı gösterir. Zorlanan sınır: tüm projelerde günde 500 yeni thread. PR izleyen boşta thread, CI hatasında ya da yorumda uyanıp planını yine tüketir. <a href="../index.html#m-model-4-k">5.4</a></li><li><b>Eski thread'i diriltme.</b> Bir saati (Pro ve Max) aşmış boşta thread'e gelen takip mesajı bütün konuşmayı yeniden okutur. Yeni iş için taze thread çoğu zaman ucuzdur.</li><li><b>İzin onayı thread'in içinde verilir.</b> Proje konuşmasına "devam et" yazmak thread'e ulaşmaz. Thread'ler uygunsa auto mode'da çalışır, repodaki izin kuralları uygulanmaz. <a href="../index.html#m-izin-7-k">6.7</a></li><li><b>Gün aşan işte commit ve push iste.</b> Sandbox turlar arasında durur. Devam edilemezse thread taze klondan sürer ve commit'lenmemiş değişiklik kaybolabilir.</li></ul>
+<h2 id="hata-bicimleri">Hata biçimleri</h2>
+<p>Bu bölümde D01-D10 arasından uygun gerçek vaka yok. Aşağıdakiler kurgu.</p>
+<p><b>Kurgu senaryo: kural thread'e hiç gitmedi.</b> Gizem'in <code>.claude/settings.json</code> dosyasında commit öncesi testi koşturan bir hook ve <code>.env</code> okumasını yasaklayan bir <code>permissions.deny</code> var. Gizem üç servis için proje kurar ve altı thread başlatır. Thread'ler testsiz commit atar. Belgeye göre proje thread'i reponun hook'unu çalıştırmaz ve izin kurallarını uygulamaz. Çözüm: "commit'ten önce <code>make test</code> koş, çıktının son satırını yaz" cümlesini proje talimatına koymak. Hook'a gerçekten ihtiyacı olan görev, kendi makinesinde Remote Control ile koşar.</p>
+<p><b>Kurgu senaryo: yanlış bellek, sessiz bozulma.</b> Gizem iki hafta önce Claude'a "staging adresi şu" diye hatırlattı. Adres değişti, proje belleğindeki kayıt kaldı. Yeni thread'ler eski adrese istek atıyor ve her biri "erişemedim" diye dönüyor. Çözüm: <b>Project settings &gt; Memory</b>'de kaydı düzeltmek ve bir thread ile doğrulamak.</p>
+<p><b>Kurgu senaryo: anahtar ortam değişkenine kondu.</b> Gizem ödeme servisi tokenını ortam değişkenine yazar. Ortamı kullanan herkes değeri okuyabilir. Doğrusu network secret: anahtar oturuma hiç girmez, proxy isteğe ekler.</p>
+<h2 id="alistirma-iki-thread-lik-kucuk-proje">Alıştırma: iki thread'lik küçük proje</h2>
+<p>Projects Pro ya da Max planı ister. Planın yoksa 1. adımdan sonra dur ve ne göreceğini belgeden oku. GitHub'da bir deneme deposu kullan.</p>
+<p>1. claude.ai/code'da <b>Projects &gt; New project</b> aç. Adı ve tek satırlık hedefi yaz, deneme deposunu ekle. GitHub App kurulu değilse mesajın verdiği düğmeyle kur. 2. <b>Project settings &gt; Memory</b> altına dört satırlık proje talimatı yaz: dal başlangıcı, PR adlandırma, bitirmeden önce hangi komutu koşacağı, eksik bir şey olursa durup söyleyeceği. 3. İki bağımsız küçük iş ver: README'ye bölüm eklemek ve bir yardımcı fonksiyona test yazmak. "Önce önerip onayımı bekle" de, öneriyi onayla. 4. Her thread'i aç, ne yaptığını oku. Her biri için PR açtır. 5. <b>Overview</b>'da hangi thread <b>Waiting on you</b> altında olduğuna bak. Birine yanıt gerekiyorsa thread'in kendi kutusundan yanıtla. 6. <b>Project settings &gt; Usage</b> sekmesini aç.</p>
+<p><b>Bitti sayılması için:</b> her thread'in PR bağlantısı, <b>Waiting on you</b> grubunda gördüğün (ya da boş olduğunu gördüğün) thread'in adı ve yanıtın, <b>Usage</b> ekranından iki thread ile koordinatörün token payı yan yana yazılmış üç satır.</p>
+<h2 id="baglantilar">Bağlantılar</h2>
+<p>Kontrol listesinin Projects bölümü: <a href="../index.html#m-projects-1-k">20.1</a> <a href="../index.html#m-projects-2-k">20.2</a> <a href="../index.html#m-projects-3-k">20.3</a> <a href="../index.html#m-projects-4-k">20.4</a> <a href="../index.html#m-projects-5-k">20.5</a> <a href="../index.html#m-projects-6-k">20.6</a> <a href="../index.html#m-projects-7-k">20.7</a>. İlgili diğer maddeler: <a href="../index.html#m-paralel-1-k">11.1</a> <a href="../index.html#m-paralel-5-k">11.5</a> <a href="../index.html#m-gozetimsiz-1-k">13.1</a> <a href="../index.html#m-rutin-1-k">14.1</a> <a href="../index.html#m-model-4-k">5.4</a> <a href="../index.html#m-izin-7-k">6.7</a> <a href="../index.html#m-yeniden-5-k">9.5</a> <a href="../index.html#m-yeniden-6-k">9.6</a>. Ekler: <a href="../ekler/sorun-giderme.html">Sorun giderme</a>, <a href="../ekler/sozluk.html">Terimler sözlüğü</a>, <a href="../ekler/komutlar.html">Komutlar ve kısayollar</a>. Önceki bölümler: <a href="09-paralel-isler.html">Bölüm 9: Paralel işler: bağımsızlığı ölçmek</a>, <a href="10-gozetimsiz-is.html">Bölüm 10: Gözetimsiz iş: sen yokken çalışan sistem</a>, <a href="11-ekip-olcegi.html">Bölüm 11: Ekip ölçeği: ortak ayar, dağıtım ve güven</a>.</p>
+<footer><a href="13-bitirme-projesi.html">← Bölüm 13: Bitirme projesi: her adımda kanıt</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/rehber/14-projects.md">Markdown sürümü</a></footer></main>
+</body>
+</html>

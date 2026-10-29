@@ -55,6 +55,9 @@ Hangi başlığın uyduğunu bilmiyorsan oturumda `/doctor` koş. Claude hiç a�
 | Rutin hiç çalışmamış gibi | Zamanlandı mı, başladı mı, çıktı yazdı mı? | Üç aşamayı ayrı kontrol et. Sessizliği başarı sayma. [14.3](../README.md#14-rutin) |
 | Commit'te başkasının dosyaları var | `git log --stat` | Aynı checkout'ta başka oturum stage etmiş. Ayrı worktree. [11.1](../README.md#11-paralel) [11.2](../README.md#11-paralel) |
 | Önizlemede değişiklik görünmüyor | Sunucu hangi dizinden, hangi porttan çalışıyor? | Başka oturumun sunucusuna bakıyor olabilirsin. [11.3](../README.md#11-paralel) |
+| Proje repoya bağlanamıyor | Claude GitHub App bu depoda kurulu mu, bağlı hesabın push yetkisi var mı? | Diğer bulut oturumlarının kullandığı GitHub token'ı proje thread'leri için yetmez. Install GitHub App ya da Select repositories on GitHub, sonra Check again. Organizasyon deposunu yalnız organizasyon sahibi kurabilir. |
+| Proje thread'i onay bekliyor, "devam et" dedim ama ilerlemiyor | Onayı proje konuşmasında mı verdin? | Proje konuşmasındaki mesaj thread'e ulaşmaz. Onayı thread'in içinde ver. |
+| Proje konuşması bir connector'ı kullanamıyor | İşi konuşma mı yapıyor, thread mi? | Proje konuşmasında connector yoktur, yalnız thread'lerde vardır. Connector gerektiren işi bir thread'e ver, connector'ın claude.ai hesabında bağlı olduğuna bak. |
 | Rewind sonrası bazı dosyalar eski halinde değil | Dosya Bash'le mi değişti? | Checkpoint onu izlemez. Git ile geri al. [15.2](../README.md#15-git) |
 | Belgedeki komut yok | `claude --version` | Belge yerel sürümden yeni olabilir. Güncelle ya da `/help` ile kontrol et. [19.6](../README.md#19-bakim) |
 

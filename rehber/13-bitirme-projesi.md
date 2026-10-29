@@ -100,4 +100,4 @@ Kendini dürüstçe sorguladığında üç şeyi de yaz: neyi kaçırmış olabi
 
 ---
 
-[← Bölüm 12](12-sistemi-iyilestirmek.md) · [İçindekiler](README.md)
+[← Bölüm 12](12-sistemi-iyilestirmek.md) · [İçindekiler](README.md) · [Bölüm 14 →](14-projects.md)

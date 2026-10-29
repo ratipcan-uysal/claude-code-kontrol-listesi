@@ -43,6 +43,7 @@ Alıştırmalar herhangi bir git deposunda yapılabilir. Silme, yeniden yazma ya
 - [11. Ekip ölçeği: ortak ayar, dağıtım ve güven](11-ekip-olcegi.md): Ekip dosyası bir öneri, yönetilen ayar bir kuraldır. Ayarı, skill'i ve plugin'i kimin yazdığını, kimin incelediğini ve kimin çalıştırdığını bilmek ekip ölçeğinin temel sorusudur.
 - [12. Sistemi iyileştirmek: hatayı katmana yazmak](12-sistemi-iyilestirmek.md): Her başarısızlığın adresi bağlam, model kararı ya da harness'tir ve ders doğru katmana yazılır. Üçüncü tekrar kural olur, bakım ritmi ve önce ve sonra karşılaştırması sistemi sağlıklı tutar.
 - [13. Bitirme projesi: her adımda kanıt](13-bitirme-projesi.md): Kendi seçtiğin küçük ve gerçek bir işi plan, uygulama, doğrulama ve teslim aşamalarından geçirirsin. Her aşamada önceki bölümlerin becerisini kullanır ve bir kanıt dosyası bırakırsın.
+- [14. Projects: koordinatör ve thread'ler](14-projects.md): Proje, işi thread'lere bölen tek bir konuşmadır. Her thread repoyu temiz klonlayan bir bulut oturumudur ve makinendeki hook, izin ve skill'leri değil, proje talimatını, belleğini, connector'larını ve ortamını alır.
 
 ---
 
