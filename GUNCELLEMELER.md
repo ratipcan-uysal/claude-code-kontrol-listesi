@@ -1,3 +1,12 @@
+# 29 Ekim 2026: altı madde ve dört başvuru eki
+
+19 bölüm korundu, 107 madde 113'e çıktı. Mevcut kimlikler ve `cc-kontrol-v2` kaydı değişmedi, yeni maddeler bölüm sonlarına eklendi.
+
+- 1.8 ayarın hangi katmandan geldiği, 2.7 devam, dallandırma ve temiz başlangıç, 5.6 modeli aynı görevle karşılaştırma, 8.6 engelleyen hook'u async yapmama, 8.7 hook sırası varsaymama, 14.7 makineye aktarılacak sonucu şemayla tanımlama.
+- Dört ek: komutlar ve kısayollar, sorun giderme, gerçek deneyimlerden on ders, terimler sözlüğü. Her ek ilgili maddelere bağlanıyor. Ekler web sayfası, Markdown ve PDF olarak üretiliyor.
+- Dar ekranda ek tabloları kart olarak diziliyor.
+- Yapısal testler 11'e, tarayıcı kontrolleri 40'a çıktı.
+
 # 21 Ekim 2026 kalite güncellemesi
 
 19 bölüm korundu. 97 madde 107’ye çıktı; mevcut 51 maddenin anlatımı veya örneği düzeltildi, 10 yeni kontrol eklendi. Eski bölüm/madde kimlikleri ve `cc-kontrol-v2` yerel kayıt anahtarı korunur.

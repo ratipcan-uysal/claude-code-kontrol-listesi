@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Belirti, ilk ayırıcı kontrol ve sonraki adım. Talimat, izin, hook, bağlam, genişletme ve koşum sorunları.">
+<title>Sorun giderme · Claude Code kontrol listesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Düzen: tek sütun okuma alanı, üstte yapışkan ilerleme ve süzgeç çubuğu, geniş ekranda solda bölüm dizini */
+:root{
+ --bg:#f6f7f9;--yuzey:#ffffff;--fg:#17202c;--soft:#5b6472;--line:#e1e5eb;--kod:#eef1f5;
+ --acc:#1d4f91;--accbg:#e6eef9;--ile:#6a4a9c;--ilebg:#f0eaf8;--ok:#1f7a4d;
+ --f-baslik:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+ --f-govde:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+ --f-kod:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-govde);font-size:15px;line-height:1.55;margin:0}
+.sar{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;grid-template-columns:1fr;gap:32px}
+@media (min-width:980px){.sar{grid-template-columns:230px minmax(0,1fr)}}
+nav.dizin{display:none}
+@media (min-width:980px){nav.dizin{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);align-self:start;max-height:calc(100vh - 120px);overflow:auto;font-size:13px}}
+nav.dizin a{display:flex;justify-content:space-between;gap:8px;color:var(--soft);text-decoration:none;padding:4px 8px;border-radius:6px}
+nav.dizin a:hover,nav.dizin a:focus-visible{background:var(--accbg);color:var(--fg);outline:none}
+nav.dizin small{font-variant-numeric:tabular-nums}
+main{min-width:0}
+header.ust h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+header.ust p{color:var(--soft);max-width:65ch;margin:0 0 6px}
+.surum{font-family:var(--f-kod);font-size:12px;color:var(--soft)}
+.cubuk{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0;margin:20px 0 8px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.ilerleme{flex:1 1 220px;min-width:0}
+.ilerleme .etiket{font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
+.ilerleme .yol{height:6px;background:var(--line);border-radius:3px;margin-top:5px;overflow:hidden}
+.ilerleme .dolu{height:100%;width:0;background:var(--ok);transition:width .25s}
+.suzgec{display:flex;flex-wrap:wrap;gap:6px}
+.suzgec button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--yuzey);color:var(--fg);padding:5px 11px;border-radius:999px;cursor:pointer}
+.suzgec button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.suzgec button:focus-visible,.kopya:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+h2{font-family:var(--f-baslik);font-size:24px;letter-spacing:-.01em;margin:44px 0 6px;text-wrap:balance;scroll-margin-top:90px}
+h2 .no{color:var(--acc);margin-right:10px;font-variant-numeric:tabular-nums}
+.giris{color:var(--soft);max-width:68ch;margin:0 0 10px}
+details.okuma{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:8px}
+details.okuma summary{cursor:pointer;font-weight:600}
+details.okuma p{max-width:68ch}
+.sayilar{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.sayilar div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
+.sayilar b{display:block;font-family:var(--f-baslik);font-size:18px}
+.sayilar span{color:var(--soft);font-size:13px}
+.ilk10{list-style:none;padding:0;margin:8px 0 0;counter-reset:s;display:grid;gap:8px}
+.ilk10 li{counter-increment:s;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px;background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.ilk10 li::before{content:counter(s);font-family:var(--f-baslik);font-size:24px;font-weight:700;color:var(--acc);line-height:1}
+.ilk10 a{color:var(--fg);font-weight:600;text-decoration:none}.ilk10 a:hover{text-decoration:underline}
+.ilk10 .n{color:var(--soft);font-size:14px}
+.madde{display:grid;grid-template-columns:28px minmax(0,1fr);gap:4px 10px;padding:16px 0;border-top:1px solid var(--line)}
+.madde[hidden]{display:none}
+.madde input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--ok);cursor:pointer}
+.madde.yapildi .bas{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--line)}
+.bas{font-weight:600;font-size:16px;cursor:pointer}
+.no2{font-variant-numeric:tabular-nums;color:var(--soft);font-weight:500;margin-right:6px}
+.et{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:4px;margin-left:8px;vertical-align:2px}
+.temel{color:var(--acc);background:var(--accbg)}.ileri{color:var(--ile);background:var(--ilebg)}
+dl{display:grid;grid-template-columns:76px minmax(0,1fr);gap:4px 10px;margin:8px 0 0;font-size:14.5px}
+dt{color:var(--soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
+dd{margin:0;min-width:0}
+code{font-family:var(--f-kod);font-size:.88em;background:var(--kod);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.ornek{position:relative;margin-top:8px}
+.ornek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:0;overflow-x:auto;white-space:pre}
+.kopya{position:absolute;top:6px;right:6px;font:inherit;font-size:12px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:2px 9px;cursor:pointer}
+.bos-durum{color:var(--soft);padding:12px 0}
+footer{color:var(--soft);font-size:13px;margin-top:48px;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.ilerleme .dolu{transition:none}}
+
+a{color:var(--acc)}
+.madde,section.bolum{scroll-margin-top:var(--kaydirma,170px)}
+.kaynak{font-size:12px;color:var(--soft);margin:8px 0 0}
+.araclar{margin:14px 0}.araclar label{font-weight:600;font-size:13px;display:block}
+#ara{width:100%;font:inherit;color:var(--fg);background:var(--yuzey);border:1px solid var(--line);border-radius:8px;padding:10px;margin:5px 0}
+.islemler{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.islemler button,.islemler a{font:inherit;font-size:12px;padding:7px 9px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;cursor:pointer;text-decoration:none}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+#arama-sonuc,#bildirim{font-size:13px;color:var(--soft)}
+.ornek pre{padding-top:40px;white-space:pre-wrap;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+@media(max-width:480px){dl{grid-template-columns:1fr;gap:3px}dt{margin-top:7px}.sar{padding-inline:12px}.madde{gap:4px 6px}.cubuk{position:static}.et{margin-left:4px}nav.dizin{position:static}}
+@media print{.cubuk,.araclar,.dizin,.kopya,.ilk10,details.okuma{display:none!important}.sar{display:block;padding:0}body{background:white;color:#17202c}.madde{break-inside:avoid}.ornek pre{padding:10px}a{color:#1d4f91}}
+
+main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
+.ek .ust-bag{font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:18px}
+.ek h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+.ek h2{scroll-margin-top:16px}.ek h3{font-size:17px;margin:26px 0 4px}
+.ek p,.ek li{max-width:72ch}
+.ek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.tablo{overflow-x:auto;margin:10px 0 18px;border:1px solid var(--line);border-radius:8px}
+.tablo table{border-collapse:collapse;width:100%;font-size:14px;background:var(--yuzey)}
+.tablo th,.tablo td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
+.tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
+@media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td:first-child code{white-space:normal}}
+ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
+ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+ul.ekler a{font-weight:600}
+ul.ekler span{display:block;color:var(--soft);font-size:14px}
+</style>
+<script>try{var t=localStorage.getItem("cc-kontrol-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main class="ek"><nav class="ust-bag" aria-label="Ekler"><a href="../index.html">← Kontrol listesi</a><a href="komutlar.html">Komutlar ve kısayollar</a><a href="deneyimler.html">Gerçek deneyimlerden on ders</a><a href="sozluk.html">Terimler sözlüğü</a></nav><h1>Sorun giderme</h1><p class="surum">Belge kontrolü: 29 Ekim 2026</p>
+<p>Bir belirti çoğu zaman birkaç nedenden biridir. Aşağıdaki tablo her belirti için <b>ilk ayırıcı kontrolü</b> verir: nedenleri birbirinden ayıran en ucuz bakış. Aynı denemeyi tekrarlamak yerine yeni kanıt topla.</p>
+<p>Hangi başlığın uyduğunu bilmiyorsan oturumda <code>/doctor</code> koş. Claude hiç açılmıyorsa kabukta <code>claude doctor</code>. Sorunun senin yapılandırmandan gelip gelmediğini ayırmak için <code>claude --safe-mode</code> ya da <code>claude --bare</code> ile başlat. Kaynak: <a href="https://code.claude.com/docs/en/troubleshooting">resmî sorun giderme</a>.</p>
+<h2 id="talimat-ve-ayar">Talimat ve ayar</h2>
+<div class="tablo"><table><thead><tr><th>Belirti</th><th>İlk ayırıcı kontrol</th><th>Sonraki adım</th></tr></thead><tbody><tr><td data-e="Belirti">CLAUDE.md'deki kural uygulanmıyor</td><td data-e="İlk ayırıcı kontrol"><code>/memory</code> listesinde dosya var mı?</td><td data-e="Sonraki adım">Yüklenmiyorsa yol ya da import onayı. Yükleniyorsa kural belirsiz ya da başka kuralla çelişiyor. <a href="../index.html#m-talimat-2-k">1.2</a> <a href="../index.html#m-talimat-5-k">1.5</a></td></tr><tr><td data-e="Belirti">Import edilen dosya bazen görünüyor, bazen görünmüyor</td><td data-e="İlk ayırıcı kontrol">Etkileşimli mi headless mi, worktree'de mi?</td><td data-e="Sonraki adım">Proje dışı import onayı proje yolu başına tutulur. Her oturumda gereken bilgi için SessionStart hook'u. <a href="../index.html#m-talimat-5-k">1.5</a> <a href="../index.html#m-hook-1-k">8.1</a></td></tr><tr><td data-e="Belirti">Ayar değişikliği etki etmiyor</td><td data-e="İlk ayırıcı kontrol"><code>/status</code> içinde <code>Setting sources</code></td><td data-e="Sonraki adım">Daha yüksek öncelikli katman aynı anahtarı ezmiş olabilir. Listeler birleşir, ezilmez. <a href="../index.html#m-talimat-8-k">1.8</a></td></tr><tr><td data-e="Belirti">Model ayarı tutmuyor</td><td data-e="İlk ayırıcı kontrol"><code>env</code> içinde <code>ANTHROPIC_MODEL</code> var mı?</td><td data-e="Sonraki adım">Kabuktaki değişken dosyadaki <code>model</code> anahtarını geçer. <a href="../index.html#m-talimat-8-k">1.8</a></td></tr><tr><td data-e="Belirti">Otomatik bellek eski bilgi veriyor</td><td data-e="İlk ayırıcı kontrol">Kaydın tarihi ve kaynağın bugünkü hali</td><td data-e="Sonraki adım">Eski kaydı düzelt ya da sil. <a href="../index.html#m-talimat-7-k">1.7</a></td></tr></tbody></table></div>
+<h2 id="i-zin-ve-hook">İzin ve hook</h2>
+<div class="tablo"><table><thead><tr><th>Belirti</th><th>İlk ayırıcı kontrol</th><th>Sonraki adım</th></tr></thead><tbody><tr><td data-e="Belirti">Aynı komut için sürekli izin soruluyor</td><td data-e="İlk ayırıcı kontrol">Komutta <code>$(...)</code>, <code>${...}</code>, <code>source</code> var mı?</td><td data-e="Sonraki adım">Bu parçaları içeren komut allow kuralıyla eşleşmeyip her seferinde sorabilir. Komutu onlarsız yaz, venv'i aktive etmek yerine yorumlayıcıyı doğrudan çağır. <a href="../index.html#m-izin-4-k">6.4</a></td></tr><tr><td data-e="Belirti">Gözetimsiz koşum izin ekranında takıldı</td><td data-e="İlk ayırıcı kontrol">Oturumun gerçek etkin modu</td><td data-e="Sonraki adım">Ayarlanan mod ile açılan mod farklı olabilir. Projenin kendi allow listesine bak. <a href="../index.html#m-izin-7-k">6.7</a> <a href="../index.html#m-gozetimsiz-2-k">13.2</a></td></tr><tr><td data-e="Belirti">Hook hiç çalışmıyor</td><td data-e="İlk ayırıcı kontrol"><code>/hooks</code> listesinde var mı, eşleşme deseni doğru mu?</td><td data-e="Sonraki adım">Betiği aynı JSON girdisiyle elle çalıştır. <a href="../index.html#m-hook-4-k">8.4</a></td></tr><tr><td data-e="Belirti">Hook çalışıyor ama engellemiyor</td><td data-e="İlk ayırıcı kontrol">Hook async mi, çıkış kodu 2 mi?</td><td data-e="Sonraki adım">Async hook engelleyemez. Olayın exit 2 davranışını belgede kontrol et. <a href="../index.html#m-hook-5-k">8.5</a> <a href="../index.html#m-hook-6-k">8.6</a></td></tr><tr><td data-e="Belirti">İki hook'un sonucu her seferinde farklı</td><td data-e="İlk ayırıcı kontrol">Aynı olaya eşleşen birden çok hook var mı?</td><td data-e="Sonraki adım">Paralel çalışırlar. Bağımlı adımları tek betikte birleştir. <a href="../index.html#m-hook-7-k">8.7</a></td></tr></tbody></table></div>
+<h2 id="baglam-ve-performans">Bağlam ve performans</h2>
+<div class="tablo"><table><thead><tr><th>Belirti</th><th>İlk ayırıcı kontrol</th><th>Sonraki adım</th></tr></thead><tbody><tr><td data-e="Belirti">Bağlam çabuk doluyor</td><td data-e="İlk ayırıcı kontrol"><code>/context</code> dağılımı</td><td data-e="Sonraki adım">Büyük dosyayı parça parça okut, geniş aramayı alt ajana ver. <a href="../index.html#m-baglam-4-k">2.4</a> <a href="../index.html#m-baglam-5-k">2.5</a></td></tr><tr><td data-e="Belirti">Otomatik sıkıştırma art arda tetikleniyor</td><td data-e="İlk ayırıcı kontrol"><code>/context</code> içinde <code>Messages</code> payı</td><td data-e="Sonraki adım">Odak vererek <code>/compact</code>, gerekirse <code>/clear</code> ve devir dosyası. <a href="../index.html#m-baglam-6-k">2.6</a></td></tr><tr><td data-e="Belirti">Oturum dondu</td><td data-e="İlk ayırıcı kontrol"><code>Ctrl+C</code> tepki veriyor mu?</td><td data-e="Sonraki adım">Vermiyorsa terminali kapat, aynı dizinde <code>claude --resume</code>. Konuşma kaybolmaz.</td></tr><tr><td data-e="Belirti">Bellek ya da işlemci çok yüksek</td><td data-e="İlk ayırıcı kontrol">Büyük derleme dizinleri, eklentiler</td><td data-e="Sonraki adım"><code>.gitignore</code>'a ekle, <code>claude --safe-mode</code> ile eklenti ve MCP'yi ayır, yeniden başlatıp <code>--continue</code>.</td></tr><tr><td data-e="Belirti"><code>@dosya</code> ya da arama sonuç vermiyor</td><td data-e="İlk ayırıcı kontrol"><code>claude doctor</code> çıktısında Search satırı</td><td data-e="Sonraki adım">Paketli ripgrep çalışmıyor olabilir. Belgedeki ripgrep adımları.</td></tr></tbody></table></div>
+<h2 id="genisletme">Genişletme</h2>
+<div class="tablo"><table><thead><tr><th>Belirti</th><th>İlk ayırıcı kontrol</th><th>Sonraki adım</th></tr></thead><tbody><tr><td data-e="Belirti">Skill hiç devreye girmiyor</td><td data-e="İlk ayırıcı kontrol"><code>/skills</code> listesinde var mı?</td><td data-e="Sonraki adım">Varsa açıklama, isteğin diliyle eşleşmiyor. Açıklamaya tetik kelimelerini ve sınırını yaz. <a href="../index.html#m-yeniden-3-k">9.3</a> <a href="../index.html#m-yeniden-8-k">9.8</a></td></tr><tr><td data-e="Belirti">Yeni skill görünmüyor</td><td data-e="İlk ayırıcı kontrol">Dosya doğru dizinde mi?</td><td data-e="Sonraki adım"><code>/reload-skills</code>.</td></tr><tr><td data-e="Belirti">MCP aracı listede ama veri gelmiyor</td><td data-e="İlk ayırıcı kontrol"><code>/mcp</code> durumu ve küçük bir okuma denemesi</td><td data-e="Sonraki adım">Bağlantı, yetki ve sorgu kapsamını ayrı sına. <a href="../index.html#m-yeniden-7-k">9.7</a></td></tr><tr><td data-e="Belirti">Alt ajan raporu "bitti" diyor ama iş yok</td><td data-e="İlk ayırıcı kontrol">Diff ve dosya</td><td data-e="Sonraki adım">Rapor kanıt değildir. Dosyanın kendisine bak. <a href="../index.html#m-dogrulama-3-k">12.3</a></td></tr></tbody></table></div>
+<h2 id="dogrulama-kosum-ve-yayin">Doğrulama, koşum ve yayın</h2>
+<div class="tablo"><table><thead><tr><th>Belirti</th><th>İlk ayırıcı kontrol</th><th>Sonraki adım</th></tr></thead><tbody><tr><td data-e="Belirti">Testler geçti ama hata sürüyor</td><td data-e="İlk ayırıcı kontrol">Koşulan test sayısı</td><td data-e="Sonraki adım">Filtre hiçbir şeye eşleşmemiş olabilir. Hatayı geri koyup testin düştüğünü gör. <a href="../index.html#m-dogrulama-1-k">12.1</a> <a href="../index.html#m-dogrulama-2-k">12.2</a></td></tr><tr><td data-e="Belirti">Headless betik başarılı diyor ama sonuç boş</td><td data-e="İlk ayırıcı kontrol">JSON'da <code>is_error</code> ve <code>structured_output</code></td><td data-e="Sonraki adım">Yalnız <code>subtype</code> alanına güvenme. <a href="../index.html#m-rutin-6-k">14.6</a> <a href="../index.html#m-rutin-7-k">14.7</a></td></tr><tr><td data-e="Belirti">Gece koşumu sabah bitmemiş, çıktı boş</td><td data-e="İlk ayırıcı kontrol">Süreç yaşıyor mu, işlemci süresi ne, makine şarjda mı?</td><td data-e="Sonraki adım">Arka plan işi tur bitince ölmüş ya da makine uyumuş olabilir. Bkz. deneyimler D03 ve D05. <a href="../index.html#m-gozetimsiz-3-k">13.3</a> <a href="../index.html#m-gozetimsiz-4-k">13.4</a></td></tr><tr><td data-e="Belirti">Rutin hiç çalışmamış gibi</td><td data-e="İlk ayırıcı kontrol">Zamanlandı mı, başladı mı, çıktı yazdı mı?</td><td data-e="Sonraki adım">Üç aşamayı ayrı kontrol et. Sessizliği başarı sayma. <a href="../index.html#m-rutin-3-k">14.3</a></td></tr><tr><td data-e="Belirti">Commit'te başkasının dosyaları var</td><td data-e="İlk ayırıcı kontrol"><code>git log --stat</code></td><td data-e="Sonraki adım">Aynı checkout'ta başka oturum stage etmiş. Ayrı worktree. <a href="../index.html#m-paralel-1-k">11.1</a> <a href="../index.html#m-paralel-2-k">11.2</a></td></tr><tr><td data-e="Belirti">Önizlemede değişiklik görünmüyor</td><td data-e="İlk ayırıcı kontrol">Sunucu hangi dizinden, hangi porttan çalışıyor?</td><td data-e="Sonraki adım">Başka oturumun sunucusuna bakıyor olabilirsin. <a href="../index.html#m-paralel-3-k">11.3</a></td></tr><tr><td data-e="Belirti">Rewind sonrası bazı dosyalar eski halinde değil</td><td data-e="İlk ayırıcı kontrol">Dosya Bash'le mi değişti?</td><td data-e="Sonraki adım">Checkpoint onu izlemez. Git ile geri al. <a href="../index.html#m-git-2-k">15.2</a></td></tr><tr><td data-e="Belirti">Belgedeki komut yok</td><td data-e="İlk ayırıcı kontrol"><code>claude --version</code></td><td data-e="Sonraki adım">Belge yerel sürümden yeni olabilir. Güncelle ya da <code>/help</code> ile kontrol et. <a href="../index.html#m-bakim-6-k">19.6</a></td></tr></tbody></table></div>
+<h2 id="yardim-isterken">Yardım isterken</h2>
+<p>"Çalışmıyor" yerine dört şey yaz: beklenen, gözlenen, tekrar koşulu ve son değişiklik. Büyük log'u sohbete yapıştırma, dosyaya yaz ve ilgili kısmı okut.</p>
+<pre>Beklenen: PreToolUse hook&#x27;u rm -rf içeren komutu reddetsin.
+Gözlenen: komut sormadan çalıştı.
+Tekrar: yeni oturum, proje kökünde, hook .claude/settings.json içinde.
+Son değişiklik: hook&#x27;a async: true eklendi.
+İstek: nedeni ayır, en küçük düzeltmeyi öner, aynı koşulda sına.</pre>
+<footer><a href="../index.html#ekler">Bütün ekler</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/ekler/sorun-giderme.md">Markdown sürümü</a></footer></main>
+</body>
+</html>

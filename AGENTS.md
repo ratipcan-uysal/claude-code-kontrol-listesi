@@ -1,5 +1,6 @@
 # Bu depoda çalışma
 
+- Ek sayfaların kaynağı `kaynak/ekler.py`; `[[3.1]]` maddeye bağlanır, geçersiz numara derlemeyi durdurur. `ekler/` üretilmiş çıktıdır.
 - İçerik kaynağı `kaynak/veri.py`; üretici `kaynak/yap.py`, tarayıcı davranışı `kaynak/app.js`.
 - Üretilmiş README/index dosyasını tek başına düzenleme. `python3 kaynak/yap.py` çalıştır; PDF’yi de güncelle.
 - Mevcut bölüm sırasını ve madde sırasını koru. Yeni madde bölüm sonuna eklenir; işaret kimlikleri ve `cc-kontrol-v2` anahtarı kullanıcı verisidir.

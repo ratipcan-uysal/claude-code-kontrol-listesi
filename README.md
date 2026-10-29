@@ -1,11 +1,11 @@
 # Claude Code'u iyi kullanmanın kontrol listesi
 
-19 bölüm, 107 madde. Her maddede neden, nasıl, kopyalanabilir örnek ve doğrulama.
+19 bölüm, 113 madde. Her maddede neden, nasıl, kopyalanabilir örnek ve doğrulama.
 
 - **Web sürümü** (işaretlenebilir, süzgeçli): https://ratipcan-uysal.github.io/claude-code-kontrol-listesi/
 - **PDF:** [claude-code-kontrol-listesi.pdf](claude-code-kontrol-listesi.pdf)
 
-_21 Ekim 2026 · Kaynak kontrolü; yerel CLI 2.1.284_
+_29 Ekim 2026 · Kaynak kontrolü; yerel CLI 2.1.284_
 
 ## Nasıl okunur
 
@@ -13,9 +13,9 @@ Bu liste tekrar işi azaltmak, kapsamı belirlemek ve sonucu kanıtla teslim alm
 
 **Neden** gerekçeyi, **nasıl** uygulama yolunu, **doğrula** beklenen kanıtı gösterir. Başlangıç onlusu ve temel/ileri etiketleri editoryal öneridir; ölçülmüş getiri sıralaması değildir.
 
-**Temel** 25, **ileri** 82 madde vardır. Teknik davranışların yanında resmî kaynak bağlantısı bulunur; bağlantısız maddeler iş akışı önerisidir. Örnekler kendi projenin araçlarına ve yetkisine uyarlanmalıdır.
+**Temel** 25, **ileri** 88 madde vardır. Teknik davranışların yanında resmî kaynak bağlantısı bulunur; bağlantısız maddeler iş akışı önerisidir. Örnekler kendi projenin araçlarına ve yetkisine uyarlanmalıdır.
 
-Kaynaklar 21 Ekim 2026'da kontrol edildi. Yerel CLI 2.1.284 için yalnız sürüm ve yardım çıktısı alındı; listelenen bütün Claude özellikleri canlı çalıştırılmadı. CLI, Desktop, bulut ve sağlayıcı farklarını ilgili belgede kontrol et.
+Kaynaklar 21 Ekim 2026'da kontrol edildi, yeni altı madde ve ekler 29 Ekim 2026'da. Yerel CLI 2.1.284 için yalnız sürüm ve yardım çıktısı alındı; listelenen bütün Claude özellikleri canlı çalıştırılmadı. CLI, Desktop, bulut ve sağlayıcı farklarını ilgili belgede kontrol et.
 
 Bir kutuyu işaretlemek kişisel ilerleme kaydıdır; otomatik doğrulama veya güvenlik garantisi değildir. Tarayıcı verisi temizlenebilir; ilerlemeni JSON olarak dışa aktarabilirsin.
 
@@ -34,25 +34,32 @@ Bir kutuyu işaretlemek kişisel ilerleme kaydıdır; otomatik doğrulama veya g
 
 ## Bölümler
 
-1. [Talimat katmanları](#1-talimat) (7)
-2. [Bağlam yönetimi](#2-baglam) (6)
+1. [Talimat katmanları](#1-talimat) (8)
+2. [Bağlam yönetimi](#2-baglam) (7)
 3. [Görev verme](#3-gorev) (7)
 4. [Prompt yazımı: önce ve sonra](#4-prompt) (4)
-5. [Model, effort ve maliyet](#5-model) (5)
+5. [Model, effort ve maliyet](#5-model) (6)
 6. [İzinler](#6-izin) (7)
 7. [Güvenlik ve gizlilik](#7-guvenlik) (7)
-8. [Hook'lar](#8-hook) (5)
+8. [Hook'lar](#8-hook) (7)
 9. [Skill, komut, ajan, MCP](#9-yeniden) (8)
 10. [Ekiple kullanım](#10-ekip) (3)
 11. [Paralel çalışma](#11-paralel) (6)
 12. [Doğrulama](#12-dogrulama) (7)
 13. [Gözetimsiz koşum](#13-gozetimsiz) (6)
-14. [Rutinler ve zamanlama](#14-rutin) (6)
+14. [Rutinler ve zamanlama](#14-rutin) (7)
 15. [Git ve yayın](#15-git) (4)
 16. [Tasarım ve arayüz](#16-tasarim) (4)
 17. [Mobil ve simülatör](#17-mobil) (5)
 18. [Bilgi birikimi](#18-bilgi) (4)
 19. [Bakım ritmi](#19-bakim) (6)
+
+## Ekler
+
+- [Komutlar ve kısayollar](ekler/komutlar.md): Slash komutları işe göre, en çok işe yarayan CLI bayrakları, klavye kısayolları ve sık karıştırılan çiftler.
+- [Sorun giderme](ekler/sorun-giderme.md): Belirti, ilk ayırıcı kontrol ve sonraki adım. Talimat, izin, hook, bağlam, genişletme ve koşum sorunları.
+- [Gerçek deneyimlerden on ders](ekler/deneyimler.md): Tarihli ölçüm defterinden anonimleştirilmiş vakalar: gözlenen, ders, ayırıcı kanıt ve sınır.
+- [Terimler sözlüğü](ekler/sozluk.md): Listede geçen terimlerin bir cümlelik karşılıkları, konu başına gruplanmış.
 
 <a id="1-talimat"></a>
 ## 1. Talimat katmanları
@@ -128,6 +135,17 @@ Yeni oturumun konuşma bağlamı yenidir; talimat dosyaları ve otomatik bellek 
   - **Nasıl:** `/memory` ile kayıtları ve etkin ayarı incele; yanlış veya artık geçerli olmayan bilgiyi düzelt.
   - **Doğrula:** Yeni oturum kritik notu doğru kullanıyor; otomatik belleğe güvenilerek açık iş kaydı atlanmıyor.
   - **Dayanak:** [Talimat ve bellek](https://code.claude.com/docs/en/memory)
+- [ ] **1.8 Ayarın hangi katmandan geldiğini doğrula.** `İleri`
+  - **Neden:** Aynı anahtar kullanıcı, proje, yerel ve yönetilen katmanda farklı olabilir. Beklemediğin davranışın kaynağı çoğu zaman yanlış katmandaki bir ayardır.
+  - **Nasıl:** `/status` içindeki `Setting sources` satırı o oturumda yüklenen ayar dosyalarını listeler, tek tek anahtarın kaynağını göstermez. Öncelik yüksekten düşüğe: yönetilen, komut satırı, `settings.local.json`, `.claude/settings.json`, kullanıcı. İzin listeleri birleşir, ezilmez. Ortam değişkeni ayrı işler: kabuktaki `ANTHROPIC_MODEL` dosyadaki `model` anahtarını geçer.
+
+    ```
+    grep -n '"model"' ~/.claude/settings.json .claude/settings.json .claude/settings.local.json 2>/dev/null
+    env | grep ^ANTHROPIC_
+    ```
+
+  - **Doğrula:** `Setting sources` beklediğin dosyaları listeliyor. Şüpheli anahtar her katmanda aranmış, etkisi küçük bir denemeyle görülmüş. Tek dosyayı okuyup etkin değeri varsayma.
+  - **Dayanak:** [Ayarlar](https://code.claude.com/docs/en/settings)
 
 <a id="2-baglam"></a>
 ## 2. Bağlam yönetimi
@@ -199,6 +217,20 @@ Gereksiz araç çıktısı ve konu değişimleri bağlamı büyütür. Sıkışt
 
   - **Doğrula:** Sıkıştırmadan sonra kritik bir kararı sor, doğru gelmeli.
   - **Dayanak:** [Komutlar](https://code.claude.com/docs/en/commands)
+- [ ] **2.7 Devam, dallandırma ve temiz başlangıcı ayır.** `İleri`
+  - **Neden:** Kaldığın yerden sürmek, aynı noktadan başka bir yol denemek ve sıfırdan başlamak farklı ihtiyaçlardır. Yanlışını seçmek ya bağlamı kirletir ya da işi yeniden kurdurur.
+  - **Nasıl:** Aynı işe dönmek için `claude --continue` ya da `/resume`. Başka bir yaklaşımı orijinali bozmadan denemek için `/branch` ya da `claude --resume` ile `--fork-session`. `/fork` farklıdır: konuşmayı arka planda koşan yeni bir oturuma kopyalar, sen burada sürersin. Kodu ve konuşmayı geri sarmak için `/rewind` (boş girdide Esc Esc). İlgisiz iş için `/clear`.
+
+    ```
+    # Aynı iş, yeni gün
+    claude --continue
+    # Aynı noktadan ikinci yaklaşım, orijinal korunur
+    claude --resume odeme-refactor --fork-session
+    # Oturum içinde: /branch alternatif-cozum
+    ```
+
+  - **Doğrula:** Dalı açınca orijinal oturum `/resume` listesinde duruyor. Rewind sonrası yalnız Bash ile değişmiş dosyalar Git ile ayrıca kontrol edilmiş.
+  - **Dayanak:** [Oturumlar](https://code.claude.com/docs/en/sessions) · [Checkpoint](https://code.claude.com/docs/en/checkpointing)
 
 <a id="3-gorev"></a>
 ## 3. Görev verme
@@ -389,6 +421,19 @@ Her işe en güçlü modeli ve en yüksek düşünme bütçesini vermek limiti e
   - **Nasıl:** `/advisor opus` ile aç, `/advisor off` ile kapat. Kullanılabilirlik model, sağlayıcı ve özellik erişimine bağlıdır; Anthropic API altyapısı kullanır, bu yalnız API anahtarı kullanıcıları demek değildir.
   - **Doğrula:** `/advisor` ile bağlı modeli kontrol et.
   - **Dayanak:** [Advisor](https://code.claude.com/docs/en/advisor)
+- [ ] **5.6 Model değişikliğini aynı görevle karşılaştır.** `İleri`
+  - **Neden:** Genel izlenim ve tek bir başarılı cevap model seçimini kanıtlamaz. Hata maliyeti, süre ve kullanım ancak aynı işte yan yana görünür.
+  - **Nasıl:** Kendi işinden temsilî iki üç görev seç. Her birini iki modelle aynı prompt ve aynı başlangıç durumuyla headless koştur. JSON çıktısındaki sonucu, tur sayısını ve maliyeti kaydet, sonucu önceden belirlediğin ölçütle değerlendir. Belgede hazır bir karşılaştırma tarifi yok, bu parçalarla kurulur.
+
+    ```
+    for m in sonnet opus; do
+      claude -p "$(cat gorev.md)" --model $m --output-format json \
+        --no-session-persistence > sonuc-$m.json
+    done
+    ```
+
+  - **Doğrula:** Karar tablosunda her görev için iki modelin ölçüt sonucu, `num_turns` ve `total_cost_usd` var. Tek koşumluk farkı kesin sonuç sayma.
+  - **Dayanak:** [Model ve effort](https://code.claude.com/docs/en/model-config) · [Headless kullanım](https://code.claude.com/docs/en/headless)
 
 <a id="6-izin"></a>
 ## 6. İzinler
@@ -592,6 +637,16 @@ Hook belirli olaylarda çalışan bir mekanizmadır; güvenilirliği betiğin ka
   - **Neden:** Bilgi gösteren hook ile güvenlik kapısı aynı hatada-devam kuralını kullanmamalıdır.
   - **Nasıl:** Bilgilendirme hatasını görünür kaydet; politika hook’unda hatayı sessizce başarıya çevirme. `onFailure: "block"` komut/HTTP hook’ları için v2.1.295+ gerektirir; eski sürümde yokmuş gibi davran.
   - **Doğrula:** Betiğin bulunamaması, bozuk JSON, hata çıkışı ve timeout ayrı denenmiş; engel gerektiğinde çağrı ilerlemiyor.
+  - **Dayanak:** [Hook referansı](https://code.claude.com/docs/en/hooks)
+- [ ] **8.6 Engellemesi gereken hook'u arka plana atma.** `İleri`
+  - **Neden:** Arka plan hook'u Claude'u bekletmez ama onu durduramaz da. Güvenlik kontrolünü async yapmak kontrolü sessizce kaldırmaktır.
+  - **Nasıl:** `async: true` yalnız bildirim, log, yavaş biçimlendirme gibi engellemesi gerekmeyen işlerde. Async hook'un `decision` ve `permissionDecision` alanları etkisizdir. `asyncRewake` exit 2 ile Claude'u uyarır, engellemez. Headless koşum bitince hâlâ koşan async hook iptal edilir.
+  - **Doğrula:** Yasak bir komutu dene: senkron hook onu reddediyor, aynı hook async iken reddetmiyor. Bu farkı gördükten sonra güvenlik hook'unu senkron bırak.
+  - **Dayanak:** [Hook referansı](https://code.claude.com/docs/en/hooks)
+- [ ] **8.7 Birden çok hook arasında çalışma sırası varsayma.** `İleri`
+  - **Neden:** Aynı olaya eşleşen hook'lar paralel çalışır. Birinin diğerinin çıktısına dayandığı düzen bazen tutar, bazen tutmaz.
+  - **Nasıl:** Sıraya bağlı adımları tek bir betikte birleştir. Paralel hook'lar aynı dosyaya yazıyorsa çakışmayı göze al ya da ayrı dosyalara yazdır.
+  - **Doğrula:** Bağımlı iki adım tek betikte. Hook'ları farklı sırada tanımlayınca sonuç değişmiyor.
   - **Dayanak:** [Hook referansı](https://code.claude.com/docs/en/hooks)
 
 <a id="9-yeniden"></a>
@@ -903,6 +958,19 @@ Tekrarlanan işi elle tetiklemek unutulur. Ama bilgisayar kapanınca ölen bir r
   - **Neden:** Geçerli JSON üretmek işin tamamlandığını göstermez.
   - **Nasıl:** Çıkış kodu, `is_error`, sonuç türü ve kabul ölçütünü değerlendir; yarım işi tekrar koşarken yan etkileri çoğaltma.
   - **Doğrula:** İzin reddi ve tur sınırı vakaları hata/eksik olarak görünür; başarılı eşinde kabul ölçütü sağlanır.
+  - **Dayanak:** [Headless kullanım](https://code.claude.com/docs/en/headless)
+- [ ] **14.7 Makineye aktarılacak sonucu şemayla tanımla.** `İleri`
+  - **Neden:** Başka bir betiğin okuyacağı sonucu serbest metinden ayıklamak kırılgandır. Biçim bir gün değişir, betik sessizce yanlış veri alır.
+  - **Nasıl:** Headless koşumda `--output-format json` ile birlikte `--json-schema` ver. Sonuç `structured_output` alanında gelir. Claude geçerli çıktı üretemezse alan hiç gelmez, betik önce varlığına baksın. Başarıyı yalnız `subtype` ile ölçme, `is_error` alanına da bak.
+
+    ```
+    claude -p "Bu haftanın hata kayıtlarını özetle" --output-format json \
+      --json-schema '{"type":"object","properties":{"kritik":{"type":"integer"}},"required":["kritik"]}' \
+      > sonuc.json
+    jq -e '.is_error == false and has("structured_output")' sonuc.json
+    ```
+
+  - **Doğrula:** Şemaya uymayan bir durumu dene, ör. boş girdi: betik alanın yokluğunu fark edip hata veriyor, boş veriyle devam etmiyor.
   - **Dayanak:** [Headless kullanım](https://code.claude.com/docs/en/headless)
 
 <a id="15-git"></a>

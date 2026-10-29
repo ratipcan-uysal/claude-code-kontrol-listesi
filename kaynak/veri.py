@@ -1,5 +1,5 @@
 # Tek içerik kaynağı; mevcut bölüm ve madde sırası kalıcı işaret kimlikleridir.
-SURUM = "21 Ekim 2026 · Kaynak kontrolü; yerel CLI 2.1.284"
+SURUM = "29 Ekim 2026 · Kaynak kontrolü; yerel CLI 2.1.284"
 
 def M(e, n, y, d, s="ileri", o=None, r=None):
     return dict(e=e, n=n, y=y, d=d, s=s, o=o, r=r or [])
@@ -29,7 +29,8 @@ KAYNAKLAR = {'memory': {'ad': 'Talimat ve bellek', 'url': 'https://code.claude.c
  'scheduled-tasks': {'ad': 'Oturum içi zamanlama', 'url': 'https://code.claude.com/docs/en/scheduled-tasks'},
  'checkpointing': {'ad': 'Checkpoint', 'url': 'https://code.claude.com/docs/en/checkpointing'},
  'settings-reference': {'ad': 'Ayar referansı', 'url': 'https://code.claude.com/docs/en/settings-reference'},
- 'overview': {'ad': 'Genel bakış', 'url': 'https://code.claude.com/docs/en/overview'}}
+ 'overview': {'ad': 'Genel bakış', 'url': 'https://code.claude.com/docs/en/overview'},
+ 'sessions': {'ad': 'Oturumlar', 'url': 'https://code.claude.com/docs/en/sessions'}}
 
 BOLUMLER = [
 ('talimat', 'Talimat katmanları', 'Yeni oturumun konuşma bağlamı yenidir; talimat dosyaları ve otomatik bellek oturumlar arasında bilgi taşıyabilir. Kalıcı kuralları kısa tut, ayrıntılı prosedürleri ilgili işe taşınacak dosyalara ayır.', [
@@ -82,6 +83,13 @@ M('Otomatik belleği düzenli olarak gözden geçir.',
   'ileri',
   None,
   ['memory']),
+M('Ayarın hangi katmandan geldiğini doğrula.',
+  'Aynı anahtar kullanıcı, proje, yerel ve yönetilen katmanda farklı olabilir. Beklemediğin davranışın kaynağı çoğu zaman yanlış katmandaki bir ayardır.',
+  '<code>/status</code> içindeki <code>Setting sources</code> satırı o oturumda yüklenen ayar dosyalarını listeler, tek tek anahtarın kaynağını göstermez. Öncelik yüksekten düşüğe: yönetilen, komut satırı, <code>settings.local.json</code>, <code>.claude/settings.json</code>, kullanıcı. İzin listeleri birleşir, ezilmez. Ortam değişkeni ayrı işler: kabuktaki <code>ANTHROPIC_MODEL</code> dosyadaki <code>model</code> anahtarını geçer.',
+  '<code>Setting sources</code> beklediğin dosyaları listeliyor. Şüpheli anahtar her katmanda aranmış, etkisi küçük bir denemeyle görülmüş. Tek dosyayı okuyup etkin değeri varsayma.',
+  'ileri',
+  'grep -n \'"model"\' ~/.claude/settings.json .claude/settings.json .claude/settings.local.json 2>/dev/null\nenv | grep ^ANTHROPIC_',
+  ['settings']),
 ]),
 
 ('baglam', 'Bağlam yönetimi', 'Gereksiz araç çıktısı ve konu değişimleri bağlamı büyütür. Sıkıştırma ayrıntı kaybettirebilir; yeni oturum da bağlamı tekrar kurmayı gerektirir. Geçiş kararını işin sınırına ve açık kanıtlara göre ver.', [
@@ -127,6 +135,13 @@ M('<code>/compact</code> yaparken neyin korunacağını söyle.',
   'ileri',
   '/compact veri modeli kararlarını, açık hataları ve değişen dosya yollarını koru',
   ['commands']),
+M('Devam, dallandırma ve temiz başlangıcı ayır.',
+  'Kaldığın yerden sürmek, aynı noktadan başka bir yol denemek ve sıfırdan başlamak farklı ihtiyaçlardır. Yanlışını seçmek ya bağlamı kirletir ya da işi yeniden kurdurur.',
+  'Aynı işe dönmek için <code>claude --continue</code> ya da <code>/resume</code>. Başka bir yaklaşımı orijinali bozmadan denemek için <code>/branch</code> ya da <code>claude --resume</code> ile <code>--fork-session</code>. <code>/fork</code> farklıdır: konuşmayı arka planda koşan yeni bir oturuma kopyalar, sen burada sürersin. Kodu ve konuşmayı geri sarmak için <code>/rewind</code> (boş girdide Esc Esc). İlgisiz iş için <code>/clear</code>.',
+  'Dalı açınca orijinal oturum <code>/resume</code> listesinde duruyor. Rewind sonrası yalnız Bash ile değişmiş dosyalar Git ile ayrıca kontrol edilmiş.',
+  'ileri',
+  '# Aynı iş, yeni gün\nclaude --continue\n# Aynı noktadan ikinci yaklaşım, orijinal korunur\nclaude --resume odeme-refactor --fork-session\n# Oturum içinde: /branch alternatif-cozum',
+  ['sessions', 'checkpointing']),
 ]),
 
 ('gorev', 'Görev verme', 'Bir isteğin kalitesi, en çok neyin "bitti" sayılacağının açıklığına bağlı. Bitiş tanımı yoksa model ya erken durur ya da senden "devam" bekler.', [
@@ -248,6 +263,13 @@ M("Advisor'u zor kararlar için kullan.",
   'ileri',
   None,
   ['advisor']),
+M('Model değişikliğini aynı görevle karşılaştır.',
+  'Genel izlenim ve tek bir başarılı cevap model seçimini kanıtlamaz. Hata maliyeti, süre ve kullanım ancak aynı işte yan yana görünür.',
+  'Kendi işinden temsilî iki üç görev seç. Her birini iki modelle aynı prompt ve aynı başlangıç durumuyla headless koştur. JSON çıktısındaki sonucu, tur sayısını ve maliyeti kaydet, sonucu önceden belirlediğin ölçütle değerlendir. Belgede hazır bir karşılaştırma tarifi yok, bu parçalarla kurulur.',
+  'Karar tablosunda her görev için iki modelin ölçüt sonucu, <code>num_turns</code> ve <code>total_cost_usd</code> var. Tek koşumluk farkı kesin sonuç sayma.',
+  'ileri',
+  'for m in sonnet opus; do\n  claude -p "$(cat gorev.md)" --model $m --output-format json \\\n    --no-session-persistence > sonuc-$m.json\ndone',
+  ['model-config', 'headless']),
 ]),
 
 ('izin', 'İzinler', 'İzin listesi tekrarlanan yetkili işlemleri kolaylaştırır. Etkin mod, yönetilen politika, hook ve sandbox da sonucu etkiler. Bir allow kuralı komutun her girdide güvenli olduğunu kanıtlamaz.', [
@@ -387,6 +409,20 @@ M('Hook hata politikasını görevine göre seç.',
   'Bilgi gösteren hook ile güvenlik kapısı aynı hatada-devam kuralını kullanmamalıdır.',
   'Bilgilendirme hatasını görünür kaydet; politika hook’unda hatayı sessizce başarıya çevirme. <code>onFailure: "block"</code> komut/HTTP hook’ları için v2.1.295+ gerektirir; eski sürümde yokmuş gibi davran.',
   'Betiğin bulunamaması, bozuk JSON, hata çıkışı ve timeout ayrı denenmiş; engel gerektiğinde çağrı ilerlemiyor.',
+  'ileri',
+  None,
+  ['hooks']),
+M('Engellemesi gereken hook\'u arka plana atma.',
+  'Arka plan hook\'u Claude\'u bekletmez ama onu durduramaz da. Güvenlik kontrolünü async yapmak kontrolü sessizce kaldırmaktır.',
+  '<code>async: true</code> yalnız bildirim, log, yavaş biçimlendirme gibi engellemesi gerekmeyen işlerde. Async hook\'un <code>decision</code> ve <code>permissionDecision</code> alanları etkisizdir. <code>asyncRewake</code> exit 2 ile Claude\'u uyarır, engellemez. Headless koşum bitince hâlâ koşan async hook iptal edilir.',
+  'Yasak bir komutu dene: senkron hook onu reddediyor, aynı hook async iken reddetmiyor. Bu farkı gördükten sonra güvenlik hook\'unu senkron bırak.',
+  'ileri',
+  None,
+  ['hooks']),
+M('Birden çok hook arasında çalışma sırası varsayma.',
+  'Aynı olaya eşleşen hook\'lar paralel çalışır. Birinin diğerinin çıktısına dayandığı düzen bazen tutar, bazen tutmaz.',
+  'Sıraya bağlı adımları tek bir betikte birleştir. Paralel hook\'lar aynı dosyaya yazıyorsa çakışmayı göze al ya da ayrı dosyalara yazdır.',
+  'Bağımlı iki adım tek betikte. Hook\'ları farklı sırada tanımlayınca sonuç değişmiyor.',
   'ileri',
   None,
   ['hooks']),
@@ -659,6 +695,13 @@ M('Headless başarısını süreç ve sonuç alanından birlikte doğrula.',
   'İzin reddi ve tur sınırı vakaları hata/eksik olarak görünür; başarılı eşinde kabul ölçütü sağlanır.',
   'ileri',
   None,
+  ['headless']),
+M('Makineye aktarılacak sonucu şemayla tanımla.',
+  'Başka bir betiğin okuyacağı sonucu serbest metinden ayıklamak kırılgandır. Biçim bir gün değişir, betik sessizce yanlış veri alır.',
+  'Headless koşumda <code>--output-format json</code> ile birlikte <code>--json-schema</code> ver. Sonuç <code>structured_output</code> alanında gelir. Claude geçerli çıktı üretemezse alan hiç gelmez, betik önce varlığına baksın. Başarıyı yalnız <code>subtype</code> ile ölçme, <code>is_error</code> alanına da bak.',
+  'Şemaya uymayan bir durumu dene, ör. boş girdi: betik alanın yokluğunu fark edip hata veriyor, boş veriyle devam etmiyor.',
+  'ileri',
+  'claude -p "Bu haftanın hata kayıtlarını özetle" --output-format json \\\n  --json-schema \'{"type":"object","properties":{"kritik":{"type":"integer"}},"required":["kritik"]}\' \\\n  > sonuc.json\njq -e \'.is_error == false and has("structured_output")\' sonuc.json',
   ['headless']),
 ]),
 

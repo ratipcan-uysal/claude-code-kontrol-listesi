@@ -2,6 +2,7 @@
 import sys, os, re, html
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from veri import BOLUMLER, ILK10, SAYILAR, SURUM, KAYNAKLAR
+from ekler import EKLER, EK_TARIH
 
 esc = html.escape
 N = sum(len(m) for *_, m in BOLUMLER)
@@ -13,7 +14,7 @@ OKUMA = [
  "Bu liste tekrar işi azaltmak, kapsamı belirlemek ve sonucu kanıtla teslim almak için hazırlanmış bir çalışma rehberidir. Her madde her projeye uygun değildir; kullanımına uygun olanları seç.",
  "<b>Neden</b> gerekçeyi, <b>nasıl</b> uygulama yolunu, <b>doğrula</b> beklenen kanıtı gösterir. Başlangıç onlusu ve temel/ileri etiketleri editoryal öneridir; ölçülmüş getiri sıralaması değildir.",
  f"<b>Temel</b> {NT}, <b>ileri</b> {N-NT} madde vardır. Teknik davranışların yanında resmî kaynak bağlantısı bulunur; bağlantısız maddeler iş akışı önerisidir. Örnekler kendi projenin araçlarına ve yetkisine uyarlanmalıdır.",
- "Kaynaklar 21 Ekim 2026'da kontrol edildi. Yerel CLI 2.1.284 için yalnız sürüm ve yardım çıktısı alındı; listelenen bütün Claude özellikleri canlı çalıştırılmadı. CLI, Desktop, bulut ve sağlayıcı farklarını ilgili belgede kontrol et.",
+ "Kaynaklar 21 Ekim 2026'da kontrol edildi, yeni altı madde ve ekler 29 Ekim 2026'da. Yerel CLI 2.1.284 için yalnız sürüm ve yardım çıktısı alındı; listelenen bütün Claude özellikleri canlı çalıştırılmadı. CLI, Desktop, bulut ve sağlayıcı farklarını ilgili belgede kontrol et.",
  "Bir kutuyu işaretlemek kişisel ilerleme kaydıdır; otomatik doğrulama veya güvenlik garantisi değildir. Tarayıcı verisi temizlenebilir; ilerlemeni JSON olarak dışa aktarabilirsin.",
 ]
 SAYI_GIRIS = "Eski sürümün kişisel kullanım sayıları bu denetimde ham kayıtlarla yeniden doğrulanmadığından sıralama kanıtı olarak kullanılmıyor."
@@ -36,6 +37,68 @@ def validate(bolumler=BOLUMLER):
     for k,j,_ in ILK10:
         match=next((x for x in bolumler if x[0]==k),None)
         if not match or not 1<=j<=len(match[3]): raise ValueError('Geçersiz başlangıç bağlantısı')
+    validate_ekler(EKLER, bolumler)
+
+# ---------- EKLER ----------
+# Ek metinleri Markdown alt kümesiyle yazılır: ##/###, paragraf, "- " liste, | tablo |, ``` kod.
+# [[3.1]] maddeye bağlantı olur; numara bölüm ve madde sırasından çözülür.
+REF = re.compile(r"\[\[(\d+)\.(\d+)\]\]")
+
+def validate_ekler(ekler, bolumler=BOLUMLER):
+    seen = set()
+    for ek in ekler:
+        if ek["ad"] in seen: raise ValueError("Tekrarlanan ek: " + ek["ad"])
+        seen.add(ek["ad"])
+        for i, j in REF.findall(ek["md"]):
+            i, j = int(i), int(j)
+            if not (1 <= i <= len(bolumler) and 1 <= j <= len(bolumler[i-1][3])):
+                raise ValueError(f"Geçersiz madde bağlantısı: {i}.{j} ({ek['ad']})")
+
+def ref_md(md):
+    return REF.sub(lambda m: f"[{m[1]}.{m[2]}](../README.md#{m[1]}-{BOLUMLER[int(m[1])-1][0]})", md)
+
+def ref_html(md, onek="../index.html"):
+    return REF.sub(lambda m: f"[{m[1]}.{m[2]}]({onek}#m-{BOLUMLER[int(m[1])-1][0]}-{m[2]}-k)", md)
+
+def satir_ici(t):
+    t = esc(t, quote=False)
+    t = re.sub(r"`([^`]+)`", r"<code>\1</code>", t)
+    t = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
+    return re.sub(r"\[([^\]]+)\]\(([^)\s]+)\)", r'<a href="\2">\1</a>', t)
+
+def baslik_id(t):
+    t = t.lower().translate(str.maketrans("çğıöşüâî", "cgiosuai"))
+    return re.sub(r"[^a-z0-9]+", "-", t).strip("-")
+
+def md_html(md, onek_id=""):
+    o, par, liste, tablo, kod = [], [], [], [], None
+    def bosalt():
+        if par: o.append("<p>" + satir_ici(" ".join(par)) + "</p>"); par.clear()
+        if liste: o.append("<ul>" + "".join(f"<li>{satir_ici(x)}</li>" for x in liste) + "</ul>"); liste.clear()
+        if tablo:
+            hucre = lambda s: [c.strip() for c in s.strip().strip("|").split("|")]
+            bas, *govde = [r for r in tablo if not re.fullmatch(r"\|[\s:|-]+\|", r.strip())]
+            o.append('<div class="tablo"><table><thead><tr>' + "".join(f"<th>{satir_ici(c)}</th>" for c in hucre(bas)) + "</tr></thead><tbody>"
+                     + "".join("<tr>" + "".join(f'<td data-e="{esc(re.sub(r"[`*]", "", h))}">{satir_ici(c)}</td>' for h, c in zip(hucre(bas), hucre(r))) + "</tr>" for r in govde) + "</tbody></table></div>")
+            tablo.clear()
+    for l in md.strip("\n").split("\n"):
+        if kod is not None:
+            if l.startswith("```"): o.append(f"<pre>{esc(chr(10).join(kod))}</pre>"); kod = None
+            else: kod.append(l)
+        elif l.startswith("```"): bosalt(); kod = []
+        elif l.startswith("#"):
+            bosalt(); n = len(l) - len(l.lstrip("#")); t = l[n:].strip()
+            o.append(f'<h{n} id="{onek_id}{baslik_id(t)}">{satir_ici(t)}</h{n}>')
+        elif l.startswith("|"):
+            if par or liste: bosalt()
+            tablo.append(l)
+        elif l.startswith("- "):
+            if par or tablo: bosalt()
+            liste.append(l[2:])
+        elif not l.strip(): bosalt()
+        else: par.append(l.strip())
+    bosalt()
+    return "\n".join(o)
 
 
 def ilk10_satirlari():
@@ -106,6 +169,9 @@ def pdf():
             o.append(("</div>" if j == 2 else "") + madde_pdf(i, j, m))
         if len(mad) == 1: o.append("</div>")
         o.append("</section>")
+    for e in EKLER:
+        o.append(f'<section class="bolum ilk ek"><h2>Ek · {e["baslik"]}</h2><p class="giris">{e["ozet"]} Belge kontrolü: {EK_TARIH}.</p>'
+                 + md_html(ref_html(e["md"], SAYFA), e["ad"] + "-") + "</section>")
     o.append('<section class="bolum ilk"><h2>Kendi puan kartın</h2><p class="giris">Her bölüm için kaç maddenin yapıldığını, kaçının sırada olduğunu yaz. Üç ay sonra yeniden doldur.</p><table><tr><th>#</th><th>Bölüm</th><th>Madde</th><th>Yapıldı</th><th>Sırada</th><th>Gerek yok</th></tr>')
     for i, (k, b, _, mad) in enumerate(BOLUMLER, 1):
         o.append(f'<tr><td>{i}</td><td>{b}</td><td class="n">{len(mad)}</td><td><span class="bos"></span></td><td><span class="bos"></span></td><td><span class="bos"></span></td></tr>')
@@ -200,9 +266,48 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(-
 PCSS += """
 a{color:#1d4f91;text-decoration:none}.kaynak{font-size:7.5pt;color:#5a6270;margin-top:1mm}
 pre{overflow-wrap:anywhere}
+.ek h2{margin-top:5mm}.ek h3{font-size:10.5pt;margin:4mm 0 1mm}.ek p{margin:0 0 2mm;max-width:172mm}
+.ek table{font-size:8.6pt;margin:1mm 0 4mm}.ek td,.ek th{vertical-align:top}.ek tr{break-inside:avoid}.ek ul{margin:0 0 2mm;padding-left:5mm}
 """
+SAYFA = "https://ratipcan-uysal.github.io/claude-code-kontrol-listesi/"
 
 WJS = open(os.path.join(os.path.dirname(__file__), 'app.js'), encoding='utf-8').read()
+
+ECSS = """
+main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
+.ek .ust-bag{font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:18px}
+.ek h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+.ek h2{scroll-margin-top:16px}.ek h3{font-size:17px;margin:26px 0 4px}
+.ek p,.ek li{max-width:72ch}
+.ek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.tablo{overflow-x:auto;margin:10px 0 18px;border:1px solid var(--line);border-radius:8px}
+.tablo table{border-collapse:collapse;width:100%;font-size:14px;background:var(--yuzey)}
+.tablo th,.tablo td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
+.tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
+@media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td:first-child code{white-space:normal}}
+ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
+ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+ul.ekler a{font-weight:600}
+ul.ekler span{display:block;color:var(--soft);font-size:14px}
+"""
+
+def ek_html(ek):
+    bag = "".join(f'<a href="{e["ad"]}.html">{e["baslik"]}</a>' for e in EKLER if e is not ek)
+    return ('<!doctype html>\n<html lang="tr">\n<head>\n<meta charset="utf-8">\n'
+            '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
+            f'<meta name="description" content="{esc(ek["ozet"])}">\n<title>{ek["baslik"]} · Claude Code kontrol listesi</title>\n'
+            '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+            '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">\n'
+            f'<style>{WCSS}{ECSS}</style>\n<script>try{{var t=localStorage.getItem("cc-kontrol-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}}catch(e){{}}</script>\n</head>\n<body>\n<main class="ek">'
+            f'<nav class="ust-bag" aria-label="Ekler"><a href="../index.html">← Kontrol listesi</a>{bag}</nav>'
+            f'<h1>{ek["baslik"]}</h1><p class="surum">Belge kontrolü: {EK_TARIH}</p>\n{md_html(ref_html(ek["md"]))}\n'
+            f'<footer><a href="../index.html#ekler">Bütün ekler</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/ekler/{ek["ad"]}.md">Markdown sürümü</a></footer>'
+            '</main>\n</body>\n</html>\n')
+
+def ek_md(ek):
+    diger = " · ".join(f'[{e["baslik"]}]({e["ad"]}.md)' for e in EKLER if e is not ek)
+    return f'# {ek["baslik"]}\n\n_Belge kontrolü: {EK_TARIH}_\n\n{ref_md(ek["md"]).strip()}\n\n---\n\n[Kontrol listesi](../README.md) · {diger}\n'
 
 def madde_web(i, j, m):
     mid = f"m-{BOLUMLER[i-1][0]}-{j}"
@@ -215,10 +320,10 @@ def web():
     o = ['<title>Claude Code kontrol listesi</title>',
          '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">',
-         f'<style>{WCSS}</style>', '<div class="sar"><nav class="dizin" aria-label="Bölümler"><a href="#ilk10"><span>Önce bu on madde</span></a>']
+         f'<style>{WCSS}{ECSS}</style>', '<div class="sar"><nav class="dizin" aria-label="Bölümler"><a href="#ilk10"><span>Önce bu on madde</span></a>']
     for i, (k, b, _, mad) in enumerate(BOLUMLER, 1):
         o.append(f'<a href="#b-{k}"><span>{i}. {b}</span><small>0/{len(mad)}</small></a>')
-    o.append('</nav><main>')
+    o.append(f'<a href="#ekler"><span>Ekler</span><small>{len(EKLER)}</small></a></nav><main>')
     o.append(f'<header class="ust"><h1>{BASLIK}</h1><p>{len(BOLUMLER)} bölüm, {N} madde. Her maddede neden, nasıl, kopyalanabilir örnek ve doğrulama. İşaretler bu tarayıcıda saklanır; JSON olarak yedekleyebilirsin.</p><div class="surum">{SURUM}</div></header>')
     o.append('<div class="cubuk"><div class="ilerleme"><div class="etiket" id="sayac" role="status" aria-live="polite">0 madde işaretlendi</div><div class="yol"><div class="dolu" id="dolu"></div></div></div>'
              '<div class="suzgec" role="group" aria-label="Süzgeç"><button type="button" data-suz="hepsi" aria-pressed="true">Tümü</button>'
@@ -238,6 +343,8 @@ def web():
         o.append(f'<section class="bolum" id="b-{k}"><h2><span class="no">{i}</span>{b}</h2><p class="giris">{giris}</p>')
         o.extend(madde_web(i, j, m) for j, m in enumerate(mad, 1))
         o.append('<p class="bos-durum" hidden>Bu süzgeçte bu bölümde gösterilecek madde yok.</p></section>')
+    o.append('<section id="ekler"><h2>Ekler</h2><p class="giris">Maddeleri günlük işe taşıyan başvuru sayfaları. Her ek ilgili maddelere bağlanır.</p><ul class="ekler">'
+             + "".join(f'<li><a href="ekler/{e["ad"]}.html">{e["baslik"]}</a><span>{e["ozet"]}</span></li>' for e in EKLER) + '</ul></section>')
     o.append(f'<footer>{SURUM}. <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/KAYNAKLAR.md">Kaynaklar</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/DOGRULAMA.md">Doğrulama kapsamı</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/GUNCELLEMELER.md">Değişiklikler</a></footer></main></div>')
     o.append(f"<script>{WJS}</script>")
     return "\n".join(o)
@@ -262,6 +369,7 @@ def readme():
         o.append(f"{n}. **{kisa}** ([{i}.{j}](#{i}-{BOLUMLER[i-1][0]})): {md_satir(m['n'])}")
     o += ["", "## Bölümler", ""]
     o += [f"{i}. [{b}](#{i}-{k}) ({len(m)})" for i, (k, b, _, m) in enumerate(BOLUMLER, 1)]
+    o += ["", "## Ekler", ""] + [f"- [{e['baslik']}](ekler/{e['ad']}.md): {e['ozet']}" for e in EKLER]
     for i, (k, b, giris, mad) in enumerate(BOLUMLER, 1):
         o += ["", f'<a id="{i}-{k}"></a>', f"## {i}. {b}", "", md_satir(giris), ""]
         for j, m in enumerate(mad, 1):
@@ -292,4 +400,8 @@ if __name__ == "__main__":
     open(os.path.join(kok, "kaynak", "pdf.html"), "w", encoding="utf-8").write(pdf())
     open(os.path.join(kok, "index.html"), "w", encoding="utf-8").write(bagimsiz(web()))
     open(os.path.join(kok, "README.md"), "w", encoding="utf-8").write(readme())
+    os.makedirs(os.path.join(kok, "ekler"), exist_ok=True)
+    for e in EKLER:
+        open(os.path.join(kok, "ekler", e["ad"] + ".html"), "w", encoding="utf-8").write(ek_html(e))
+        open(os.path.join(kok, "ekler", e["ad"] + ".md"), "w", encoding="utf-8").write(ek_md(e))
     print(len(BOLUMLER), "bölüm", N, "madde", NT, "temel")

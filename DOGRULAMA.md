@@ -1,5 +1,20 @@
 # Doğrulama kaydı
 
+## 29 Ekim 2026 güncellemesi
+
+| Kontrol | Durum | Kanıt ve sınır |
+|---|---|---|
+| İçerik yapısı ve üretilen dosya eşitliği | PASS | 11 test. 113 madde, 25 temel, 88 ileri. Eski kimlikler korunuyor, ek dosyaları güncel |
+| Hata yakalayan test | PASS | Geçersiz `[[3.99]]` ek bağlantısı reddediliyor. Test geçerli numarayla bozulunca düştü |
+| Sayfa işlevleri | PASS | 40 tarayıcı kontrolü: eski 30'a ek olarak ek sayfaları, ekten maddeye bağlantı, 1440 ve 320 px taşma |
+| Görsel inceleme | PASS | Komutlar eki masaüstü, dört ek 320 px, Ekler bölümü, madde 2.7 ve PDF ek sayfaları açılıp bakıldı |
+| PDF | PASS | 41 A4 sayfa. Dört ek başlığı metinde var |
+| Ürün iddiaları | PASS | Yeni maddeler ve ekler resmî belgeyle karşılaştırıldı. Belgede bulunmayan iddialar yazılmadı |
+| Claude özelliklerinin canlı koşumu | NOT_RUN | Yeni maddelerdeki komutlar ve bayraklar bu görevde çalıştırılmadı |
+| Canlı yayın | NOT_RUN | Değişiklik yerel commit'te, push yapılmadı |
+
+## 21 Ekim 2026
+
 Tarih: 21 Ekim 2026. Hedef: mevcut GitHub deposu ve GitHub Pages sayfası.
 
 | Kontrol | Durum | Kanıt ve sınır |

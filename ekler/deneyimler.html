@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Tarihli ölçüm defterinden anonimleştirilmiş vakalar: gözlenen, ders, ayırıcı kanıt ve sınır.">
+<title>Gerçek deneyimlerden on ders · Claude Code kontrol listesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Düzen: tek sütun okuma alanı, üstte yapışkan ilerleme ve süzgeç çubuğu, geniş ekranda solda bölüm dizini */
+:root{
+ --bg:#f6f7f9;--yuzey:#ffffff;--fg:#17202c;--soft:#5b6472;--line:#e1e5eb;--kod:#eef1f5;
+ --acc:#1d4f91;--accbg:#e6eef9;--ile:#6a4a9c;--ilebg:#f0eaf8;--ok:#1f7a4d;
+ --f-baslik:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+ --f-govde:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+ --f-kod:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-govde);font-size:15px;line-height:1.55;margin:0}
+.sar{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;grid-template-columns:1fr;gap:32px}
+@media (min-width:980px){.sar{grid-template-columns:230px minmax(0,1fr)}}
+nav.dizin{display:none}
+@media (min-width:980px){nav.dizin{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);align-self:start;max-height:calc(100vh - 120px);overflow:auto;font-size:13px}}
+nav.dizin a{display:flex;justify-content:space-between;gap:8px;color:var(--soft);text-decoration:none;padding:4px 8px;border-radius:6px}
+nav.dizin a:hover,nav.dizin a:focus-visible{background:var(--accbg);color:var(--fg);outline:none}
+nav.dizin small{font-variant-numeric:tabular-nums}
+main{min-width:0}
+header.ust h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+header.ust p{color:var(--soft);max-width:65ch;margin:0 0 6px}
+.surum{font-family:var(--f-kod);font-size:12px;color:var(--soft)}
+.cubuk{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0;margin:20px 0 8px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.ilerleme{flex:1 1 220px;min-width:0}
+.ilerleme .etiket{font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
+.ilerleme .yol{height:6px;background:var(--line);border-radius:3px;margin-top:5px;overflow:hidden}
+.ilerleme .dolu{height:100%;width:0;background:var(--ok);transition:width .25s}
+.suzgec{display:flex;flex-wrap:wrap;gap:6px}
+.suzgec button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--yuzey);color:var(--fg);padding:5px 11px;border-radius:999px;cursor:pointer}
+.suzgec button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.suzgec button:focus-visible,.kopya:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+h2{font-family:var(--f-baslik);font-size:24px;letter-spacing:-.01em;margin:44px 0 6px;text-wrap:balance;scroll-margin-top:90px}
+h2 .no{color:var(--acc);margin-right:10px;font-variant-numeric:tabular-nums}
+.giris{color:var(--soft);max-width:68ch;margin:0 0 10px}
+details.okuma{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:8px}
+details.okuma summary{cursor:pointer;font-weight:600}
+details.okuma p{max-width:68ch}
+.sayilar{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.sayilar div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
+.sayilar b{display:block;font-family:var(--f-baslik);font-size:18px}
+.sayilar span{color:var(--soft);font-size:13px}
+.ilk10{list-style:none;padding:0;margin:8px 0 0;counter-reset:s;display:grid;gap:8px}
+.ilk10 li{counter-increment:s;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px;background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.ilk10 li::before{content:counter(s);font-family:var(--f-baslik);font-size:24px;font-weight:700;color:var(--acc);line-height:1}
+.ilk10 a{color:var(--fg);font-weight:600;text-decoration:none}.ilk10 a:hover{text-decoration:underline}
+.ilk10 .n{color:var(--soft);font-size:14px}
+.madde{display:grid;grid-template-columns:28px minmax(0,1fr);gap:4px 10px;padding:16px 0;border-top:1px solid var(--line)}
+.madde[hidden]{display:none}
+.madde input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--ok);cursor:pointer}
+.madde.yapildi .bas{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--line)}
+.bas{font-weight:600;font-size:16px;cursor:pointer}
+.no2{font-variant-numeric:tabular-nums;color:var(--soft);font-weight:500;margin-right:6px}
+.et{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:4px;margin-left:8px;vertical-align:2px}
+.temel{color:var(--acc);background:var(--accbg)}.ileri{color:var(--ile);background:var(--ilebg)}
+dl{display:grid;grid-template-columns:76px minmax(0,1fr);gap:4px 10px;margin:8px 0 0;font-size:14.5px}
+dt{color:var(--soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
+dd{margin:0;min-width:0}
+code{font-family:var(--f-kod);font-size:.88em;background:var(--kod);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.ornek{position:relative;margin-top:8px}
+.ornek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:0;overflow-x:auto;white-space:pre}
+.kopya{position:absolute;top:6px;right:6px;font:inherit;font-size:12px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:2px 9px;cursor:pointer}
+.bos-durum{color:var(--soft);padding:12px 0}
+footer{color:var(--soft);font-size:13px;margin-top:48px;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.ilerleme .dolu{transition:none}}
+
+a{color:var(--acc)}
+.madde,section.bolum{scroll-margin-top:var(--kaydirma,170px)}
+.kaynak{font-size:12px;color:var(--soft);margin:8px 0 0}
+.araclar{margin:14px 0}.araclar label{font-weight:600;font-size:13px;display:block}
+#ara{width:100%;font:inherit;color:var(--fg);background:var(--yuzey);border:1px solid var(--line);border-radius:8px;padding:10px;margin:5px 0}
+.islemler{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.islemler button,.islemler a{font:inherit;font-size:12px;padding:7px 9px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;cursor:pointer;text-decoration:none}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+#arama-sonuc,#bildirim{font-size:13px;color:var(--soft)}
+.ornek pre{padding-top:40px;white-space:pre-wrap;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+@media(max-width:480px){dl{grid-template-columns:1fr;gap:3px}dt{margin-top:7px}.sar{padding-inline:12px}.madde{gap:4px 6px}.cubuk{position:static}.et{margin-left:4px}nav.dizin{position:static}}
+@media print{.cubuk,.araclar,.dizin,.kopya,.ilk10,details.okuma{display:none!important}.sar{display:block;padding:0}body{background:white;color:#17202c}.madde{break-inside:avoid}.ornek pre{padding:10px}a{color:#1d4f91}}
+
+main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
+.ek .ust-bag{font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:18px}
+.ek h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+.ek h2{scroll-margin-top:16px}.ek h3{font-size:17px;margin:26px 0 4px}
+.ek p,.ek li{max-width:72ch}
+.ek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.tablo{overflow-x:auto;margin:10px 0 18px;border:1px solid var(--line);border-radius:8px}
+.tablo table{border-collapse:collapse;width:100%;font-size:14px;background:var(--yuzey)}
+.tablo th,.tablo td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
+.tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
+@media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td:first-child code{white-space:normal}}
+ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
+ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+ul.ekler a{font-weight:600}
+ul.ekler span{display:block;color:var(--soft);font-size:14px}
+</style>
+<script>try{var t=localStorage.getItem("cc-kontrol-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main class="ek"><nav class="ust-bag" aria-label="Ekler"><a href="../index.html">← Kontrol listesi</a><a href="komutlar.html">Komutlar ve kısayollar</a><a href="sorun-giderme.html">Sorun giderme</a><a href="sozluk.html">Terimler sözlüğü</a></nav><h1>Gerçek deneyimlerden on ders</h1><p class="surum">Belge kontrolü: 29 Ekim 2026</p>
+<p>Bu sayfadaki on vaka, bu listenin yazarının kendi makinesinde tuttuğu tarihli ölçüm defterinden alındı. Proje adları, yollar ve kişisel veriler çıkarıldı. Her vaka bir gözlemdir: o makinede, o sürümde, o koşulda görüldü. Genel kural gibi okuma, kendi ortamında aynı belirtiyi gördüğünde ilk bakılacak yer olarak kullan.</p>
+<p>Vakaların ortak dersi şu: en pahalı hatalar bir şeyin kırılmasından değil, bir şeyin <b>hiçbir şeye bakmadan başarılı görünmesinden</b> çıkıyor.</p>
+<h2 id="d01-gozetimsiz-oturumda-izin-modu-sessizce-degisti">D01 · Gözetimsiz oturumda izin modu sessizce değişti</h2>
+<p><b>Gözlenen:</b> Zamanlanmış oturumların izinsiz ilerlemesi için <code>bypassPermissions</code> modu ayarlanmıştı. Bir projenin 43 oturum kaydındaki 345 mod değeri tarandı. Bu mod hiç görünmüyordu. Mod ilk kullanımda bir onay penceresi istiyor, zamanlanmış oturum pencereyi gösteremediği için oturum hata vermeden varsayılan moda düşüyordu.</p>
+<p><b>Ders:</b> Ayarladığın mod ile oturumun gerçekte açıldığı mod ayrı şeylerdir. Gözetimsiz koşumu ayakta tutan şey projenin kendi izin listesiydi.</p>
+<p><b>Ayırıcı kanıt:</b> Oturum kaydındaki etkin mod değeri. Ayar dosyasındaki değer kanıt değildir.</p>
+<p><b>Sınır:</b> 29 Ağustos 2026 gözlemi. Davranış sürüme ve yönetilen politikaya göre değişebilir. İlgili maddeler: <a href="../index.html#m-izin-7-k">6.7</a>, <a href="../index.html#m-gozetimsiz-2-k">13.2</a>.</p>
+<h2 id="d02-hic-test-kosmayan-filtre-yesil-dondu">D02 · Hiç test koşmayan filtre yeşil döndü</h2>
+<p><b>Gözlenen:</b> Test komutuna süitin okunur adı filtre olarak verildi. Eşleşen test olmadı, çıktı "başarılı" dedi. Aynı gün iki kez rapora "test geçiyor" diye girmek üzereydi. Aynı gün iki benzer yeşil daha görüldü: hiçbir dosya bulamadığı için geçen lint ve dar pencere yüzünden körleşen lint.</p>
+<p><b>Ders:</b> Durum satırını değil sayıyı oku. Sıfır test koşmak geçmek değildir.</p>
+<p><b>Ayırıcı kanıt:</b> Çıktıdaki koşulan test sayısı. Filtreyi tip ya da fonksiyon adıyla verince sayı sıfırdan çıktı.</p>
+<p><b>Sınır:</b> Belirli bir test aracının filtre davranışı. Başka araçlarda ilke aynı, sözdizimi farklı. İlgili maddeler: <a href="../index.html#m-dogrulama-1-k">12.1</a>, <a href="../index.html#m-dogrulama-2-k">12.2</a>.</p>
+<h2 id="d03-arka-plana-atilan-is-tur-bitince-iz-birakmadan-oldu">D03 · Arka plana atılan iş, tur bitince iz bırakmadan öldü</h2>
+<p><b>Gözlenen:</b> Zamanlanmış bir görev uzun bir veri çekimini arka planda başlattı ve turu "bekliyorum" diye kapattı. Komut başlamadan önce rastgele bekleme yapıyordu. Oturum kapanınca süreç öldü, görev çıktısı dizinle birlikte silindi. 83 dakika boyunca ağa tek istek gitmedi ve geriye tek satır kanıt kalmadı.</p>
+<p><b>Ders:</b> Gözetimsiz oturumda uzun işi arka plana atıp turu kapatma. Log'u oturumdan bağımsız bir yola yaz. Aynı iş ön planda ve kalıcı log'la 12 dakikada bitti.</p>
+<p><b>Ayırıcı kanıt:</b> Normal komutun yarım çıktısı log'da kalır. Önce bekleyen komut ise "hiç başlamadı" ile "öldü" arasında fark bırakmaz.</p>
+<p><b>Sınır:</b> 1 Eylül 2026, tek bir masaüstü kurulumu. İlgili maddeler: <a href="../index.html#m-gozetimsiz-3-k">13.3</a>, <a href="../index.html#m-gozetimsiz-4-k">13.4</a>.</p>
+<h2 id="d04-ucuz-kontrol-yuk-altinda-120-kat-uzadi">D04 · "Ucuz" kontrol yük altında 120 kat uzadı</h2>
+<p><b>Gözlenen:</b> Görev dosyası bir test komutunu "yaklaşık 2,5 saniye" diye tarif ediyordu. Bir nöbet koşumunda aynı komut 300 saniyelik ön plan sınırını aştı ve arka plana düştü. Testler sonunda geçti. Makine yükü o dakikada 68'e çıkmıştı, eşzamanlı oturumlar yüzünden.</p>
+<p><b>Ders:</b> "Ucuz" bir ölçüm değil varsayımdır. Kontrol arka plana düştüyse turu kapatma, bitmesini bekle ve çıkış satırını oku. Yoksa D03 tekrarlanır ve dışarıdaki nöbetçi makineyi ölü sanıp yanlış alarm verir.</p>
+<p><b>Ayırıcı kanıt:</b> <code>uptime</code> yük ortalamaları. Bir dakikalık değer on beş dakikalığın birkaç katıysa yük o pencerede fırlamıştır.</p>
+<p><b>Sınır:</b> 2 Eylül 2026. İlgili maddeler: <a href="../index.html#m-paralel-4-k">11.4</a>, <a href="../index.html#m-gozetimsiz-4-k">13.4</a>.</p>
+<h2 id="d05-uyku-engelleyici-bataryada-uykuyu-engellemedi">D05 · Uyku engelleyici, bataryada uykuyu engellemedi</h2>
+<p><b>Gözlenen:</b> Gece koşumu bir uyku engelleyiciyle sarılmıştı. Makine prizde değildi. 19 saatte süreç 1,2 saniye işlemci zamanı kullandı. Sistem günlüğünde aynı gece 257 uykuya giriş kaydı vardı. Çıktı dosyası 19 saat boyunca boş kaldı. Makine prize takılınca aynı koşum 20 dakikada bitti.</p>
+<p><b>Ders:</b> Batarya ve düşük şarj koşumu öldürmez, dondurur. Donma sessizdir. Gece koşumunun ön koşulu makinenin şarjda olmasıdır.</p>
+<p><b>Ayırıcı kanıt:</b> Geçen süreye değil işlemci süresine bak. Oran sıfıra yakınsa süreç uyuyor demektir.</p>
+<p><b>Sınır:</b> macOS, 5 Eylül 2026. İlgili madde: <a href="../index.html#m-gozetimsiz-2-k">13.2</a>.</p>
+<h2 id="d06-baska-oturumun-commit-i-benim-degisikliklerimi-goturdu">D06 · Başka oturumun commit'i benim değişikliklerimi götürdü</h2>
+<p><b>Gözlenen:</b> Değişiklikler stage edildi, ardından üç dakikalık izole derleme yapıldı. Bu arada aynı repoda çalışan başka bir oturum kendi raporunu commit'ledi. Commit index'in tamamını aldı. Dört dosya başka bir mesajın altına girdi, benim commit'im "değişiklik yok" diye boş döndü.</p>
+<p><b>Ders:</b> Git index'i aynı checkout'taki bütün oturumlar arasında ortaktır. Stage ile commit'i tek komutta yap. Arada derleme gerekiyorsa index'i değil geçici bir kopyayı ya da ayrı worktree'yi kullan.</p>
+<p><b>Ayırıcı kanıt:</b> <code>git log --stat</code> ile dosyaların hangi commit'e girdiğine bak.</p>
+<p><b>Sınır:</b> 28 Eylül 2026. İçerik doğruydu, yalnız commit mesajı yanlıştı. Paylaşılan dalda geçmiş yeniden yazılmadı. İlgili maddeler: <a href="../index.html#m-paralel-1-k">11.1</a>, <a href="../index.html#m-paralel-2-k">11.2</a>.</p>
+<h2 id="d07-proje-disi-import-headless-kosumda-yuklenmedi">D07 · Proje dışı import headless koşumda yüklenmedi</h2>
+<p><b>Gözlenen:</b> Ortak kurallar ayrı bir dosyaya taşındı ve dört projenin CLAUDE.md'sine <code>@~/...</code> import'u eklendi. <code>claude -p</code> ile koşulan oturum dosyanın içeriğini görmedi, yalnız import satırını gördü. Proje dışı import onayı proje yolu başına tutuluyordu. Her worktree ayrı kayıt sayılıyordu, headless koşum onay penceresini hiç göstermiyordu. Symlink de çözmedi.</p>
+<p><b>Ders:</b> Her oturuma girmesi gereken proje dışı bilgiyi import'a bırakma. SessionStart hook'u aynı içeriği her koşumda bağlama koydu ve model kuralı kelimesi kelimesine aktardı.</p>
+<p><b>Ayırıcı kanıt:</b> Dosya okuma araçları kapalı bir headless oturumda "bu kural ne diyor?" diye sor.</p>
+<p><b>Sınır:</b> 15 Ekim 2026. İlgili maddeler: <a href="../index.html#m-talimat-5-k">1.5</a>, <a href="../index.html#m-hook-1-k">8.1</a>.</p>
+<h2 id="d08-dort-paralel-oturum-makineyi-kilitledi-metin-kurali-yetmedi">D08 · Dört paralel oturum makineyi kilitledi, metin kuralı yetmedi</h2>
+<p><b>Gözlenen:</b> Dört alt oturum ayrı worktree'lerde aynı anda derleme ve test koştu. Başka projelerin derlemeleri de sürüyordu. Yük ortalaması 720'ye çıktı, sakin makinede 4'tü. Oturumlara "ağır komutu kilitle sar" diye metin talimatı verildi. Bir oturum kilitsiz başlattığı derlemeyi sonradan durdurmak zorunda kaldı.</p>
+<p><b>Ders:</b> Metin kuralı yeni oturuma ve başka projeye ulaşmaz. Çalışan yol iki parçalıydı: ağır komutları iki yuvalı kilitle koşturan bir sarmalayıcı ve sırasız ağır komutu reddeden bir PreToolUse hook'u.</p>
+<p><b>Ayırıcı kanıt:</b> Hook 16 vakalık bir testle sınandı, sıfır yanlış verdi. Hafif komut istisnası bozulunca iki yanlış verdi, yani test gerçekten bakıyordu.</p>
+<p><b>Sınır:</b> 26 Ekim 2026. Tek yuva fazla dar çıktı: uzun bir cihaz testi kilidi 30 dakika tuttu, diğerleri boşta bekledi. İlgili maddeler: <a href="../index.html#m-hook-4-k">8.4</a>, <a href="../index.html#m-paralel-4-k">11.4</a>, <a href="../index.html#m-paralel-6-k">11.6</a>.</p>
+<h2 id="d09-gecici-dizin-toptan-silindi-cok-gunluk-is-gitti">D09 · Geçici dizin toptan silindi, çok günlük iş gitti</h2>
+<p><b>Gözlenen:</b> Bir yazı serisinin kaynakları, görselleri ve durum dosyası oturumun geçici çalışma dizinindeydi. Dizin ağacı bir akşam toptan silindi. Metinler alt ajan kayıtlarındaki dosya okuma sonuçlarından geri kuruldu. Görsellerin yerel kopyası geri gelmedi.</p>
+<p><b>Ders:</b> Birden çok gün sürecek işin kaynağı geçici dizinde tutulmaz. Proje dizinine ya da kalıcı bir yola yaz. Geçici dizin yalnız o turun ara çıktısı içindir.</p>
+<p><b>Ayırıcı kanıt:</b> Yeniden yaratılan dizinlerin hepsi aynı dakikanın zaman damgasını taşıyordu.</p>
+<p><b>Sınır:</b> 27 Ekim 2026. Silmenin nedeni ölçülmedi. İlgili maddeler: <a href="../index.html#m-gozetimsiz-3-k">13.3</a>, <a href="../index.html#m-bilgi-2-k">18.2</a>.</p>
+<h2 id="d10-eski-rapor-canli-sistemin-yerine-okundu">D10 · Eski rapor, canlı sistemin yerine okundu</h2>
+<p><b>Gözlenen:</b> On gün önceki bir denetim "uygulama yalnız bir ülkede satışta" diyordu. Cümle aynı gün iki kez tekrarlandı, biri kullanıcının yapıştırdığı notta. Sayfaya bakılmadan doğru kabul edildi ve buna göre bir karar önerildi. Yönetim panelinde uygulama 175 ülkede satıştaydı. Aynı oturumda ikinci bir örnek: bir sürüm notundaki "hepsinin görseli var" iddiası yeni sürümde 11 eksik görselle çürüdü.</p>
+<p><b>Ders:</b> Mağaza ayarı, sayı, kapsam gibi değişebilen bir durumu eski rapordan alma. Kullanıcının yapıştırdığı not da bir rapordur. Yazmadan ya da öneri yapmadan önce kaynağın kendisine bak.</p>
+<p><b>Ayırıcı kanıt:</b> Kaynağın şu anki değeri ve okuma tarihi.</p>
+<p><b>Sınır:</b> 28 Ekim 2026. İlgili maddeler: <a href="../index.html#m-dogrulama-3-k">12.3</a>, <a href="../index.html#m-bilgi-4-k">18.4</a>.</p>
+<footer><a href="../index.html#ekler">Bütün ekler</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/ekler/deneyimler.md">Markdown sürümü</a></footer></main>
+</body>
+</html>

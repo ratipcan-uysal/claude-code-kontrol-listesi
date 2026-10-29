@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Listede geçen terimlerin bir cümlelik karşılıkları, konu başına gruplanmış.">
+<title>Terimler sözlüğü · Claude Code kontrol listesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Düzen: tek sütun okuma alanı, üstte yapışkan ilerleme ve süzgeç çubuğu, geniş ekranda solda bölüm dizini */
+:root{
+ --bg:#f6f7f9;--yuzey:#ffffff;--fg:#17202c;--soft:#5b6472;--line:#e1e5eb;--kod:#eef1f5;
+ --acc:#1d4f91;--accbg:#e6eef9;--ile:#6a4a9c;--ilebg:#f0eaf8;--ok:#1f7a4d;
+ --f-baslik:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+ --f-govde:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+ --f-kod:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-govde);font-size:15px;line-height:1.55;margin:0}
+.sar{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;grid-template-columns:1fr;gap:32px}
+@media (min-width:980px){.sar{grid-template-columns:230px minmax(0,1fr)}}
+nav.dizin{display:none}
+@media (min-width:980px){nav.dizin{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);align-self:start;max-height:calc(100vh - 120px);overflow:auto;font-size:13px}}
+nav.dizin a{display:flex;justify-content:space-between;gap:8px;color:var(--soft);text-decoration:none;padding:4px 8px;border-radius:6px}
+nav.dizin a:hover,nav.dizin a:focus-visible{background:var(--accbg);color:var(--fg);outline:none}
+nav.dizin small{font-variant-numeric:tabular-nums}
+main{min-width:0}
+header.ust h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+header.ust p{color:var(--soft);max-width:65ch;margin:0 0 6px}
+.surum{font-family:var(--f-kod);font-size:12px;color:var(--soft)}
+.cubuk{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0;margin:20px 0 8px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.ilerleme{flex:1 1 220px;min-width:0}
+.ilerleme .etiket{font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
+.ilerleme .yol{height:6px;background:var(--line);border-radius:3px;margin-top:5px;overflow:hidden}
+.ilerleme .dolu{height:100%;width:0;background:var(--ok);transition:width .25s}
+.suzgec{display:flex;flex-wrap:wrap;gap:6px}
+.suzgec button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--yuzey);color:var(--fg);padding:5px 11px;border-radius:999px;cursor:pointer}
+.suzgec button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.suzgec button:focus-visible,.kopya:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+h2{font-family:var(--f-baslik);font-size:24px;letter-spacing:-.01em;margin:44px 0 6px;text-wrap:balance;scroll-margin-top:90px}
+h2 .no{color:var(--acc);margin-right:10px;font-variant-numeric:tabular-nums}
+.giris{color:var(--soft);max-width:68ch;margin:0 0 10px}
+details.okuma{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:8px}
+details.okuma summary{cursor:pointer;font-weight:600}
+details.okuma p{max-width:68ch}
+.sayilar{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.sayilar div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
+.sayilar b{display:block;font-family:var(--f-baslik);font-size:18px}
+.sayilar span{color:var(--soft);font-size:13px}
+.ilk10{list-style:none;padding:0;margin:8px 0 0;counter-reset:s;display:grid;gap:8px}
+.ilk10 li{counter-increment:s;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px;background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.ilk10 li::before{content:counter(s);font-family:var(--f-baslik);font-size:24px;font-weight:700;color:var(--acc);line-height:1}
+.ilk10 a{color:var(--fg);font-weight:600;text-decoration:none}.ilk10 a:hover{text-decoration:underline}
+.ilk10 .n{color:var(--soft);font-size:14px}
+.madde{display:grid;grid-template-columns:28px minmax(0,1fr);gap:4px 10px;padding:16px 0;border-top:1px solid var(--line)}
+.madde[hidden]{display:none}
+.madde input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--ok);cursor:pointer}
+.madde.yapildi .bas{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--line)}
+.bas{font-weight:600;font-size:16px;cursor:pointer}
+.no2{font-variant-numeric:tabular-nums;color:var(--soft);font-weight:500;margin-right:6px}
+.et{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:4px;margin-left:8px;vertical-align:2px}
+.temel{color:var(--acc);background:var(--accbg)}.ileri{color:var(--ile);background:var(--ilebg)}
+dl{display:grid;grid-template-columns:76px minmax(0,1fr);gap:4px 10px;margin:8px 0 0;font-size:14.5px}
+dt{color:var(--soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
+dd{margin:0;min-width:0}
+code{font-family:var(--f-kod);font-size:.88em;background:var(--kod);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.ornek{position:relative;margin-top:8px}
+.ornek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:0;overflow-x:auto;white-space:pre}
+.kopya{position:absolute;top:6px;right:6px;font:inherit;font-size:12px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:2px 9px;cursor:pointer}
+.bos-durum{color:var(--soft);padding:12px 0}
+footer{color:var(--soft);font-size:13px;margin-top:48px;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.ilerleme .dolu{transition:none}}
+
+a{color:var(--acc)}
+.madde,section.bolum{scroll-margin-top:var(--kaydirma,170px)}
+.kaynak{font-size:12px;color:var(--soft);margin:8px 0 0}
+.araclar{margin:14px 0}.araclar label{font-weight:600;font-size:13px;display:block}
+#ara{width:100%;font:inherit;color:var(--fg);background:var(--yuzey);border:1px solid var(--line);border-radius:8px;padding:10px;margin:5px 0}
+.islemler{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.islemler button,.islemler a{font:inherit;font-size:12px;padding:7px 9px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;cursor:pointer;text-decoration:none}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+#arama-sonuc,#bildirim{font-size:13px;color:var(--soft)}
+.ornek pre{padding-top:40px;white-space:pre-wrap;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+@media(max-width:480px){dl{grid-template-columns:1fr;gap:3px}dt{margin-top:7px}.sar{padding-inline:12px}.madde{gap:4px 6px}.cubuk{position:static}.et{margin-left:4px}nav.dizin{position:static}}
+@media print{.cubuk,.araclar,.dizin,.kopya,.ilk10,details.okuma{display:none!important}.sar{display:block;padding:0}body{background:white;color:#17202c}.madde{break-inside:avoid}.ornek pre{padding:10px}a{color:#1d4f91}}
+
+main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
+.ek .ust-bag{font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:18px}
+.ek h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+.ek h2{scroll-margin-top:16px}.ek h3{font-size:17px;margin:26px 0 4px}
+.ek p,.ek li{max-width:72ch}
+.ek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.tablo{overflow-x:auto;margin:10px 0 18px;border:1px solid var(--line);border-radius:8px}
+.tablo table{border-collapse:collapse;width:100%;font-size:14px;background:var(--yuzey)}
+.tablo th,.tablo td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
+.tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
+@media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td:first-child code{white-space:normal}}
+ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
+ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+ul.ekler a{font-weight:600}
+ul.ekler span{display:block;color:var(--soft);font-size:14px}
+</style>
+<script>try{var t=localStorage.getItem("cc-kontrol-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main class="ek"><nav class="ust-bag" aria-label="Ekler"><a href="../index.html">← Kontrol listesi</a><a href="komutlar.html">Komutlar ve kısayollar</a><a href="sorun-giderme.html">Sorun giderme</a><a href="deneyimler.html">Gerçek deneyimlerden on ders</a></nav><h1>Terimler sözlüğü</h1><p class="surum">Belge kontrolü: 29 Ekim 2026</p>
+<p>Terimler ilk geçtiği maddede kısaca tanımlanır. Bu sayfa hepsini bir arada verir. Her satır terimin bu listede ne anlama geldiğini söyler. Ürün davranışının tamamı için ilgili resmî belgeye bak.</p>
+<h2 id="oturum-ve-baglam">Oturum ve bağlam</h2>
+<div class="tablo"><table><thead><tr><th>Terim</th><th>Bu listede ne demek</th></tr></thead><tbody><tr><td data-e="Terim">Oturum</td><td data-e="Bu listede ne demek">Claude ile tek bir konuşma ve onun araç geçmişi. Kapatıp açınca konuşma bağlamı sıfırlanır, dosyalar kalır.</td></tr><tr><td data-e="Terim">Bağlam (context)</td><td data-e="Bu listede ne demek">Modelin o anda görebildiği her şey: mesajlar, okunan dosyalar, araç çıktıları, yüklenen talimatlar. Sınırlıdır ve dolar.</td></tr><tr><td data-e="Terim">Token</td><td data-e="Bu listede ne demek">Modelin metni işlediği parça. Bağlam ve kullanım token'la ölçülür. Kelimeyle birebir eşleşmez.</td></tr><tr><td data-e="Terim">Sıkıştırma (<code>/compact</code>)</td><td data-e="Bu listede ne demek">Uzayan konuşmanın özetle değiştirilmesi. Yer açar, ayrıntı kaybettirebilir.</td></tr><tr><td data-e="Terim">Checkpoint</td><td data-e="Bu listede ne demek">Claude'un dosya düzenlemelerinden önce aldığı yerel geri dönüş noktası. Git'in yerini tutmaz.</td></tr><tr><td data-e="Terim">Devir dosyası</td><td data-e="Bu listede ne demek">Oturum kapanmadan önce durumun yazıldığı dosya. Yeni oturum oradan devam eder.</td></tr><tr><td data-e="Terim">Otomatik bellek</td><td data-e="Bu listede ne demek">Claude'un oturumlar arasında kendi tuttuğu notlar. Talimat dosyasından ayrıdır, eskiyebilir.</td></tr></tbody></table></div>
+<h2 id="talimat-ve-ayar">Talimat ve ayar</h2>
+<div class="tablo"><table><thead><tr><th>Terim</th><th>Bu listede ne demek</th></tr></thead><tbody><tr><td data-e="Terim">CLAUDE.md</td><td data-e="Bu listede ne demek">Her oturumun başında yüklenen talimat dosyası. Üç düzeyi var: kullanıcı, proje ve alt dizin.</td></tr><tr><td data-e="Terim"><code>CLAUDE.local.md</code></td><td data-e="Bu listede ne demek">Yalnız bu makinede geçerli proje notu. Git'e girmez.</td></tr><tr><td data-e="Terim">Kural dosyası (<code>.claude/rules/</code>)</td><td data-e="Bu listede ne demek">Yalnız eşleşen dosyalara dokunulunca yüklenen talimat.</td></tr><tr><td data-e="Terim"><code>settings.json</code></td><td data-e="Bu listede ne demek">İzin, hook, model ve ortam ayarlarının dosyası. Kullanıcı, proje, yerel ve yönetilen katmanları vardır.</td></tr><tr><td data-e="Terim">Yönetilen politika</td><td data-e="Bu listede ne demek">Kurumun yönettiği ve kullanıcının ezemediği ayar katmanı.</td></tr><tr><td data-e="Terim">Prompt</td><td data-e="Bu listede ne demek">Claude'a verilen istek metni.</td></tr><tr><td data-e="Terim">Output style</td><td data-e="Bu listede ne demek">Claude'un cevap üslubunu değiştiren hazır ya da özel ayar.</td></tr></tbody></table></div>
+<h2 id="i-zin-ve-guvenlik">İzin ve güvenlik</h2>
+<div class="tablo"><table><thead><tr><th>Terim</th><th>Bu listede ne demek</th></tr></thead><tbody><tr><td data-e="Terim">İzin modu</td><td data-e="Bu listede ne demek">Claude'un araç kullanmadan önce ne zaman onay soracağını belirleyen mod. Plan modu bunlardan biridir.</td></tr><tr><td data-e="Terim">Allow / ask / deny</td><td data-e="Bu listede ne demek">İzin kuralının üç sonucu: sormadan izin ver, sor, reddet.</td></tr><tr><td data-e="Terim">Plan modu</td><td data-e="Bu listede ne demek">Claude'un yalnız okuyup plan yazdığı, dosya değiştirmediği mod.</td></tr><tr><td data-e="Terim">Sandbox</td><td data-e="Bu listede ne demek">Komutların dosya sistemi ve ağ erişimini işletim sistemi düzeyinde sınırlayan yalıtım.</td></tr><tr><td data-e="Terim">Prompt injection</td><td data-e="Bu listede ne demek">Okunan sayfa, belge ya da e-postadaki metnin kullanıcı talimatı gibi davranmaya çalışması.</td></tr></tbody></table></div>
+<h2 id="genisletme">Genişletme</h2>
+<div class="tablo"><table><thead><tr><th>Terim</th><th>Bu listede ne demek</th></tr></thead><tbody><tr><td data-e="Terim">Hook</td><td data-e="Bu listede ne demek">Belirli bir olayda (araç öncesi, araç sonrası, oturum başı gibi) otomatik çalışan betik. Modelin kararına bağlı değildir.</td></tr><tr><td data-e="Terim">Skill</td><td data-e="Bu listede ne demek">Gerektiğinde yüklenen talimat ve dosya paketi. Açıklaması her zaman bağlamdadır, gövdesi yalnız kullanılınca yüklenir.</td></tr><tr><td data-e="Terim">Slash komutu</td><td data-e="Bu listede ne demek"><code>/</code> ile başlayan komut. Bir kısmı yerleşik, bir kısmını skill ve plugin'ler ekler.</td></tr><tr><td data-e="Terim">Alt ajan (subagent)</td><td data-e="Bu listede ne demek">Kendi bağlamında çalışan ve sonucu ana oturuma özet olarak dönen yardımcı Claude.</td></tr><tr><td data-e="Terim">MCP</td><td data-e="Bu listede ne demek">Claude'u dış sistemlere (veritabanı, iş takibi, tarayıcı gibi) araç olarak bağlayan açık protokol.</td></tr><tr><td data-e="Terim">Plugin</td><td data-e="Bu listede ne demek">Skill, ajan, hook ve MCP ayarlarını tek pakette dağıtma biçimi.</td></tr><tr><td data-e="Terim">Statusline</td><td data-e="Bu listede ne demek">Terminal altında sürekli görünen, kendi betiğinle üretilen durum satırı.</td></tr></tbody></table></div>
+<h2 id="calisma-bicimi">Çalışma biçimi</h2>
+<div class="tablo"><table><thead><tr><th>Terim</th><th>Bu listede ne demek</th></tr></thead><tbody><tr><td data-e="Terim">Headless (<code>claude -p</code>)</td><td data-e="Bu listede ne demek">Etkileşimsiz koşum. İstek verilir, sonuç metin ya da JSON olarak döner, oturum biter.</td></tr><tr><td data-e="Terim">Effort</td><td data-e="Bu listede ne demek">Modelin düşünmeye ayıracağı çaba düzeyi.</td></tr><tr><td data-e="Terim">Worktree</td><td data-e="Bu listede ne demek">Aynı Git deposunun ayrı bir klasördeki ikinci çalışma kopyası. Paralel yazarları ayırır.</td></tr><tr><td data-e="Terim">Rutin</td><td data-e="Bu listede ne demek">Zamanlanmış ya da tetiklenmiş, gözetimsiz koşan Claude görevi. Bulutta ya da masaüstünde çalışır.</td></tr><tr><td data-e="Terim">Gözetimsiz koşum</td><td data-e="Bu listede ne demek">Kullanıcı başında yokken ilerleyen iş. Soru soramaz, izin bekleyemez.</td></tr><tr><td data-e="Terim">Advisor</td><td data-e="Bu listede ne demek">Zor kararda ikinci, daha güçlü bir modelin görüşünü alma özelliği.</td></tr><tr><td data-e="Terim">Harness</td><td data-e="Bu listede ne demek">Modelin çevresindeki çalışma düzeni: araçlar, izinler, bağlam yönetimi. Claude Code bir harness'tır.</td></tr></tbody></table></div>
+<footer><a href="../index.html#ekler">Bütün ekler</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/ekler/sozluk.md">Markdown sürümü</a></footer></main>
+</body>
+</html>
