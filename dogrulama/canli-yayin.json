@@ -1,20 +1,54 @@
 {
-  "checked_at": "2026-10-21T20:35:19.713910+00:00",
-  "content_commit": "d6873cd404cc2edc273e400aca4ba84c1198bf66",
-  "url": "https://ratipcan-uysal.github.io/claude-code-kontrol-listesi/",
-  "authentication": "none; public HTTP requests",
-  "files": [
+  "tarih": "2026-10-29T15:30:04.608987Z",
+  "commit": "0dc3fe544b8364bb270086a14198094e4055cd04",
+  "dosyalar": [
     {
-      "path": "index.html",
-      "http": "200",
-      "sha256": "4de36017e0562884b276e849e7229a76ed0aeecf5912a0149fb84d1b57228fce",
-      "matches_local": true
+      "yol": "index.html",
+      "http": 200,
+      "esit": true,
+      "sha256": "49f7ad76bdd333c6441de451311dbee8acc275f84a1ba92f29f147c5ebf47035"
     },
     {
-      "path": "claude-code-kontrol-listesi.pdf",
-      "http": "200",
-      "sha256": "8e46d4f8839a6afb5bc1d49a1b411cc87457e371fee8f4144ca1060446368dae",
-      "matches_local": true
+      "yol": "claude-code-kontrol-listesi.pdf",
+      "http": 200,
+      "esit": true,
+      "sha256": "6baf98b82f114535b507b03b48a58d0360097d7ae7342789f02bd7de436ffac0"
+    },
+    {
+      "yol": "ekler/komutlar.html",
+      "http": 200,
+      "esit": true,
+      "sha256": "18bd085b8335ba5b26445a6f7b0169ce39dabf0fd83caa2fc2639350b4fc4c1f"
+    },
+    {
+      "yol": "ekler/sorun-giderme.html",
+      "http": 200,
+      "esit": true,
+      "sha256": "8f29bd14e25e5966403cab93a556e0e8574e758c6d5aeb4e9ac1f67c43b3dd08"
+    },
+    {
+      "yol": "ekler/dosyalar.html",
+      "http": 200,
+      "esit": true,
+      "sha256": "6bd6ebd2d07b6a1926df594dd2e72b68dde0ba36eb24289c07b5721396284ccd"
+    },
+    {
+      "yol": "ekler/ipuclari.html",
+      "http": 200,
+      "esit": true,
+      "sha256": "31bbf8657ba21e99c410abb00749cb2104dd806e4c7efce4694f8bf9780dcee6"
+    },
+    {
+      "yol": "ekler/deneyimler.html",
+      "http": 200,
+      "esit": true,
+      "sha256": "79f28b39a35a600e63c36cbab20455b1e00d6d70b7e3278079289276be7ac190"
+    },
+    {
+      "yol": "ekler/sozluk.html",
+      "http": 200,
+      "esit": true,
+      "sha256": "b443bafc9f537e38786c95f35778a135556f538c5e5717b4cbf672a17e09446c"
     }
   ]
 }

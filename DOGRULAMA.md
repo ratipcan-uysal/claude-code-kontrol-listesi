@@ -11,7 +11,9 @@
 | PDF | PASS | 50 A4 sayfa. Altı ek başlığı metinde var |
 | Ürün iddiaları | PASS | Yeni maddeler ve ekler resmî belgeyle karşılaştırıldı. Belgede bulunmayan iddialar yazılmadı |
 | Claude özelliklerinin canlı koşumu | NOT_RUN | Yeni maddelerdeki komutlar ve bayraklar bu görevde çalıştırılmadı |
-| Canlı yayın | NOT_RUN | Değişiklik yerel commit'te, push yapılmadı |
+| GitHub CI | PASS | [İçerik kontrolü](https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/actions/runs/40902023457), commit `0dc3fe5` |
+| Canlı yayın | PASS | [Pages dağıtımı](https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/actions/runs/40902021597). Anonim HTTP 200, HTML, PDF ve altı ek yerel dosyalarla SHA-256 düzeyinde aynı: [kanıt](dogrulama/canli-yayin.json) |
+| Canlı sayfa işlevleri | PASS | Aynı 44 tarayıcı kontrolü herkese açık adreste de geçti: [sonuçlar](dogrulama/browser-live.json) |
 
 ## 21 Ekim 2026
 
