@@ -9,6 +9,7 @@
 | Ürün iddiaları | PASS | Projects maddeleri claude-projects ve cloud-environments belgeleriyle, 5.7 model-config ve settings-reference ile karşılaştırıldı. Opus 5.5 kaynaklı 3.8, 12.8, 13.7, 16.5 iş akışı önerisidir |
 | Canlı özellik denemesi | NOT_RUN | Projects ve model geçişi canlı denenmedi |
 | GitHub CI | PASS | [İçerik kontrolü](https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/actions/runs/40958918442), commit `b9a2622` |
+| Dizin ağaçları (sonraki yayın) | PASS | Commit `0c70cf9`: [CI](https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/actions/runs/41034279070), [Pages](https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/actions/runs/41034277809). 23 canlı dosya yerelle aynı, 74 tarayıcı kontrolü canlı adreste geçti. PDF 100 sayfa |
 | Canlı yayın | PASS | [Pages dağıtımı](https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/actions/runs/40958915697). 23 dosya anonim HTTP 200 ve yerel dosyalarla SHA-256 düzeyinde aynı: [kanıt](dogrulama/canli-yayin.json) |
 | PDF | PASS | 99 A4 sayfa |
 
