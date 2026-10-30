@@ -93,7 +93,7 @@ main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
 .ek h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
 .ek h2{scroll-margin-top:16px}.ek h3{font-size:17px;margin:26px 0 4px}
 .ek p,.ek li{max-width:72ch}
-.ek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.ek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre;overflow-x:auto;overflow-wrap:normal}
 .tablo{overflow-x:auto;margin:10px 0 18px;border:1px solid var(--line);border-radius:8px}
 .tablo table{border-collapse:collapse;width:100%;font-size:14px;background:var(--yuzey)}
 .tablo th,.tablo td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
@@ -111,6 +111,47 @@ ul.ekler span{display:block;color:var(--soft);font-size:14px}
 <main class="ek"><nav class="ust-bag" aria-label="Gezinme"><a href="../index.html">← Kontrol listesi</a><a href="../rehber/index.html">Rehber</a><a href="komutlar.html">Komutlar ve kısayollar</a><a href="sorun-giderme.html">Sorun giderme</a><a href="ipuclari.html">İpuçları ve püf noktaları</a><a href="deneyimler.html">Gerçek deneyimlerden on ders</a><a href="sozluk.html">Terimler sözlüğü</a></nav><h1>Dosya konumları</h1><p class="surum">Belge kontrolü: 29 Ekim 2026</p>
 <p>Claude Code davranışını birkaç düzine dosyadan alır ve yaptığı işi de dosyalara yazar. Bir ayar beklediğin gibi çalışmıyorsa, bir bilgi bir oturumda var ötekinde yoksa ya da disk doluyorsa cevap çoğu zaman bu sayfadaki bir yoldadır.</p>
 <p>Yollar macOS ve Linux içindir. Windows'ta <code>~/.claude</code>, <code>%USERPROFILE%\.claude</code> olur. <code>CLAUDE_CONFIG_DIR</code> ortam değişkeni verilirse <code>~/.claude</code> altındaki her şey, <code>~/.claude.json</code> ve kimlik dosyası da o dizine taşınır. Kaynaklar: <a href="https://code.claude.com/docs/en/settings">ayarlar</a>, <a href="https://code.claude.com/docs/en/claude-directory">.claude dizini</a>, <a href="https://code.claude.com/docs/en/memory">bellek</a>, <a href="https://code.claude.com/docs/en/mcp">MCP</a>.</p>
+<h2 id="tek-bakista">Tek bakışta</h2>
+<p>Aşağıdaki iki ağaç, Claude Code'un okuduğu ve yazdığı dosyaların nerede durduğunu gösterir. Ayrıntıları ve git'e girip girmediklerini sonraki bölümlerdeki tablolar verir.</p>
+<p><b>Proje kökü.</b> Ekiple paylaşılanlar git'e girer, <code>.local</code> ile bitenler girmez.</p>
+<pre>proje/
+├── CLAUDE.md                 her oturumda yüklenen proje talimatı
+├── CLAUDE.local.md           yalnız bu makinedeki not, .gitignore&#x27;a ekle
+├── AGENTS.md                 hiç CLAUDE dosyası yoksa okunur
+├── .mcp.json                 ekiple paylaşılan MCP sunucuları
+├── .worktreeinclude          yeni worktree&#x27;ye kopyalanacak gizli dosyalar
+├── alt-dizin/
+│   └── CLAUDE.md             o dizinde bir dosyaya dokununca yüklenir
+└── .claude/
+    ├── settings.json         ekibin izinleri, hook&#x27;ları, plugin&#x27;leri
+    ├── settings.local.json   senin bu projedeki ayarın, git&#x27;e girmez
+    ├── CLAUDE.md             kökteki CLAUDE.md&#x27;nin yerine kullanılabilir
+    ├── rules/                paths desenine uyan dosyada yüklenen kurallar
+    ├── skills/&lt;ad&gt;/SKILL.md  proje skill&#x27;leri
+    ├── agents/               proje alt ajanları
+    ├── commands/             eski biçim özel komutlar
+    ├── output-styles/        cevap üslubu tanımları
+    └── workflows/            kaydedilmiş workflow betikleri</pre>
+<p><b>Ev dizini.</b> Bütün projelerde geçerli ayarlar ve Claude Code'un kendi verisi.</p>
+<pre>~/
+├── .claude.json              hesap, kullanıcı ve local kapsamlı MCP, proje güven kararları
+└── .claude/
+    ├── settings.json         kişisel izinler, hook&#x27;lar, env, model, atıf
+    ├── CLAUDE.md             her projede yüklenen kişisel talimat
+    ├── rules/                bütün projelerde geçerli yol kuralları
+    ├── skills/  agents/  commands/  output-styles/
+    ├── keybindings.json      klavye kısayolu değişiklikleri
+    ├── statusline.sh         durum satırı betiği (yolu settings.json&#x27;da)
+    ├── plugins/              plugin önbelleği, verisi, marketplace kopyaları
+    ├── projects/&lt;proje&gt;/
+    │   ├── &lt;oturum&gt;.jsonl    konuşma kaydı, süre dolunca silinir
+    │   └── memory/MEMORY.md  otomatik bellek dizini
+    ├── file-history/         /rewind&#x27;ın geri yüklediği dosya kopyaları
+    ├── plans/                plan modu dosyaları
+    ├── history.jsonl         yazdığın prompt&#x27;lar, silinmez
+    ├── backups/              ~/.claude.json&#x27;un eski kopyaları
+    └── .credentials.json     Linux ve Windows&#x27;ta giriş anahtarı</pre>
+<p>macOS'ta giriş anahtarı dosyada değil Keychain'de durur. Kurumun yönettiği ayarlar ayrı bir sistem dizinindedir, macOS'ta <code>/Library/Application Support/ClaudeCode/</code>.</p>
 <h2 id="ayar-dosyalari">Ayar dosyaları</h2>
 <p>Öncelik yüksekten düşüğe: yönetilen, komut satırı, proje yerel, paylaşılan proje, kullanıcı. İzin listeleri katmanlar arasında birleşir. Hangi dosyaların yüklendiğini <code>/status</code> içindeki <code>Setting sources</code> satırı gösterir. <a href="../index.html#m-talimat-8-k">1.8</a></p>
 <div class="tablo"><table><thead><tr><th>Yol</th><th>Kapsam</th><th>Ne için</th><th>Git</th></tr></thead><tbody><tr><td data-e="Yol"><code>~/.claude/settings.json</code></td><td data-e="Kapsam">Kullanıcı, bütün projeler</td><td data-e="Ne için">Kişisel izinler, hook'lar, <code>env</code>, model, atıf</td><td data-e="Git">Girmez</td></tr><tr><td data-e="Yol"><code>.claude/settings.json</code></td><td data-e="Kapsam">Proje, ekip</td><td data-e="Ne için">Ekibin ortak izinleri, hook'ları, plugin'leri</td><td data-e="Git">Girer <a href="../index.html#m-ekip-1-k">10.1</a></td></tr><tr><td data-e="Yol"><code>.claude/settings.local.json</code></td><td data-e="Kapsam">Proje, yalnız sen</td><td data-e="Ne için">Bu projede kişisel ayar. "Bir daha sorma" dediğin izinler buraya yazılır</td><td data-e="Git">Girmez. Claude Code dosyayı yaratırken global git excludes'a ekler</td></tr><tr><td data-e="Yol"><code>/Library/Application Support/ClaudeCode/managed-settings.json</code></td><td data-e="Kapsam">Yönetilen (macOS)</td><td data-e="Ne için">Kurum politikası. Kullanıcı ve proje ayarları bunu ezemez</td><td data-e="Git">Girmez. IT dağıtır</td></tr><tr><td data-e="Yol"><code>/etc/claude-code/managed-settings.json</code></td><td data-e="Kapsam">Yönetilen (Linux, WSL)</td><td data-e="Ne için">Aynı</td><td data-e="Git">Girmez</td></tr><tr><td data-e="Yol"><code>C:\Program Files\ClaudeCode\managed-settings.json</code></td><td data-e="Kapsam">Yönetilen (Windows)</td><td data-e="Ne için">Aynı. Eski <code>ProgramData</code> yolu artık okunmaz</td><td data-e="Git">Girmez</td></tr><tr><td data-e="Yol"><code>managed-settings.d/*.json</code></td><td data-e="Kapsam">Yönetilen, parçalı</td><td data-e="Ne için">Politikayı ekipler arasında bölmek. Dosyalar alfabetik sırayla birleşir</td><td data-e="Git">Girmez</td></tr><tr><td data-e="Yol"><code>managed-mcp.json</code></td><td data-e="Kapsam">Yönetilen</td><td data-e="Ne için">Kurumun sabit MCP sunucu seti</td><td data-e="Git">Girmez</td></tr></tbody></table></div>

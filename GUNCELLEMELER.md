@@ -5,6 +5,7 @@ Dayanak resmî belge: [Projects](https://code.claude.com/docs/en/claude-projects
 - Kontrol listesine 20. bölüm, yedi madde: proje talimatı, repo ayarlarının thread'e gelmemesi, ağ erişimi, ağ sırrı, kurulum betiği, model ve effort ile Usage, Waiting on you.
 - Rehbere 14. bölüm: Projects, koordinatör ve thread'ler.
 - Sorun gidermeye üç satır: GitHub App, thread onayı, proje konuşmasında connector olmaması.
+- Dosya konumları ekinin başına proje kökü ve ev dizini için iki dizin ağacı eklendi. Ek sayfalarındaki kod blokları dar ekranda kırılmak yerine yatay kayıyor.
 
 # 30 Ekim 2026: Opus 5.5 rehberinden eklemeler
 

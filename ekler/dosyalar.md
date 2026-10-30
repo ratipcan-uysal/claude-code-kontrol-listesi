@@ -6,6 +6,58 @@ Claude Code davranışını birkaç düzine dosyadan alır ve yaptığı işi de
 
 Yollar macOS ve Linux içindir. Windows'ta `~/.claude`, `%USERPROFILE%\.claude` olur. `CLAUDE_CONFIG_DIR` ortam değişkeni verilirse `~/.claude` altındaki her şey, `~/.claude.json` ve kimlik dosyası da o dizine taşınır. Kaynaklar: [ayarlar](https://code.claude.com/docs/en/settings), [.claude dizini](https://code.claude.com/docs/en/claude-directory), [bellek](https://code.claude.com/docs/en/memory), [MCP](https://code.claude.com/docs/en/mcp).
 
+## Tek bakışta
+
+Aşağıdaki iki ağaç, Claude Code'un okuduğu ve yazdığı dosyaların nerede durduğunu gösterir. Ayrıntıları ve git'e girip girmediklerini sonraki bölümlerdeki tablolar verir.
+
+**Proje kökü.** Ekiple paylaşılanlar git'e girer, `.local` ile bitenler girmez.
+
+```text
+proje/
+├── CLAUDE.md                 her oturumda yüklenen proje talimatı
+├── CLAUDE.local.md           yalnız bu makinedeki not, .gitignore'a ekle
+├── AGENTS.md                 hiç CLAUDE dosyası yoksa okunur
+├── .mcp.json                 ekiple paylaşılan MCP sunucuları
+├── .worktreeinclude          yeni worktree'ye kopyalanacak gizli dosyalar
+├── alt-dizin/
+│   └── CLAUDE.md             o dizinde bir dosyaya dokununca yüklenir
+└── .claude/
+    ├── settings.json         ekibin izinleri, hook'ları, plugin'leri
+    ├── settings.local.json   senin bu projedeki ayarın, git'e girmez
+    ├── CLAUDE.md             kökteki CLAUDE.md'nin yerine kullanılabilir
+    ├── rules/                paths desenine uyan dosyada yüklenen kurallar
+    ├── skills/<ad>/SKILL.md  proje skill'leri
+    ├── agents/               proje alt ajanları
+    ├── commands/             eski biçim özel komutlar
+    ├── output-styles/        cevap üslubu tanımları
+    └── workflows/            kaydedilmiş workflow betikleri
+```
+
+**Ev dizini.** Bütün projelerde geçerli ayarlar ve Claude Code'un kendi verisi.
+
+```text
+~/
+├── .claude.json              hesap, kullanıcı ve local kapsamlı MCP, proje güven kararları
+└── .claude/
+    ├── settings.json         kişisel izinler, hook'lar, env, model, atıf
+    ├── CLAUDE.md             her projede yüklenen kişisel talimat
+    ├── rules/                bütün projelerde geçerli yol kuralları
+    ├── skills/  agents/  commands/  output-styles/
+    ├── keybindings.json      klavye kısayolu değişiklikleri
+    ├── statusline.sh         durum satırı betiği (yolu settings.json'da)
+    ├── plugins/              plugin önbelleği, verisi, marketplace kopyaları
+    ├── projects/<proje>/
+    │   ├── <oturum>.jsonl    konuşma kaydı, süre dolunca silinir
+    │   └── memory/MEMORY.md  otomatik bellek dizini
+    ├── file-history/         /rewind'ın geri yüklediği dosya kopyaları
+    ├── plans/                plan modu dosyaları
+    ├── history.jsonl         yazdığın prompt'lar, silinmez
+    ├── backups/              ~/.claude.json'un eski kopyaları
+    └── .credentials.json     Linux ve Windows'ta giriş anahtarı
+```
+
+macOS'ta giriş anahtarı dosyada değil Keychain'de durur. Kurumun yönettiği ayarlar ayrı bir sistem dizinindedir, macOS'ta `/Library/Application Support/ClaudeCode/`.
+
 ## Ayar dosyaları
 
 Öncelik yüksekten düşüğe: yönetilen, komut satırı, proje yerel, paylaşılan proje, kullanıcı. İzin listeleri katmanlar arasında birleşir. Hangi dosyaların yüklendiğini `/status` içindeki `Setting sources` satırı gösterir. [1.8](../README.md#1-talimat)
