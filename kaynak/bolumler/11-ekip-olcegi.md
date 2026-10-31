@@ -11,11 +11,30 @@ Claude Code ayarı dört sahiple okur. Öncelik yukarıdan aşağıdır: yöneti
 | Kişi, bu proje | `.claude/settings.local.json` | Yalnız sen | Sen |
 | Kişi, her proje | `~/.claude/settings.json` | Yalnız sen | Sen |
 
+Tablo dosyaları sahibine göre sıralar. Öncelik sırası ise aşağıdaki şemada: komut satırı ve yerel dosya, ekip dosyasının üstünde durur.
+
+{{sekil:b11-ekip-ayar-katmanlari|Ayar katmanları öncelik sırasıyla: kim yazar, kime ulaşır. Kurum dosyası kural, ekip dosyası öneridir.}}
+
 Belgenin ince bir ayrımı var ve ekip kurarken en çok bu yanıltır: depoda duran ayar her zaman hemen işlemez. `permissions.allow` kuralları, `additionalDirectories` ve `extraKnownMarketplaces` girdileri, her ekip üyesi klasöre güven verdikten sonra geçerli olur. O zamana dek yeni gelen hâlâ izin sorusu görür. Sınırlayan kurallar (`deny`, `ask`) bundan etkilenmez, çünkü yetki vermezler. Kısacası: ekip dosyası bir öneridir, kurum dosyası bir kuraldır. Ayrıntısı için {{bolum:5}} ve {{bolum:6}}.
 
 ## Karar kuralları
 
 **Ortak olanı commit'le, kişisel olanı yerelde tut.** Ekibin izin listesi, hook'ları ve ortak plugin'leri `settings.json`'a gider. Kendi modelin, kendi kısayolların `settings.local.json`'a. Claude Code yerel dosyayı oluşturduğunda onu git dışında bırakır. Dosyayı elle oluşturduysan `.gitignore`'a kendin eklemelisin. Bir ekip dosyası senin tercihinle çakışırsa kendi yerel dosyanda ezersin, commit gerekmez. [[10.1]]
+
+Aşağıdaki çıktı alıştırmadaki gibi geçici bir deneme deposundan alındı. Depoda ekip ayarı, bir skill ve `.gitignore` içinde adı geçen yerel ayar dosyası var.
+
+```terminal Gerçek çıktı
+$ git status --short -uall
+?? .claude/settings.json
+?? .claude/skills/ozet/SKILL.md
+?? .gitignore
+$ git check-ignore -v .claude/settings.local.json
+.gitignore:1:.claude/settings.local.json	.claude/settings.local.json
+```
+
+- İlk üç satır: ekip ayarı ve skill commit'lenmeyi bekliyor. `.gitignore` satırı yalnız bu denemede dosyayı yeni oluşturduğum için görünüyor.
+- `settings.local.json` listede yok: git onu görmüyor, yani kişisel tercihin klona geçmez.
+- Son satır: dosyayı yok sayan kuralın nerede olduğunu gösterir (`.gitignore`, 1. satır). Bu satır boş dönerse dosya git dışında değildir ve ekibin deposuna sızabilir.
 
 **CLAUDE.md'ye kod gibi davran.** Proje CLAUDE.md'sindeki bir satır bütün ekibin oturumunu değiştirir. Değişikliği pull request'ten geçir, gerekçesini commit mesajına yaz. Aksi hâlde altı ay sonra kimse bir kuralın neden orada durduğunu bilmez ve silmeye cesaret edemez. Kişisel tercihler `CLAUDE.local.md`'ye gider, o da gitignore'dadır. Büyük monorepoda başka ekiplerin CLAUDE.md dosyaları seni de etkiler, `claudeMdExcludes` ile hariç tutabilirsin. [[10.2]]
 

@@ -1,0 +1,31 @@
+<svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Projects mimarisi: sen proje konuşmasındaki koordinatörle konuşursun; koordinatör işi bulut ortamında çalışan thread'lere dağıtır, connector yalnız thread'lerde vardır">
+<defs><marker id="b14-m" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--soft,#5b6472)"/></marker></defs>
+<rect x="10" y="130" width="86" height="60" rx="12" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)" stroke-width="1.5"/>
+<text x="53" y="166" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--fg,#17202c)" text-anchor="middle">Sen</text>
+<path d="M96 160H136" fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#b14-m)"/>
+<rect x="140" y="100" width="180" height="120" rx="14" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.8"/>
+<text x="156" y="126" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--acc,#1d4f91)" text-anchor="start">Proje konuşması</text>
+<text x="156" y="148" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">koordinatör: işi böler,</text>
+<text x="156" y="166" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">raporları görür</text>
+<text x="156" y="190" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="600" fill="var(--soft,#5b6472)" text-anchor="start">connector yok</text>
+<rect x="350" y="14" width="280" height="332" rx="16" fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="366" y="38" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="600" fill="var(--soft,#5b6472)" text-anchor="start">Temiz bulut ortamı</text>
+<rect x="366" y="54" width="248" height="82" rx="12" fill="var(--yuzey,#ffffff)" stroke="var(--ile,#6a4a9c)" stroke-width="1.6"/>
+<text x="382" y="79" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--ile,#6a4a9c)" text-anchor="start">Thread 1</text>
+<text x="382" y="99" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">kendi bağlamı, kendi dalı</text>
+<rect x="382" y="108" width="84" height="20" rx="10" fill="var(--ilebg,#f0eaf8)" stroke="var(--ile,#6a4a9c)" stroke-width="1.2"/>
+<text x="424" y="123" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" fill="var(--ile,#6a4a9c)" text-anchor="middle">connector</text>
+<path d="M322 160C340 160 344 95 362 95" fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#b14-m)"/>
+<rect x="366" y="146" width="248" height="82" rx="12" fill="var(--yuzey,#ffffff)" stroke="var(--ile,#6a4a9c)" stroke-width="1.6"/>
+<text x="382" y="171" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--ile,#6a4a9c)" text-anchor="start">Thread 2</text>
+<text x="382" y="191" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">kendi bağlamı, kendi dalı</text>
+<rect x="382" y="200" width="84" height="20" rx="10" fill="var(--ilebg,#f0eaf8)" stroke="var(--ile,#6a4a9c)" stroke-width="1.2"/>
+<text x="424" y="215" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" fill="var(--ile,#6a4a9c)" text-anchor="middle">connector</text>
+<path d="M322 160C340 160 344 187 362 187" fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#b14-m)"/>
+<rect x="366" y="238" width="248" height="82" rx="12" fill="var(--yuzey,#ffffff)" stroke="var(--ile,#6a4a9c)" stroke-width="1.6"/>
+<text x="382" y="263" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--ile,#6a4a9c)" text-anchor="start">Thread 3</text>
+<text x="382" y="283" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">kendi bağlamı, kendi dalı</text>
+<rect x="382" y="292" width="84" height="20" rx="10" fill="var(--ilebg,#f0eaf8)" stroke="var(--ile,#6a4a9c)" stroke-width="1.2"/>
+<text x="424" y="307" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" fill="var(--ile,#6a4a9c)" text-anchor="middle">connector</text>
+<path d="M322 160C340 160 344 279 362 279" fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#b14-m)"/>
+</svg>

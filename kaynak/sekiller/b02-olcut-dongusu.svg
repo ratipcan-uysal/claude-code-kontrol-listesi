@@ -1,0 +1,18 @@
+<svg viewBox="0 0 640 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ölçüt yoksa her parçayı sen kontrol edersin ve Claude seni bekler. Ölçüt varsa Claude komutu koşturur, düzeltir ve kendi döngüsünde ilerler" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" fill="var(--fg,#17202c)">
+<defs><marker id="b02-ok" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--soft,#5b6472)"/></marker></defs>
+<text x="20" y="26" font-size="15" font-weight="700" fill="var(--fg,#17202c)">Ölçüt yok</text>
+<text x="118" y="26" font-size="13" fill="var(--soft,#5b6472)">tek doğrulayıcı sensin</text>
+<rect x="20" y="40" width="170" height="52" rx="10" fill="var(--yuzey,#ffffff)" stroke="var(--soft,#5b6472)" stroke-width="1.6"/><text x="105" y="72" text-anchor="middle" font-size="14" fill="var(--fg,#17202c)">Claude değiştirir</text>
+<rect x="235" y="40" width="170" height="52" rx="10" fill="var(--ilebg,#f0eaf8)" stroke="var(--ile,#6a4a9c)" stroke-width="1.6" stroke-dasharray="5 4"/><text x="320" y="72" text-anchor="middle" font-size="14" fill="var(--fg,#17202c)">Sen gözle bakarsın</text>
+<rect x="450" y="40" width="170" height="52" rx="10" fill="var(--yuzey,#ffffff)" stroke="var(--soft,#5b6472)" stroke-width="1.6"/><text x="535" y="72" text-anchor="middle" font-size="14" fill="var(--fg,#17202c)">Claude seni bekler</text>
+<g fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.6"><path d="M192 66H231" marker-end="url(#b02-ok)"/><path d="M407 66H446" marker-end="url(#b02-ok)"/></g>
+<text x="320" y="118" text-anchor="middle" font-size="13" fill="var(--soft,#5b6472)">her parçada aynı bekleme tekrarlanır</text>
+<line x1="20" y1="140" x2="620" y2="140" stroke="var(--line,#e1e5eb)" stroke-width="1.5"/>
+<text x="20" y="168" font-size="15" font-weight="700" fill="var(--fg,#17202c)">Ölçüt var</text>
+<text x="118" y="168" font-size="13" fill="var(--soft,#5b6472)">Claude kendi döngüsünde ölçer</text>
+<rect x="20" y="182" width="170" height="52" rx="10" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.8"/><text x="105" y="214" text-anchor="middle" font-size="14" fill="var(--fg,#17202c)">Claude değiştirir</text>
+<rect x="235" y="182" width="170" height="52" rx="10" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.8"/><text x="320" y="214" text-anchor="middle" font-size="14" fill="var(--fg,#17202c)">Komutu koşturur</text>
+<rect x="450" y="182" width="170" height="52" rx="10" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.8"/><text x="535" y="214" text-anchor="middle" font-size="14" fill="var(--fg,#17202c)">Düzeltir ya da bitirir</text>
+<g fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.6"><path d="M192 208H231" marker-end="url(#b02-ok)"/><path d="M407 208H446" marker-end="url(#b02-ok)"/><path d="M535 236V258H105V238" marker-end="url(#b02-ok)"/></g>
+<text x="320" y="279" text-anchor="middle" font-size="13" fill="var(--soft,#5b6472)">sen yalnız kanıtı okursun</text>
+</svg>

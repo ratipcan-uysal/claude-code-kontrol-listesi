@@ -1,0 +1,29 @@
+<svg viewBox="0 0 640 262" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Thread'e gelenler ve gelmeyenler: repo talimatları, proje belleği, connector'lar ve ortam gelir; skill, .mcp.json, izin kuralları ve hook'lar gelmez">
+<text x="10" y="26" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--ok,#1f7a4d)" text-anchor="start">Thread'e gelir</text>
+<text x="330" y="26" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--ile,#6a4a9c)" text-anchor="start">Thread'e gelmez</text>
+<rect x="10" y="40" width="300" height="38" rx="10" fill="var(--kod,#eef1f5)" stroke="var(--ok,#1f7a4d)" stroke-width="1.4"/>
+<path d="M24 60L30 66L40 53" fill="none" stroke="var(--ok,#1f7a4d)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="50" y="64" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">Repo CLAUDE.md ve .claude/rules/</text>
+<rect x="330" y="40" width="300" height="38" rx="10" fill="var(--yuzey,#ffffff)" stroke="var(--ile,#6a4a9c)" stroke-width="1.4" stroke-dasharray="5 4"/>
+<path d="M344 53L356 65M356 53L344 65" fill="none" stroke="var(--ile,#6a4a9c)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="370" y="64" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">Reponun skill'leri</text>
+<rect x="10" y="86" width="300" height="38" rx="10" fill="var(--kod,#eef1f5)" stroke="var(--ok,#1f7a4d)" stroke-width="1.4"/>
+<path d="M24 106L30 112L40 99" fill="none" stroke="var(--ok,#1f7a4d)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="50" y="110" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">Proje talimatı ve proje belleği</text>
+<rect x="330" y="86" width="300" height="38" rx="10" fill="var(--yuzey,#ffffff)" stroke="var(--ile,#6a4a9c)" stroke-width="1.4" stroke-dasharray="5 4"/>
+<path d="M344 99L356 111M356 99L344 111" fill="none" stroke="var(--ile,#6a4a9c)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="370" y="110" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">.mcp.json dosyası</text>
+<rect x="10" y="132" width="300" height="38" rx="10" fill="var(--kod,#eef1f5)" stroke="var(--ok,#1f7a4d)" stroke-width="1.4"/>
+<path d="M24 152L30 158L40 145" fill="none" stroke="var(--ok,#1f7a4d)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="50" y="156" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">claude.ai connector'ları</text>
+<rect x="330" y="132" width="300" height="38" rx="10" fill="var(--yuzey,#ffffff)" stroke="var(--ile,#6a4a9c)" stroke-width="1.4" stroke-dasharray="5 4"/>
+<path d="M344 145L356 157M356 145L344 157" fill="none" stroke="var(--ile,#6a4a9c)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="370" y="156" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">settings.json izin kuralları</text>
+<rect x="10" y="178" width="300" height="38" rx="10" fill="var(--kod,#eef1f5)" stroke="var(--ok,#1f7a4d)" stroke-width="1.4"/>
+<path d="M24 198L30 204L40 191" fill="none" stroke="var(--ok,#1f7a4d)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="50" y="202" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">Ortam: ağ, secret, kurulum betiği</text>
+<rect x="330" y="178" width="300" height="38" rx="10" fill="var(--yuzey,#ffffff)" stroke="var(--ile,#6a4a9c)" stroke-width="1.4" stroke-dasharray="5 4"/>
+<path d="M344 191L356 203M356 191L344 203" fill="none" stroke="var(--ile,#6a4a9c)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="370" y="202" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">Hook'lar ve env bloğu</text>
+<text x="10" y="246" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">Hook ya da izin kuralı gerekiyorsa: proje talimatına yaz ya da işi kendi makinende koştur.</text>
+</svg>

@@ -8,6 +8,8 @@ Bu yüzden tasarım işinde üç alışkanlık edin:
 - **Kalıpları adla.** Sevmediğin şeyleri tek tek yaz. Claude'un yerine ne seçtiğine bak, o da sevmediğin bir şeyse listeye ekle. [[16.5]]
 - **Tasarım dilini bir kez yaz.** Renk, tipografi ve boşluk kuralları bir dosyada ya da bir design system'de dursun. Her turda sohbetle yeniden anlatırsan kayar. [[16.4]]
 
+{{sekil:b15-yon-sec-dongusu|Üç alışkanlık tek bir döngü olarak. Beğenmeyince aynı yönü rötuşlamazsın, yeni yön istersin. Red listesi her turda uzar.}}
+
 Bunlar sonucun nasıl iyileşeceğini söyler. Önce hangi aracı seçeceğine karar vermen gerekir.
 
 ## Hangi araç ne işe yarar

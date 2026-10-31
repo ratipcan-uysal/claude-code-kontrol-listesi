@@ -22,6 +22,8 @@ Belgenin "Extend Claude Code" sayfası seçimi tetiklere bağlar. Tetikler kısa
 
 Skill ile alt ajan arasındaki fark bağlama bakarak anlaşılır. Skill konuşma penceresine eklenir. Alt ajan kendi penceresinde çalışır ve yalnız özet döndürür. İkisi birleşebilir: bir alt ajan skill'leri önceden yükleyebilir, bir skill de `context: fork` ile kendi alt ajan bağlamında koşabilir. {{bolum:5}} rica ile garanti ayrımını anlattı. Bu bölüm kapların kendisini anlatıyor.
 
+{{sekil:b07-kap-secimi|Dört kabın nerede çalıştığı. Skill ana konuşmaya eklenir, alt ajan kendi penceresinde çalışıp özet döndürür, MCP dış sisteme köprü kurar, plugin hepsini taşır}}
+
 ## Skill: açıklama bir tetiktir
 
 Skill dosyasının başındaki `description`, Claude'un skill'i ne zaman yükleyeceğine karar verdiği tek şeydir. Gövde ancak çağrılınca yüklenir. Belge ayrıntıyı şöyle koyar: açıklama ve `when_to_use` metni listede toplam 1.536 karakterde kesilir, bu yüzden ana kullanım durumunu başa yaz.

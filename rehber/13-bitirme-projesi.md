@@ -10,6 +10,8 @@ Kendi seçtiğin küçük ve gerçek bir işi plan, uygulama, doğrulama ve tesl
 
 Bu ölçüt rastgele seçilmedi. [Bölüm 4: Kanıtla teslim: iddiayı sayıya çevir](04-kanitla-teslim.md) bölümünün ana fikri şuydu: "tamamlandı" bir iddiadır, kanıt değil. Uzmanla acemi arasındaki fark, uzmanın bir sonucu gördüğünde hangi katmandan geldiğini bilmesi ve bir şeyin bittiğini sayıyla, çıktıyla ya da dosyayla göstermesidir. Bitirme projesinde bunu zorunlu kılıyoruz: her aşamanın sonunda masaya konabilecek bir kanıt olacak. Kanıtı olmayan aşama bitmiş sayılmaz.
 
+_Şekil: Dört aşama sırayla ilerler ve her biri KANIT.md dosyasına bir iz bırakır. Aşamanın kanıtı yoksa bir sonrakine geçilmez. ([web sürümünde](13-bitirme-projesi.html#sekil-b13-bitirme-asamalari))_
+
 Bu bölümün yapısı diğerlerinden farklı. Alıştırma yerine bir proje, hata biçimleri yerine bir değerlendirme listesi var. Çünkü burada hata yapmak, öğrenmenin parçası: takıldığın yer, hangi bölümü yeniden okuman gerektiğini gösterir.
 
 ## Proje
@@ -75,6 +77,33 @@ Aşağıdaki tabloyu projenin köküne `KANIT.md` olarak kaydet ve doldur. Her s
 | Teslim | Çalıştırma komutu, örnek çıktı, sürüm ve ortam notu |
 | Teslim | Bekleyenler dosyası: yapılmayanlar ve nedenleri |
 | Teslim | Öğrendiğin dersin yazıldığı dosya ve katmanın gerekçesi |
+
+Doldurulmuş bir `KANIT.md` şöyle görünür. Proje ve sayılar uydurma, yalnız biçimi gösteriyor.
+
+**Şematik örnek**
+
+```text
+# KANIT.md   proje: csv-haftalik-ozet
+
+## Plan
+tanım:   haftalik.csv'yi okur, ozet.md yazar, `python ozet.py haftalik.csv`
+bitti:   ozet.md'de 7 gün ve toplam satırı var
+dokunma: ornek/ klasörü
+
+## Doğrulama
+beklenen: ozet.md 7 gün + toplam, 8 satır
+bozulan:  bir tarihi bozdum, kontrol KALDI (çıkış kodu 1)
+test:     5 test koştu, 5 geçti
+
+## Teslim
+sürüm:    claude 2.1.284, macOS, Opus
+ders:     "CSV'de tarih biçimi sabit" -> proje CLAUDE.md (bu koda ait)
+```
+
+- `## Plan`: üç satırın üçü de sınanabilir. "Bitti" satırı bir dosyaya bakarak doğrulanabiliyor.
+- `bozulan:` satırı bu bölümün asıl şartı. Kontrolün düştüğünü görmeden o satır yazılamaz.
+- `test:` satırında sayı sıfırdan büyük. "Test geçti" demek yetmez, kaç test koştuğu yazılı olmalı.
+- `ders:` satırı katmanı da söylüyor. Aynı cümle kullanıcı dosyasına yazılsaydı başka projelere gürültü olurdu.
 
 ## Değerlendirme
 

@@ -1,0 +1,30 @@
+<svg viewBox="0 0 640 322" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Başarısızlığı katmana göre ayırma: önce harness engeli, sonra kuralın bağlamda olup olmadığı; sonuç bağlam, model kararı ya da harness">
+<defs><marker id="b12-m" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--soft,#5b6472)"/></marker></defs>
+<rect x="20" y="15" width="300" height="70" rx="12" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)" stroke-width="1.5"/>
+<text x="38" y="40" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">Komut çalışmadı, izin istedi,</text>
+<text x="38" y="60" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">hook engelledi ya da dosya</text>
+<text x="38" y="78" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">yüklenmedi mi?</text>
+<path d="M320 50H376" fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#b12-m)"/>
+<text x="348" y="42" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" fill="var(--soft,#5b6472)" text-anchor="middle">evet</text>
+<rect x="380" y="15" width="240" height="70" rx="12" fill="var(--kod,#eef1f5)" stroke="var(--ok,#1f7a4d)" stroke-width="1.8"/>
+<text x="396" y="39" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--ok,#1f7a4d)" text-anchor="start">Harness</text>
+<text x="396" y="58" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">Ayarı, izin listesini, hook'u</text>
+<text x="396" y="75" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">düzelt. Metin yardım etmez.</text>
+<path d="M170 85V122" fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#b12-m)"/>
+<text x="182" y="110" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" fill="var(--soft,#5b6472)" text-anchor="start">hayır</text>
+<rect x="20" y="125" width="300" height="70" rx="12" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)" stroke-width="1.5"/>
+<text x="38" y="150" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">Claude kuralı bağlamda gördü mü?</text>
+<text x="38" y="172" font-family="IBM Plex Mono, Menlo, Consolas, monospace" font-size="13" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">/context ve /memory ile bak</text>
+<path d="M320 160H376" fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#b12-m)"/>
+<text x="348" y="152" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" fill="var(--soft,#5b6472)" text-anchor="middle">hayır</text>
+<rect x="380" y="125" width="240" height="70" rx="12" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.8"/>
+<text x="396" y="149" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--acc,#1d4f91)" text-anchor="start">Bağlam</text>
+<text x="396" y="168" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">Kuralı tek yerde ve doğru</text>
+<text x="396" y="185" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">katmanda yaz.</text>
+<path d="M170 195V270H376" fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#b12-m)"/>
+<text x="182" y="225" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" fill="var(--soft,#5b6472)" text-anchor="start">evet</text>
+<rect x="380" y="235" width="240" height="70" rx="12" fill="var(--ilebg,#f0eaf8)" stroke="var(--ile,#6a4a9c)" stroke-width="1.8"/>
+<text x="396" y="259" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--ile,#6a4a9c)" text-anchor="start">Model kararı</text>
+<text x="396" y="278" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">Örnek, dar görev, doğrulama.</text>
+<text x="396" y="295" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">Yeni kural işe yaramaz.</text>
+</svg>

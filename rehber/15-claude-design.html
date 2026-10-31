@@ -103,7 +103,7 @@ main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
 @media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
 .sekil{margin:22px 0;max-width:100%}
 .sekil-kap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--yuzey);padding:14px}
-.sekil-kap svg{display:block;width:100%;height:auto;min-width:min(520px,100%)}
+.sekil-kap svg{display:block;width:100%;height:auto;min-width:560px}
 .sekil figcaption,.term figcaption{font-size:13px;color:var(--soft);margin-top:8px}
 .term{margin:18px 0;max-width:100%}
 .term figcaption{margin:0 0 6px;font-family:var(--f-kod);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
@@ -121,6 +121,39 @@ ul.ekler span{display:block;color:var(--soft);font-size:14px}
 <p>Tasarımda Claude'a bir ekranı sözle tarif edersin, o da onu çizer. Sorun şurada: sözle tarif edilen tasarım senin kafanda bir şey, modelin elinde başka bir şey olur. Yön vermezsen model birkaç varsayılan stile döner. Anthropic'in Opus 5.5 rehberi bunu açıkça yazar ve "jenerik görünmesin" gibi genel bir talimatın çoğunlukla bir varsayılanı ötekiyle değiştirdiğini söyler. Rehberin önerisi istemediğin kalıpları adıyla saymaktır.</p>
 <p>Bu yüzden tasarım işinde üç alışkanlık edin:</p>
 <ul><li><b>Anlatma, çizdir.</b> Bir yönü paragrafla tarif etmek yerine karşılaştırılabilir 2-3 yönü görsel olarak iste ve görsele bakarak seç. <a href="../index.html#m-tasarim-2-k">16.2</a></li><li><b>Kalıpları adla.</b> Sevmediğin şeyleri tek tek yaz. Claude'un yerine ne seçtiğine bak, o da sevmediğin bir şeyse listeye ekle. <a href="../index.html#m-tasarim-5-k">16.5</a></li><li><b>Tasarım dilini bir kez yaz.</b> Renk, tipografi ve boşluk kuralları bir dosyada ya da bir design system'de dursun. Her turda sohbetle yeniden anlatırsan kayar. <a href="../index.html#m-tasarim-4-k">16.4</a></li></ul>
+<figure class="sekil" id="sekil-b15-yon-sec-dongusu"><div class="sekil-kap"><svg viewBox="0 0 640 296" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tasarım döngüsü: üç yön çizdir, birini seç, red listesi yaz, yeniden isteyip doğrula; beğenmeyince farklı yön iste">
+<defs><marker id="b15-m" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--soft,#5b6472)"/></marker></defs>
+<rect x="8" y="70" width="135" height="86" rx="12" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.6"/>
+<text x="20" y="94" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--acc,#1d4f91)" text-anchor="start">1</text>
+<text x="38" y="94" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--fg,#17202c)" text-anchor="start">Üç yön çizdir</text>
+<text x="20" y="121" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">tam ekran,</text>
+<text x="20" y="141" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">alt alanlar dahil</text>
+<path d="M146 113H167" fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#b15-m)"/>
+<rect x="171" y="70" width="135" height="86" rx="12" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.6"/>
+<text x="183" y="94" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--acc,#1d4f91)" text-anchor="start">2</text>
+<text x="201" y="94" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--fg,#17202c)" text-anchor="start">Birini seç</text>
+<text x="183" y="121" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">görsele bakarak,</text>
+<text x="183" y="141" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">tarifle değil</text>
+<path d="M309 113H330" fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#b15-m)"/>
+<rect x="334" y="70" width="135" height="86" rx="12" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.6"/>
+<text x="346" y="94" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--acc,#1d4f91)" text-anchor="start">3</text>
+<text x="364" y="94" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--fg,#17202c)" text-anchor="start">Red listesi</text>
+<text x="346" y="121" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">sevmediğin kalıplar</text>
+<text x="346" y="141" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">adıyla yazılı</text>
+<path d="M472 113H493" fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#b15-m)"/>
+<rect x="497" y="70" width="135" height="86" rx="12" fill="var(--kod,#eef1f5)" stroke="var(--ok,#1f7a4d)" stroke-width="1.6"/>
+<text x="509" y="94" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--ok,#1f7a4d)" text-anchor="start">4</text>
+<text x="527" y="94" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--fg,#17202c)" text-anchor="start">Doğrula</text>
+<text x="509" y="121" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">yeniden iste, sonra</text>
+<text x="509" y="141" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">390 px, koyu tema</text>
+<path d="M238 70V44H76V66" fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5 4" marker-end="url(#b15-m)"/>
+<text x="157" y="34" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="middle">beğenmedin: farklı yön iste, rötuşlama</text>
+<path d="M564 156V186H402V160" fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5 4" marker-end="url(#b15-m)"/>
+<text x="483" y="208" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="middle">yerine seçtiği de sevilmediyse listeye ekle</text>
+<rect x="8" y="236" width="624" height="46" rx="12" fill="var(--kod,#eef1f5)" stroke="var(--ok,#1f7a4d)" stroke-width="1.5"/>
+<text x="24" y="257" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="600" fill="var(--ok,#1f7a4d)" text-anchor="start">Bitti sayılması için</text>
+<text x="24" y="274" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">üç yön, yazılı red listesi, önce/sonra yan yana, 390 px görüntüsü</text>
+</svg></div><figcaption>Üç alışkanlık tek bir döngü olarak. Beğenmeyince aynı yönü rötuşlamazsın, yeni yön istersin. Red listesi her turda uzar.</figcaption></figure>
 <p>Bunlar sonucun nasıl iyileşeceğini söyler. Önce hangi aracı seçeceğine karar vermen gerekir.</p>
 <h2 id="hangi-arac-ne-ise-yarar">Hangi araç ne işe yarar</h2>
 <p>Belgede tasarımla ilgili birkaç ayrı parça var. Karıştırılmaları kolay.</p>

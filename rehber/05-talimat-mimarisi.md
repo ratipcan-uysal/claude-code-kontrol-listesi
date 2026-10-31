@@ -10,6 +10,8 @@ Claude Code'a bir kuralı iki türlü verebilirsin. Ya Claude'a söylersin, ya d
 
 Bu ayrım CLAUDE.md'nin nasıl iletildiğinden gelir. CLAUDE.md sistem prompt'unun parçası değildir. Sistem prompt'undan sonra bir kullanıcı mesajı olarak modele verilir. Belge bunu açıkça yazar: Claude bu dosyaları bağlam olarak görür, zorlanan yapılandırma olarak değil, ve sıkı uyumun garantisi yoktur. Hook ise modelin kararına hiç girmez. Olayı gelince çalışır, Claude ne düşünürse düşünsün.
 
+_Şekil: Üç katman. Rica Claude'un kararına bağlıdır. Garantiyi Claude Code uygular. Sınırı işletim sistemi çizer. ([web sürümünde](05-talimat-mimarisi.html#sekil-b05-rica-garanti))_
+
 | Katman | Kim karar verir | Ne zaman yüklenir | Ne için |
 |---|---|---|---|
 | CLAUDE.md | Claude | Her oturumda | Her konuşmada geçerli bağlam: komutlar, tuzaklar, tercihler |
@@ -39,6 +41,40 @@ Belgenin hook ile skill karşılaştırmasındaki iki cümle bütün bölümü �
 **Her hook kesin değildir.** `command` ve `http` tipindeki hook kesindir. `prompt` ve `agent` tipindeki hook kararı başka bir modele bırakır, belgeye göre bunlar da kesin değildir. Hook'un kendisi çökerse eylemi de durdurmak istiyorsan hata politikasını buna göre seç. [8.5](../README.md#8-hook)
 
 **Deny kuralı bir güvenlik sınırı değildir.** Bash kuralları komutun metnini eşler, niyetini değil: `Bash(rm *)` kuralı `/bin/rm` biçimini durdurmaz. Gerçek sınır işletim sistemi düzeyindeki sandbox'tır ve o da yalnız kabuk komutlarını sarar. İkisinin ayrıntısı [Bölüm 6: İzin ve güvenlik: mod, kural, sandbox](06-izin-ve-guvenlik.md) bölümünde. [6.2](../README.md#6-izin) [7.5](../README.md#7-guvenlik)
+
+Bu fark küçük bir hook'la görülebilir. Aşağıdaki betik, okunmak istenen dosyanın yolu `.env` ile bitiyorsa 2 koduyla çıkar ve eylemi durdurur:
+
+```
+#!/usr/bin/env python3
+import json, sys
+girdi = json.load(sys.stdin)
+yol = girdi.get("tool_input", {}).get("file_path", "")
+if yol.endswith(".env"):
+    print("Engellendi: .env dosyası okunamaz.", file=sys.stderr)
+    sys.exit(2)
+sys.exit(0)
+```
+
+Betiği Claude Code çalıştırmadan, hook'un alacağı biçimde sahte JSON'la beslemek yeter:
+
+**Gerçek çıktı, kısaltılmış**
+
+```text
+$ echo '{"tool_name":"Read","tool_input":{"file_path":"/proje/.env"}}' | python3 env-engelle.py
+Engellendi: .env dosyası okunamaz.
+$ echo $?
+2
+$ echo '{"tool_name":"Read","tool_input":{"file_path":"/proje/README.md"}}' | python3 env-engelle.py
+$ echo $?
+0
+$ echo '{"tool_name":"Bash","tool_input":{"command":"cat .env"}}' | python3 env-engelle.py
+$ echo $?
+0
+```
+
+- **1. blok, çıkış kodu 2:** Okuma aracıyla `.env` istendi, hook durdurdu ve mesajı yazdı. Kod 2 "engelle" demektir.
+- **2. blok, çıkış kodu 0:** Başka bir dosya, hook sessizce geçti.
+- **3. blok, çıkış kodu 0:** Aynı dosya `cat .env` komutuyla istendi ve hook geçirdi, çünkü betik yalnız `file_path` alanına bakıyor. Kesin katman da yalnız yazıldığı şeyi engeller. Kabuk yolunu da kapatmak için `Bash` çağrılarının komut metnini de denetlemek ya da sandbox kullanmak gerekir.
 
 ## Bir kuralın yerini bulmak
 

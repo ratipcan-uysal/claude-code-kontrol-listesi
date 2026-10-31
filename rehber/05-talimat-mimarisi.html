@@ -103,7 +103,7 @@ main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
 @media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
 .sekil{margin:22px 0;max-width:100%}
 .sekil-kap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--yuzey);padding:14px}
-.sekil-kap svg{display:block;width:100%;height:auto;min-width:min(520px,100%)}
+.sekil-kap svg{display:block;width:100%;height:auto;min-width:560px}
 .sekil figcaption,.term figcaption{font-size:13px;color:var(--soft);margin-top:8px}
 .term{margin:18px 0;max-width:100%}
 .term figcaption{margin:0 0 6px;font-family:var(--f-kod);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
@@ -120,6 +120,25 @@ ul.ekler span{display:block;color:var(--soft);font-size:14px}
 <h2 id="zihinsel-model-rica-ile-garanti">Zihinsel model: rica ile garanti</h2>
 <p>Claude Code'a bir kuralı iki türlü verebilirsin. Ya Claude'a söylersin, ya da Claude Code'a uygulatırsın. Belge bu ikisini ayrı adlarla anar. Birinde <b>Claude karar verir</b>: prompt, CLAUDE.md, kural dosyası ve Claude'un kendi seçtiği skill'ler. Ötekinde <b>Claude Code uygular</b>: hook, deny kuralı ve yönetilen ayar. İlki çoğu zaman tutar. İkincisi her zaman tutar.</p>
 <p>Bu ayrım CLAUDE.md'nin nasıl iletildiğinden gelir. CLAUDE.md sistem prompt'unun parçası değildir. Sistem prompt'undan sonra bir kullanıcı mesajı olarak modele verilir. Belge bunu açıkça yazar: Claude bu dosyaları bağlam olarak görür, zorlanan yapılandırma olarak değil, ve sıkı uyumun garantisi yoktur. Hook ise modelin kararına hiç girmez. Olayı gelince çalışır, Claude ne düşünürse düşünsün.</p>
+<figure class="sekil" id="sekil-b05-rica-garanti"><div class="sekil-kap"><svg viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Üç katman: Claude'un karar verdiği rica katmanları, Claude Code'un uyguladığı garanti katmanları ve işletim sisteminin sınır çizdiği sandbox. Sağa gidildikçe kural daha kesin" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" fill="var(--fg,#17202c)">
+<defs><marker id="b05-ok" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--soft,#5b6472)"/></marker></defs>
+<rect x="8" y="124" width="196" height="186" rx="12" fill="var(--yuzey,#ffffff)" stroke="var(--soft,#5b6472)" stroke-width="1.8" stroke-dasharray="6 4"/>
+<text x="24" y="152" font-size="16" font-weight="700" fill="var(--fg,#17202c)">Rica</text>
+<text x="24" y="172" font-size="13" fill="var(--soft,#5b6472)">Claude karar verir,</text><text x="24" y="190" font-size="13" fill="var(--soft,#5b6472)">çoğu zaman tutar</text>
+<g font-size="13" fill="var(--fg,#17202c)"><text x="24" y="220">CLAUDE.md</text><text x="24" y="242">.claude/rules/</text><text x="24" y="264">skill</text><text x="24" y="286">alt ajan</text></g>
+<rect x="222" y="74" width="196" height="236" rx="12" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="2"/>
+<text x="238" y="102" font-size="16" font-weight="700" fill="var(--fg,#17202c)">Garanti</text>
+<text x="238" y="122" font-size="13" fill="var(--soft,#5b6472)">Claude Code uygular,</text><text x="238" y="140" font-size="13" fill="var(--soft,#5b6472)">her seferinde tutar</text>
+<g font-size="13" fill="var(--fg,#17202c)"><text x="238" y="170">hook (command, http)</text><text x="238" y="192">deny kuralı</text><text x="238" y="214">yönetilen ayar</text></g>
+<text x="238" y="250" font-size="13" fill="var(--soft,#5b6472)">deny komutun metnini</text><text x="238" y="268" font-size="13" fill="var(--soft,#5b6472)">eşler, niyetini değil</text>
+<rect x="436" y="24" width="196" height="286" rx="12" fill="var(--ilebg,#f0eaf8)" stroke="var(--ile,#6a4a9c)" stroke-width="2"/>
+<text x="452" y="52" font-size="16" font-weight="700" fill="var(--fg,#17202c)">Sınır</text>
+<text x="452" y="72" font-size="13" fill="var(--soft,#5b6472)">işletim sistemi,</text><text x="452" y="90" font-size="13" fill="var(--soft,#5b6472)">komut ne yaparsa yapsın</text>
+<g font-size="13" fill="var(--fg,#17202c)"><text x="452" y="120">sandbox</text></g>
+<text x="452" y="156" font-size="13" fill="var(--soft,#5b6472)">yalnız kabuk</text><text x="452" y="174" font-size="13" fill="var(--soft,#5b6472)">komutlarını sarar</text>
+<g fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.6"><path d="M206 220H218" marker-end="url(#b05-ok)"/><path d="M420 170H432" marker-end="url(#b05-ok)"/></g>
+<text x="320" y="16" text-anchor="middle" font-size="13" fill="var(--soft,#5b6472)">sağa gidildikçe kural daha kesin</text>
+</svg></div><figcaption>Üç katman. Rica Claude'un kararına bağlıdır. Garantiyi Claude Code uygular. Sınırı işletim sistemi çizer.</figcaption></figure>
 <div class="tablo"><table><thead><tr><th>Katman</th><th>Kim karar verir</th><th>Ne zaman yüklenir</th><th>Ne için</th></tr></thead><tbody><tr><td data-e="Katman">CLAUDE.md</td><td data-e="Kim karar verir">Claude</td><td data-e="Ne zaman yüklenir">Her oturumda</td><td data-e="Ne için">Her konuşmada geçerli bağlam: komutlar, tuzaklar, tercihler</td></tr><tr><td data-e="Katman"><code>.claude/rules/</code></td><td data-e="Kim karar verir">Claude</td><td data-e="Ne zaman yüklenir">Eşleşen dosyaya dokununca</td><td data-e="Ne için">Yalnız belli dosyalarda geçerli kural</td></tr><tr><td data-e="Katman">Skill</td><td data-e="Kim karar verir">Claude seçer, sen <code>/ad</code> ile zorlayabilirsin</td><td data-e="Ne zaman yüklenir">Açıklama her zaman, gövde çağrılınca</td><td data-e="Ne için">Tekrarlanan prosedür</td></tr><tr><td data-e="Katman">Alt ajan</td><td data-e="Kim karar verir">Claude</td><td data-e="Ne zaman yüklenir">Çağrılınca, kendi penceresinde</td><td data-e="Ne için">Yalıtılmış iş, sonuç özet döner</td></tr><tr><td data-e="Katman">Hook (<code>command</code>, <code>http</code>)</td><td data-e="Kim karar verir">Claude Code</td><td data-e="Ne zaman yüklenir">Olayı gelince</td><td data-e="Ne için">Her seferinde olması gereken şey</td></tr><tr><td data-e="Katman">Deny kuralı, yönetilen ayar</td><td data-e="Kim karar verir">Claude Code</td><td data-e="Ne zaman yüklenir">Her araç çağrısından önce</td><td data-e="Ne için">Hiçbir zaman olmaması gereken şey</td></tr><tr><td data-e="Katman">Sandbox</td><td data-e="Kim karar verir">İşletim sistemi</td><td data-e="Ne zaman yüklenir">Her kabuk komutunda</td><td data-e="Ne için">Komut adından fazlasını yapsa bile tutan sınır</td></tr></tbody></table></div>
 <p>Belgenin hook ile skill karşılaştırmasındaki iki cümle bütün bölümü özetler: skill "bir rica, garanti değil". Korkulukları hook'a koy.</p>
 <h2 id="karar-kurallari">Karar kuralları</h2>
@@ -131,6 +150,27 @@ ul.ekler span{display:block;color:var(--soft);font-size:14px}
 <p><b>Skill'in açıklaması tetiğidir.</b> Claude işini skill açıklamalarıyla karşılaştırıp hangisinin ilgili olduğuna kendisi karar verir. Açıklama belirsizse ya da başka bir skill'le örtüşüyorsa yanlış skill yüklenir ya da hiç yüklenmez. Mutlaka çalışması gerekiyorsa <code>/ad</code> ile kendin çağır. Yan etkili bir skill'i otomatik çağrıya <code>disable-model-invocation: true</code> ile kapat. <a href="../index.html#m-yeniden-3-k">9.3</a> <a href="../index.html#m-yeniden-4-k">9.4</a></p>
 <p><b>Her hook kesin değildir.</b> <code>command</code> ve <code>http</code> tipindeki hook kesindir. <code>prompt</code> ve <code>agent</code> tipindeki hook kararı başka bir modele bırakır, belgeye göre bunlar da kesin değildir. Hook'un kendisi çökerse eylemi de durdurmak istiyorsan hata politikasını buna göre seç. <a href="../index.html#m-hook-5-k">8.5</a></p>
 <p><b>Deny kuralı bir güvenlik sınırı değildir.</b> Bash kuralları komutun metnini eşler, niyetini değil: <code>Bash(rm *)</code> kuralı <code>/bin/rm</code> biçimini durdurmaz. Gerçek sınır işletim sistemi düzeyindeki sandbox'tır ve o da yalnız kabuk komutlarını sarar. İkisinin ayrıntısı <a href="06-izin-ve-guvenlik.html">Bölüm 6: İzin ve güvenlik: mod, kural, sandbox</a> bölümünde. <a href="../index.html#m-izin-2-k">6.2</a> <a href="../index.html#m-guvenlik-5-k">7.5</a></p>
+<p>Bu fark küçük bir hook'la görülebilir. Aşağıdaki betik, okunmak istenen dosyanın yolu <code>.env</code> ile bitiyorsa 2 koduyla çıkar ve eylemi durdurur:</p>
+<pre>#!/usr/bin/env python3
+import json, sys
+girdi = json.load(sys.stdin)
+yol = girdi.get(&quot;tool_input&quot;, {}).get(&quot;file_path&quot;, &quot;&quot;)
+if yol.endswith(&quot;.env&quot;):
+    print(&quot;Engellendi: .env dosyası okunamaz.&quot;, file=sys.stderr)
+    sys.exit(2)
+sys.exit(0)</pre>
+<p>Betiği Claude Code çalıştırmadan, hook'un alacağı biçimde sahte JSON'la beslemek yeter:</p>
+<figure class="term"><figcaption>Gerçek çıktı, kısaltılmış</figcaption><pre>$ echo &#x27;{&quot;tool_name&quot;:&quot;Read&quot;,&quot;tool_input&quot;:{&quot;file_path&quot;:&quot;/proje/.env&quot;}}&#x27; | python3 env-engelle.py
+Engellendi: .env dosyası okunamaz.
+$ echo $?
+2
+$ echo &#x27;{&quot;tool_name&quot;:&quot;Read&quot;,&quot;tool_input&quot;:{&quot;file_path&quot;:&quot;/proje/README.md&quot;}}&#x27; | python3 env-engelle.py
+$ echo $?
+0
+$ echo &#x27;{&quot;tool_name&quot;:&quot;Bash&quot;,&quot;tool_input&quot;:{&quot;command&quot;:&quot;cat .env&quot;}}&#x27; | python3 env-engelle.py
+$ echo $?
+0</pre></figure>
+<ul><li><b>1. blok, çıkış kodu 2:</b> Okuma aracıyla <code>.env</code> istendi, hook durdurdu ve mesajı yazdı. Kod 2 "engelle" demektir.</li><li><b>2. blok, çıkış kodu 0:</b> Başka bir dosya, hook sessizce geçti.</li><li><b>3. blok, çıkış kodu 0:</b> Aynı dosya <code>cat .env</code> komutuyla istendi ve hook geçirdi, çünkü betik yalnız <code>file_path</code> alanına bakıyor. Kesin katman da yalnız yazıldığı şeyi engeller. Kabuk yolunu da kapatmak için <code>Bash</code> çağrılarının komut metnini de denetlemek ya da sandbox kullanmak gerekir.</li></ul>
 <h2 id="bir-kuralin-yerini-bulmak">Bir kuralın yerini bulmak</h2>
 <p>Belgenin önerdiği tetikler kısa bir karar listesi verir:</p>
 <div class="tablo"><table><thead><tr><th>Gözlem</th><th>Yeri</th></tr></thead><tbody><tr><td data-e="Gözlem">Claude aynı şeyi iki kez yanlış yaptı</td><td data-e="Yeri">CLAUDE.md</td></tr><tr><td data-e="Gözlem">Aynı uzun prompt'u tekrar tekrar yazıyorsun</td><td data-e="Yeri">Skill</td></tr><tr><td data-e="Gözlem">Bir yan iş konuşmayı çıktıyla boğuyor</td><td data-e="Yeri">Alt ajan</td></tr><tr><td data-e="Gözlem">Bir şeyin sormadan her seferinde olması gerekiyor</td><td data-e="Yeri">Hook</td></tr><tr><td data-e="Gözlem">Bir şeyin hiçbir zaman olmaması gerekiyor</td><td data-e="Yeri">Deny kuralı, gerekirse sandbox</td></tr><tr><td data-e="Gözlem">Aynı kurulum ikinci bir depoda da lazım</td><td data-e="Yeri">Plugin</td></tr></tbody></table></div>

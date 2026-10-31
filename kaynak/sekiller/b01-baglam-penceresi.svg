@@ -1,0 +1,21 @@
+<svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bağlam penceresi: oturum başında yüklenenler ve gerektiğinde eklenenler" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" fill="var(--fg,#17202c)">
+<rect x="6" y="6" width="628" height="288" rx="16" fill="var(--yuzey,#ffffff)" stroke="var(--acc,#1d4f91)" stroke-width="2"/>
+<text x="26" y="34" font-size="16" font-weight="700" fill="var(--acc,#1d4f91)">Bağlam penceresi: modelin gördüğü tek şey</text>
+<rect x="22" y="50" width="292" height="232" rx="10" fill="var(--accbg,#e6eef9)" fill-opacity=".5" stroke="var(--acc,#1d4f91)"/>
+<text x="38" y="76" font-size="13" font-weight="700" fill="var(--soft,#5b6472)">OTURUM BAŞINDA YÜKLENİR</text>
+<g font-size="13" fill="var(--fg,#17202c)">
+<rect x="38" y="92" width="260" height="30" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--acc,#1d4f91)"/><text x="50" y="112">CLAUDE.md dosyaları</text>
+<rect x="38" y="130" width="260" height="30" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--acc,#1d4f91)"/><text x="50" y="150">otomatik belleğin dizin dosyası</text>
+<rect x="38" y="168" width="260" height="30" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--acc,#1d4f91)"/><text x="50" y="188">skill açıklamaları</text>
+<rect x="38" y="206" width="260" height="30" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--acc,#1d4f91)"/><text x="50" y="226">MCP araçlarının adları</text>
+</g>
+<rect x="326" y="50" width="292" height="232" rx="10" fill="var(--kod,#eef1f5)" fill-opacity=".6" stroke="var(--soft,#5b6472)" stroke-dasharray="5 4"/>
+<text x="342" y="76" font-size="13" font-weight="700" fill="var(--soft,#5b6472)">GEREKTİĞİNDE EKLENİR</text>
+<g font-size="13" fill="var(--fg,#17202c)">
+<rect x="342" y="92" width="260" height="30" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)"/><text x="354" y="112">okunan dosyalar, araç çıktıları</text>
+<rect x="342" y="130" width="260" height="30" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)"/><text x="354" y="150">çağrılan skill'in gövdesi</text>
+<rect x="342" y="168" width="260" height="30" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)"/><text x="354" y="188">eşleşen dosyanın yol kuralları</text>
+<rect x="342" y="206" width="260" height="30" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)"/><text x="354" y="226">alt dizin CLAUDE.md'leri</text>
+<text x="342" y="262" fill="var(--soft,#5b6472)">konuşma geçmişi de buraya dolar</text>
+</g>
+</svg>

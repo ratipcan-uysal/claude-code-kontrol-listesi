@@ -103,7 +103,7 @@ main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
 @media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
 .sekil{margin:22px 0;max-width:100%}
 .sekil-kap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--yuzey);padding:14px}
-.sekil-kap svg{display:block;width:100%;height:auto;min-width:min(520px,100%)}
+.sekil-kap svg{display:block;width:100%;height:auto;min-width:560px}
 .sekil figcaption,.term figcaption{font-size:13px;color:var(--soft);margin-top:8px}
 .term{margin:18px 0;max-width:100%}
 .term figcaption{margin:0 0 6px;font-family:var(--f-kod);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
@@ -127,13 +127,112 @@ ul.ekler span{display:block;color:var(--soft);font-size:14px}
 <p>Videoda en çok bozulan şey zamanlamadır. Bir cümle uzar, ses yanlış yerde kalır. Çözüm zamanı hiçbir yere elle yazmamaktır. Kitte planlayıcı her sahnenin kelime sayısına bakıp giriş, vurgu, oturma ve çıkış anlarını hesaplar ve tek bir dosyaya yazar. Okuma süresi de bu hesabın içindedir: metin yerine oturduktan sonra en az bir saniye, üç kelimeden sonraki her kelime için çeyrek saniye, finalde en az iki buçuk saniye ekranda kalır.</p>
 <p>Sahnedeki özel hareketler bu anlara adla bağlanır. Olayı "vurgu anından 0,1 saniye sonra" ya da "giriş anından 0,62 saniye sonra" diye tanımlarsın, saniye değeri olarak değil. Ses de aynı olayları okur. Bir çarpma sesi "çöküş olayına" konur, "14,2. saniyeye" konmaz. Metni değiştirdiğinde plan yeniden hesaplanır, görüntü, ses ve kontroller birlikte kayar. Hiçbiri senin elle düzeltmeni beklemez.</p>
 <p>Bunu Claude'a kural olarak ver: sahne kodunda saniye değeri yazmak yasak. Kitin talimat dosyasında da bu satır var.</p>
+<figure class="sekil" id="sekil-b16-tek-zaman-cizelgesi"><div class="sekil-kap"><svg viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tek zaman çizelgesi: giriş, vurgu, oturma ve çıkış adlı olayları plan şeridinde durur; sahne, ses ve kontrol şeritleri aynı olaylardan okur; oynatma çizgisi soldan sağa ilerler"><style>@media (prefers-reduced-motion: no-preference){.b16-ph{animation:b16-play 9s linear infinite}@keyframes b16-play{from{transform:translateX(110px)}to{transform:translateX(600px)}}}</style>
+<text x="14" y="24" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="600" fill="var(--soft,#5b6472)" text-anchor="start">Tek plan dosyası, dört şerit, aynı adlı olaylar</text>
+<rect x="100" y="48" width="530" height="44" rx="8" fill="var(--kod,#eef1f5)" fill-opacity="0.55" stroke="var(--line,#e1e5eb)" stroke-width="1"/>
+<text x="14" y="72" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="600" fill="var(--fg,#17202c)" text-anchor="start">Plan</text>
+<rect x="100" y="94" width="530" height="44" rx="8" fill="var(--kod,#eef1f5)" fill-opacity="0.55" stroke="var(--line,#e1e5eb)" stroke-width="1"/>
+<text x="14" y="118" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="600" fill="var(--fg,#17202c)" text-anchor="start">Sahne</text>
+<rect x="100" y="152" width="530" height="44" rx="8" fill="var(--kod,#eef1f5)" fill-opacity="0.55" stroke="var(--line,#e1e5eb)" stroke-width="1"/>
+<text x="14" y="176" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="600" fill="var(--fg,#17202c)" text-anchor="start">Ses</text>
+<rect x="100" y="210" width="530" height="44" rx="8" fill="var(--kod,#eef1f5)" fill-opacity="0.55" stroke="var(--line,#e1e5eb)" stroke-width="1"/>
+<text x="14" y="234" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="600" fill="var(--fg,#17202c)" text-anchor="start">Kontrol</text>
+<line x1="150" y1="44" x2="150" y2="276" stroke="var(--line,#e1e5eb)" stroke-width="1.5" stroke-dasharray="4 4"/>
+<line x1="260" y1="44" x2="260" y2="276" stroke="var(--line,#e1e5eb)" stroke-width="1.5" stroke-dasharray="4 4"/>
+<line x1="350" y1="44" x2="350" y2="276" stroke="var(--line,#e1e5eb)" stroke-width="1.5" stroke-dasharray="4 4"/>
+<line x1="520" y1="44" x2="520" y2="276" stroke="var(--line,#e1e5eb)" stroke-width="1.5" stroke-dasharray="4 4"/>
+<line x1="110" y1="66" x2="620" y2="66" stroke="var(--soft,#5b6472)" stroke-width="1.6"/>
+<path d="M150 58L157 66L150 74L143 66z" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="150" y="50" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" fill="var(--acc,#1d4f91)" text-anchor="middle">giriş</text>
+<path d="M260 58L267 66L260 74L253 66z" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="260" y="50" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" fill="var(--acc,#1d4f91)" text-anchor="middle">vurgu</text>
+<path d="M350 58L357 66L350 74L343 66z" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="350" y="50" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" fill="var(--acc,#1d4f91)" text-anchor="middle">oturma</text>
+<path d="M520 58L527 66L520 74L513 66z" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="520" y="50" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" fill="var(--acc,#1d4f91)" text-anchor="middle">çıkış</text>
+<rect x="150" y="100" width="102" height="24" rx="6" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.2"/>
+<text x="201.0" y="117" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--fg,#17202c)" text-anchor="middle">metin girer</text>
+<rect x="264" y="100" width="80" height="24" rx="6" fill="var(--ilebg,#f0eaf8)" stroke="var(--ile,#6a4a9c)" stroke-width="1.2"/>
+<text x="304.0" y="117" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--fg,#17202c)" text-anchor="middle">+0,1 sn</text>
+<rect x="356" y="100" width="158" height="24" rx="6" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.2"/>
+<text x="435.0" y="117" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--fg,#17202c)" text-anchor="middle">metin sabit</text>
+<rect x="524" y="100" width="66" height="24" rx="6" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.2"/>
+<text x="557.0" y="117" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--fg,#17202c)" text-anchor="middle">çıkış</text>
+<rect x="255" y="158" width="10" height="24" rx="3" fill="var(--ile,#6a4a9c)" stroke="var(--ile,#6a4a9c)" stroke-width="1"/>
+<rect x="269" y="164" width="6" height="12" rx="3" fill="var(--ile,#6a4a9c)" fill-opacity="0.6" stroke="var(--ile,#6a4a9c)" stroke-width="1"/>
+<text x="286" y="175" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">vuruş: vurgu olayına bağlı</text>
+<rect x="110" y="216" width="60" height="24" rx="6" fill="var(--kod,#eef1f5)" stroke="var(--ok,#1f7a4d)" stroke-width="1.2"/>
+<text x="140" y="233" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--fg,#17202c)" text-anchor="middle">ilk kare</text>
+<rect x="350" y="216" width="170" height="24" rx="6" fill="var(--kod,#eef1f5)" stroke="var(--ok,#1f7a4d)" stroke-width="1.2"/>
+<text x="435" y="233" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--fg,#17202c)" text-anchor="middle">okuma süresi ölçülür</text>
+<g class="b16-ph" transform="translate(440 0)"><line x1="0" y1="86" x2="0" y2="278" stroke="var(--fg,#17202c)" stroke-width="2"/><path d="M-7 78H7L0 90z" fill="var(--fg,#17202c)" stroke="var(--fg,#17202c)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="320" y="306" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="middle">Metin değişince plan yeniden hesaplanır, dört şerit birlikte kayar.</text>
+</svg></div><figcaption>Plan olayları adlandırır. Sahne, ses ve kontrol aynı adlı olaylardan okur. Oynatma çizgisi soldan sağa ilerler.</figcaption></figure>
 <h2 id="render-dan-once-olcum">Render'dan önce ölçüm</h2>
 <p>Kit videoyu kodlamadan, sahneyi kare kare çizerek ölçer. Anlatıdaki kontroller:</p>
 <div class="tablo"><table><thead><tr><th>Kontrol</th><th>Neye bakar</th></tr></thead><tbody><tr><td data-e="Kontrol">ilk kare</td><td data-e="Neye bakar">0. karede okunur metin var mı, küçük resim boş kalmasın</td></tr><tr><td data-e="Kontrol">okuma süresi</td><td data-e="Neye bakar">Her metin, kelime sayısına göre yeterince ekranda kalıyor mu</td></tr><tr><td data-e="Kontrol">metin sabit</td><td data-e="Neye bakar">Oturduktan sonra çıkışa kadar metin katmanı kıpırdıyor mu</td></tr><tr><td data-e="Kontrol">güvenli alan</td><td data-e="Neye bakar">Metin ve çizimler arayüzün örttüğü üst, alt ve sağ bölgelere giriyor mu</td></tr><tr><td data-e="Kontrol">hareket</td><td data-e="Neye bakar">Arka planda yarım saniyeden uzun donma var mı</td></tr><tr><td data-e="Kontrol">senkron</td><td data-e="Neye bakar">Kelime zamanları gerçekten konuşmaya oturuyor mu (anlatı videosunda)</td></tr></tbody></table></div>
 <p>Render'dan sonra kit MP4'te ses seviyesini de ölçer. Hedef -14 LUFS civarı, tepe -1 dBTP altı. Tek komut hepsini sırayla koşar ve ölçüm kalırsa render yapmaz.</p>
+<p>Alıştırmanın 3. adımında göreceğin çıktı aşağıdaki gibi olur. Gerçek bir koşum değil, biçimi gösterir.</p>
+<figure class="term"><figcaption>Şematik örnek</figcaption><pre>$ node olc.js plan.json
+okuma süresi   sahne 2: 7 kelime, 1,2 sn (en az 2,0 sn)   KALDI
+ilk kare       geçti
+metin sabit    geçti
+sonuç: KALDI   çıkış kodu 1, render yapılmadı
+$ node olc.js plan.json    # süre düzeltildikten sonra
+okuma süresi   sahne 2: 7 kelime, 2,4 sn (en az 2,0 sn)   GEÇTİ
+sonuç: GEÇTİ   çıkış kodu 0</pre></figure>
+<ul><li>1. satır: ölçüm neye baktığını, ölçtüğü değeri ve eşiği birlikte yazar. Yalnız "kaldı" yazan bir kontrol neyi düzelteceğini söylemez.</li><li>4. satır: çıkış kodu sıfırdan farklı olduğu için sonraki adım (render) başlamaz.</li><li>Son iki satır: aynı ölçümün önce düşmesi ve sonra geçmesi bölümün aradığı kanıttır. Yalnız geçen bir ölçüm hiçbir şeye bakmıyor olabilir.</li></ul>
 <p>Güvenli alan kontrolünün inceliği şurada: sahne, çizdiği her şeyin sınırını bildirir ve kontrol bunları kamera yakınlaşması ve sarsıntı dahil, gerçekte ekrana düştükleri yerde tartar.</p>
 <h2 id="kare-tablosu-ajanin-gozu">Kare tablosu: ajanın gözü</h2>
 <p>Ölçüm sayıyı verir, ama "bu kare çirkin mi, iki öğe üst üste mi bindi" sorusunu sayı cevaplamaz. Bunun için kit her sahne ve her adlı olay için tek bir kare üretir ve hepsini altı sütunlu tek bir PNG'ye dizer. Her karenin altında zaman etiketi vardır, üstüne güvenli alanlar yarı saydam kırmızıyla bindirilir. Ajan bu tek görüntüyü açar ve her karede şuna bakar: tek odak noktası var mı, giren ve çıkan öğe çakışıyor mu, metin telefon genişliğinde okunur mu, kaynak yazısı arayüz bölgesinin dışında mı.</p>
+<figure class="sekil" id="sekil-b16-kare-tablosu-sema"><div class="sekil-kap"><svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kare tablosu şeması: ilk kare, giriş, vurgu, oturma, çıkış ve final için birer kare tek görüntüde yan yana; üstlerinde güvenli alan şeritleri">
+<text x="14" y="24" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="14" font-weight="600" fill="var(--soft,#5b6472)" text-anchor="start">Tek PNG: her sahne ve adlı olay için bir kare</text>
+<rect x="25" y="40" width="80" height="132" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)" stroke-width="1.5"/>
+<rect x="26" y="41" width="78" height="22" fill="var(--ile,#6a4a9c)" fill-opacity="0.22"/>
+<rect x="26" y="139" width="78" height="32" fill="var(--ile,#6a4a9c)" fill-opacity="0.22"/>
+<rect x="93" y="63" width="11" height="76" fill="var(--ile,#6a4a9c)" fill-opacity="0.22"/>
+<rect x="35" y="90" width="50" height="8" rx="4" fill="var(--fg,#17202c)" fill-opacity="0.8" stroke="var(--fg,#17202c)" stroke-width="0"/>
+<rect x="35" y="106" width="36" height="8" rx="4" fill="var(--fg,#17202c)" fill-opacity="0.5" stroke="var(--fg,#17202c)" stroke-width="0"/>
+<text x="65.0" y="194" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" fill="var(--fg,#17202c)" text-anchor="middle">ilk kare</text>
+<rect x="127" y="40" width="80" height="132" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)" stroke-width="1.5"/>
+<rect x="128" y="41" width="78" height="22" fill="var(--ile,#6a4a9c)" fill-opacity="0.22"/>
+<rect x="128" y="139" width="78" height="32" fill="var(--ile,#6a4a9c)" fill-opacity="0.22"/>
+<rect x="195" y="63" width="11" height="76" fill="var(--ile,#6a4a9c)" fill-opacity="0.22"/>
+<rect x="137" y="94" width="30" height="8" rx="4" fill="var(--fg,#17202c)" fill-opacity="0.5" stroke="var(--fg,#17202c)" stroke-width="0"/>
+<text x="167.0" y="194" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" fill="var(--fg,#17202c)" text-anchor="middle">giriş</text>
+<rect x="229" y="40" width="80" height="132" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)" stroke-width="1.5"/>
+<rect x="230" y="41" width="78" height="22" fill="var(--ile,#6a4a9c)" fill-opacity="0.22"/>
+<rect x="230" y="139" width="78" height="32" fill="var(--ile,#6a4a9c)" fill-opacity="0.22"/>
+<rect x="297" y="63" width="11" height="76" fill="var(--ile,#6a4a9c)" fill-opacity="0.22"/>
+<rect x="239" y="88" width="52" height="10" rx="5" fill="var(--acc,#1d4f91)" stroke="var(--acc,#1d4f91)" stroke-width="0"/>
+<circle cx="267" cy="122" r="12" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.5"/>
+<text x="269.0" y="194" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" fill="var(--fg,#17202c)" text-anchor="middle">vurgu</text>
+<rect x="331" y="40" width="80" height="132" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)" stroke-width="1.5"/>
+<rect x="332" y="41" width="78" height="22" fill="var(--ile,#6a4a9c)" fill-opacity="0.22"/>
+<rect x="332" y="139" width="78" height="32" fill="var(--ile,#6a4a9c)" fill-opacity="0.22"/>
+<rect x="399" y="63" width="11" height="76" fill="var(--ile,#6a4a9c)" fill-opacity="0.22"/>
+<rect x="341" y="84" width="52" height="8" rx="4" fill="var(--fg,#17202c)" fill-opacity="0.8" stroke="var(--fg,#17202c)" stroke-width="0"/>
+<rect x="341" y="100" width="44" height="8" rx="4" fill="var(--fg,#17202c)" fill-opacity="0.8" stroke="var(--fg,#17202c)" stroke-width="0"/>
+<rect x="341" y="116" width="36" height="8" rx="4" fill="var(--fg,#17202c)" fill-opacity="0.8" stroke="var(--fg,#17202c)" stroke-width="0"/>
+<text x="371.0" y="194" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" fill="var(--fg,#17202c)" text-anchor="middle">oturma</text>
+<rect x="433" y="40" width="80" height="132" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)" stroke-width="1.5"/>
+<rect x="434" y="41" width="78" height="22" fill="var(--ile,#6a4a9c)" fill-opacity="0.22"/>
+<rect x="434" y="139" width="78" height="32" fill="var(--ile,#6a4a9c)" fill-opacity="0.22"/>
+<rect x="501" y="63" width="11" height="76" fill="var(--ile,#6a4a9c)" fill-opacity="0.22"/>
+<rect x="443" y="94" width="44" height="8" rx="4" fill="var(--fg,#17202c)" fill-opacity="0.25" stroke="var(--fg,#17202c)" stroke-width="0"/>
+<text x="473.0" y="194" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" fill="var(--fg,#17202c)" text-anchor="middle">çıkış</text>
+<rect x="535" y="40" width="80" height="132" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)" stroke-width="1.5"/>
+<rect x="536" y="41" width="78" height="22" fill="var(--ile,#6a4a9c)" fill-opacity="0.22"/>
+<rect x="536" y="139" width="78" height="32" fill="var(--ile,#6a4a9c)" fill-opacity="0.22"/>
+<rect x="603" y="63" width="11" height="76" fill="var(--ile,#6a4a9c)" fill-opacity="0.22"/>
+<rect x="545" y="90" width="52" height="10" rx="5" fill="var(--acc,#1d4f91)" stroke="var(--acc,#1d4f91)" stroke-width="0"/>
+<rect x="545" y="108" width="38" height="8" rx="4" fill="var(--fg,#17202c)" fill-opacity="0.5" stroke="var(--fg,#17202c)" stroke-width="0"/>
+<text x="575.0" y="194" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="600" fill="var(--fg,#17202c)" text-anchor="middle">final</text>
+<rect x="25" y="226" width="16" height="12" rx="3" fill="var(--ile,#6a4a9c)" fill-opacity="0.3" stroke="var(--ile,#6a4a9c)" stroke-width="0"/>
+<text x="48" y="237" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">arayüzün örttüğü güvenli alan dışı</text>
+<text x="14" y="266" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">Ajan her karede bakar: tek odak var mı, giren ve çıkan öğe çakışıyor mu,</text>
+<text x="14" y="286" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">metin telefon genişliğinde okunur mu, kaynak yazısı şeritlerin dışında mı.</text>
+</svg></div><figcaption>Kare tablosunun şeması. Gerçek bir tablo değil, yalnız düzeni gösteriyor.</figcaption></figure>
 <p>Aynı fikir açık kaynak claude-motion projesinde de var. README'sine göre orada da ajanlar videoyu izleyemez ama kareye bakar, her vuruş için zaman damgalı bir kare tablosu çıkar, tek bir zaman çizelgesi sahneyi, sesi ve incelemeyi besler ve hareket kuralları sayılarla yazılır. Proje MIT lisanslı. Bunları yalnız o README'ye dayanarak aktarıyorum, projeyi çalıştırmadım.</p>
 <h2 id="ses-vurus-olaya-bagli-kayit-once-kontrolden-gecer">Ses: vuruş olaya bağlı, kayıt önce kontrolden geçer</h2>
 <p>Sesi de koddan üret ve olaya bağla. Kitte sesler sentezlenir, örnek dosya ya da lisanslı müzik yoktur. Betik her sesi bir olayın adıyla yerleştirir ve bir dalga görüntüsü çıkarır, üstünde olay çizgileri vardır. Ajan dalgaya bakıp her vuruşun bir çizginin üstüne oturup oturmadığını görür. Seviye için ayrıca sayı var: mastering -14 LUFS'a ve bir true peak tavanına kendisi oturtur.</p>

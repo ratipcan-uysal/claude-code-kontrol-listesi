@@ -4,6 +4,8 @@ Bir oturumun bağlam penceresi küçük bir çalışma masasına benzer. Üzerin
 
 Oturumları yönetmek beş soruya iner. Bu iş için yeni masa mı açayım? Masayı bir yere not alıp mı bırakayım? Aynı masaya mı döneyim? Masayı kopyalayıp başka bir yol mu deneyim? Yaptığım son şeyi geri mi alayım? {{bolum:1}} bölümündeki zihinsel modeli hatırla: Claude'un bildiği, pencerede olandır. Bu bölümdeki her komut pencerenin içeriğini değiştirir.
 
+{{sekil:b03-oturum-dallanmasi|Bir oturumun zaman çizgisi. Her komut çizgiyi başka bir yöne çeker: /fork arka plana, /branch yeni bir kola, /rewind geriye, /clear boş bir pencereye, --continue ertesi güne.}}
+
 ## Konu başına oturum
 
 Bir oturum tek bir tutarlı işe ait olsun. Önceki işin dosyaları ve kararları pencerede kalırsa yeni işi de etkiler. Yeni bir konuya geçince `/clear` yaz. Belge ayrıca `/clear oauth-gecisi` gibi bir adla önceki konuşmayı etiketleyebileceğini söyler, böylece sonra `/resume` listesinde bulursun. [[2.1]] [[2.3]]
@@ -22,9 +24,29 @@ Konuşma taşınmaz, dosya taşınır. İş yarım kalacaksa oturumu kapatmadan 
 
 Şunlar özetin insafına kalır: sohbette verdiğin talimatlar, `paths` alanıyla yüklenen kurallar ve alt dizin CLAUDE.md dosyaları (bunlar ilgili dosyaya yeniden dokunulunca geri yüklenir), hook'ların eklediği bağlam ve araç çıktılarının ayrıntısı. Bu yüzden `/compact` kullanırken neyin korunacağını yaz: `/compact API değişikliklerini ve test komutlarını koru`. Önemli bir talimat sohbetteyse önce dosyaya taşı. [[2.6]]
 
+{{sekil:b03-compact-ne-doner|/compact sonrası pencerede ne kalır. Soldakiler diskten yeniden eklenir, sağdakiler yalnız özetin ne tuttuğuna bağlıdır.}}
+
 ## /resume ve --continue
 
 Aynı konuşmaya dönmenin iki yolu var. `claude --continue` bu dizindeki son oturumu açar. Orada oturum yoksa belge bunu açıkça yazar: "No conversation found to continue" der ve çıkar. `/resume` (ya da `claude --resume`) bir seçici açar ve `/rename` ile ad verdiysen adla bulursun. Geçmişe dönmek yeni bir masa değil, eski masaya dönmektir: o gün pencerede ne varsa geri gelir, düne ait eski bilgi de dahil. [[2.7]]
+
+Bu seçenekleri yerel sürümün yardım çıktısında da görebilirsin:
+
+```terminal Gerçek çıktı, kısaltılmış
+$ claude --help
+  -c, --continue         Continue the most recent conversation in
+                         the current directory
+  -r, --resume [value]   Resume a conversation by session ID, or
+                         open interactive picker with optional
+                         search term
+  --fork-session         When resuming, create a new session ID
+                         instead of reusing the original (use
+                         with --resume or --continue)
+```
+
+- **`--continue` satırı:** "most recent conversation in the current directory", yani bu dizindeki en son konuşma. Başka bir dizinde açarsan o dizinin son oturumu gelir.
+- **`--resume` satırı:** Oturum kimliği verirsen doğrudan açar, vermezsen seçici açar. Seçiciye bir arama kelimesi de verebilirsin.
+- **`--fork-session` satırı:** Eski oturumu açarken yeni bir kimlik verir. İlk oturumun geçmişi olduğu gibi kalır.
 
 ## /branch ile /fork farkı
 
@@ -67,7 +89,21 @@ Yön vermek için her zaman durdurman gerekmez. Claude çalışırken mesajını
 
 **Gerçek vaka: geçici dizin devir dosyası için kötü yerdi.** Birden çok gün sürecek bir işin kaynakları oturumun geçici çalışma dizinindeydi ve dizin toptan silindi. Devir dosyasını proje dizinine yaz. Ayrıntısı D09.
 
-**Kurgu senaryo: rewind'ın görmediği dosya.** Defne, Claude'a bir betik çalıştırtır. Betik `rapor.csv` dosyasını yeniden üretir ve eski hâlini ezer. Sonuç yanlıştır, Defne `/rewind` yapar. Kod düzenlemeleri geri döner, `rapor.csv` yerinde kalır, çünkü yalnız Bash değiştirmiştir. Dosya Git'te olsaydı `git restore rapor.csv` bir saniyede çözerdi.
+**Kurgu senaryo: rewind'ın görmediği dosya.** Defne, Claude'a bir betik çalıştırtır. Betik `rapor.csv` dosyasını yeniden üretir ve eski hâlini ezer. Sonuç yanlıştır, Defne `/rewind` yapar. Kod düzenlemeleri geri döner, `rapor.csv` yerinde kalır, çünkü yalnız Bash değiştirmiştir. Dosya Git'te olsaydı `git restore rapor.csv` bir saniyede çözerdi. Aynı durum geçici bir deneme deposunda şöyle görünür:
+
+```terminal Gerçek çıktı, geçici deneme deposunda
+$ printf 'ay,tutar\n1,999\n' > rapor.csv
+$ git status --short
+ M rapor.csv
+$ git restore rapor.csv
+$ git status --short
+$ cat rapor.csv
+ay,tutar
+1,100
+```
+
+- **`M rapor.csv` satırı:** Git dosyanın değiştiğini görüyor. Bu değişikliği Claude'un düzenleme aracı değil Bash yaptıysa `/rewind` bunu bilmez, Git bilir.
+- **`git restore` sonrası boş çıktı:** Değişen dosya kalmadı. `cat` ilk commit'teki değeri, 100'ü gösteriyor.
 
 ## Alıştırma: iki yolu dallayıp birini seç
 

@@ -16,6 +16,10 @@ Claude Code yanlış bir şey yaptığında ilk refleks "daha açık yazayım" o
 
 Ayrım pratik sonuç verir. Bağlam hatasında kuralı yazarsın, ama o kural tek yerde ve doğru katmanda durur. Model kararı hatasında kural eklemek işe yaramaz, çünkü Claude kuralı zaten biliyordu. Harness hatasında hiçbir metin yardım etmez, ayarı düzeltirsin. Üçünü karıştıran ekip CLAUDE.md'sini şişirir ve sorun yine de geri gelir. Belge de aynı yönde uyarır: uzun dosya hem bağlam harcar hem uyumu düşürür, çelişen iki talimattan Claude birini rastgele seçebilir.
 
+Tablodaki üç belirtiyi ayırmak için soruları bu sırayla sor:
+
+_Şekil: Önce harness engeli var mı, sonra kural pencerede miydi diye sor. Cevap düzeltmenin nereye yazılacağını belirler. ([web sürümünde](12-sistemi-iyilestirmek.html#sekil-b12-ariza-katman-siniflama))_
+
 ## Dersi doğru katmana yaz
 
 Bir ders öğrendiğinde dosyayı seçmeden önce şunu sor: bu cümle nerede doğru olmaktan çıkıyor?
@@ -26,6 +30,8 @@ Bir ders öğrendiğinde dosyayı seçmeden önce şunu sor: bu cümle nerede do
 - **Tarihli ölçüm ve kanıt ise** ayrı bir kanıt dosyasına yaz. Kuralın kendisi kısa kalır, ölçümün gövdesi orada durur. [18.1](../README.md#18-bilgi) [18.4](../README.md#18-bilgi)
 
 Yanlış katman sessiz bir kayıptır. Makine gerçeğini proje dosyasına yazarsan diğer projeler onu hiç görmez. Proje gerçeğini kullanıcı dosyasına yazarsan başka depolarda gürültü olur.
+
+_Şekil: Dersin katmanı kapsamına göre seçilir. Dışa doğru kapsam genişler, tarihli ölçüm ise iç içe geçmez, ayrı dosyada durur. ([web sürümünde](12-sistemi-iyilestirmek.html#sekil-b12-ders-katmani))_
 
 ## Karar kuralları
 
@@ -60,6 +66,15 @@ done
 
 **Sürüm ve ortam farkını kaydet.** Bir karşılaştırmanın değeri, hangi sürümde yapıldığına bağlı. Raporuna `claude --version` çıktısını, platformu ve sağlayıcıyı yaz. Belgede olan özellik eski sürümde ya da başka sağlayıcıda bulunmayabilir. Bu bölümdeki iki örnek: `/doctor prompt-audit` v2.1.283, `/usage` içindeki `f` kısayolu v2.1.305 ister. [19.6](../README.md#19-bakim)
 
+**Gerçek çıktı**
+
+```text
+$ claude --version
+2.1.284 (Claude Code)
+```
+
+Karşılaştırma raporunun ilk satırı bu olmalı. Bu makinedeki 2.1.284, `/doctor prompt-audit` için gereken 2.1.283'ü karşılıyor, `/usage` içindeki `f` kısayolu için gereken 2.1.305'e yetmiyor. Önce ve sonra ölçümünü iki ayrı sürümle yaparsan farkın nedenini ayıramazsın.
+
 ## Hata biçimleri
 
 **Gerçek vaka: dersin katmanı (D09).** [Gerçek deneyimlerden on ders](../ekler/deneyimler.md) sayfasındaki D09'da çok günlük bir işin kaynakları geçici dizindeydi ve silindi ([Bölüm 3: Oturum: masayı doğru yönetmek](03-oturumu-yonetmek.md)). Vakanın dersi ("birden çok gün sürecek işin kaynağı geçici dizinde tutulmaz") bir makine gerçeğidir, bu yüzden bu rehberin ölçütüne göre kullanıcı düzeyi dosyaya ait. Aynı cümle bir proje CLAUDE.md'sine yazılsaydı başka projeler aynı kayıpla karşılaşırdı. Ölçümün gövdesi (silme tarihi, neyin geri kurulabildiği) kısa kuralın dışında, kanıt sayfasında durur. Sınırı da vaka yazıyor: silmenin nedeni ölçülmedi.
@@ -79,6 +94,21 @@ Bunu kendi proje talimatlarının bir kopyasında yap. Gerçek dosyayı karşıl
 5. Sonuçları ölçütüne göre karşılaştır.
 
 **Bitti sayılması için:** üç satırlık bir önce/sonra tablosu (iş, sonuç, tur, maliyet), silinen satırların listesi ve `claude --version` çıktısı. Altına tek cümle yaz: budama hangi katmandaki hatayı çözdü, hangisini çözmedi.
+
+Teslim edeceğin tablonun biçimi şöyle olur:
+
+**Şematik örnek**
+
+```text
+iş                  sonuç    tur   maliyet
+1 küçük düzeltme    geçti      4     0,12
+2 araştırma         geçti      9     0,48
+3 çok adımlı        kaldı     14     0,91
+silinen satır: 3 (2 eski vurgu, 1 var olmayan dosyaya atıf)
+claude 2.1.284 (Claude Code)
+```
+
+Sayılar uydurma, yalnız sütunları gösteriyor. Üçüncü satırın "kaldı" olması budamanın her işi iyileştirmediğini gösterir. O satırın yanına, hatanın hangi katmandan geldiğini yaz.
 
 ## Bağlantılar
 

@@ -12,6 +12,10 @@
 
 Kuralların nasıl bir araya geldiğini tek cümleyle hatırla: deny önce gelir, sonra ask, sonra allow. İlk eşleşen kazanır ve kuralın ne kadar özel olduğu sırayı değiştirmez. Geniş bir deny kuralı, dar bir allow kuralının açtığı kapıyı kapatır. Allow kuralıyla deny kuralından istisna çıkaramazsın. Bir PreToolUse hook'u "allow" dese bile deny ve ask kuralları yine değerlendirilir.
 
+{{sekil:b06-izin-karar-sirasi|Bir araç çağrısının geçtiği sıra. İlk beş basamak Claude Code içinde karar verir, altıncı basamak komut çalışırken devreye girer}}
+
+Şekilde dördüncü basamaktan sonra gelen mod, kural yazılmamış durumda geçerli olan varsayılandır. Hook'un exit 2 verdiği çağrı bu sıranın dışında, en başta durur.
+
 ## İzin modları: hangisi ne zaman
 
 Mod, kural yazılmamış durumda Claude'un neyi sormadan yapabileceğini belirler. Kurallar modun üstüne biner. Belgedeki tabloyu kendi cümlelerimle özetliyorum:
@@ -32,6 +36,22 @@ Mod, kural yazılmamış durumda Claude'un neyi sormadan yapabileceğini belirle
 - **`bypassPermissions` her şeyi açmaz.** Allow kuralları bu modda etkisizdir ama deny kuralları yine çalışır. `rm -rf /` gibi tanınan kritik silmeler ve açık ask kuralları yine sorar. Belge bu modu internetsiz konteyner ve sanal makine için ayırır.
 
 Başlangıç modu şu sırayla belirlenir: komut satırı bayrağı, sonra ayar dosyasındaki `defaultMode`, sonra yerleşik varsayılan. Bir tuzak var. Belgeye göre `.claude/settings.json` ya da `.claude/settings.local.json` içine `bypassPermissions` yazarsan değer etkisizdir ve oturum Manual başlar. `claude -p` ile açılan oturum ise yerleşik olarak `default` ile başlar.
+
+Bayrağın bu makinedeki sürümde kabul ettiği değerleri yardım çıktısından okuyabilirsin:
+
+```terminal Gerçek çıktı, kısaltılmış
+$ claude --version
+2.1.284 (Claude Code)
+$ claude --help
+  --permission-mode <mode>   Permission mode to use for the session
+                             (choices: "acceptEdits", "auto",
+                             "bypassPermissions", "manual",
+                             "dontAsk", "plan")
+```
+
+- **2. satır:** sürüm. Bu bölümdeki sürüm iddiaları 2.1.284 içindir.
+- **4. ile 7. satır:** bayrağın kabul ettiği altı değer. Tablodaki altı modun hepsi burada var, yalnız ilk mod yardımda `manual` adıyla geçiyor. Belgeye göre arayüz bu modu Manual diye gösterir, ayar değeri `default`'tur ve hook'lar da bu adı görür. CLI ikisini de kabul eder: `--permission-mode manual` ile `"defaultMode": "default"` aynı modu açar.
+- Çıktı yardım metninden kesildi, başka bayraklar çıkarıldı.
 
 ## Dar allow girdisi
 

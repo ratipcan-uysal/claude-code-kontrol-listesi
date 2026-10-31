@@ -1,0 +1,22 @@
+<svg viewBox="0 0 640 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ajan döngüsü: bağlam topla, harekete geç, sonucu doğrula. Döngü tekrarlanır ve kullanıcı her an araya girebilir" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" fill="var(--fg,#17202c)">
+<style>
+.b01-d rect.b01-k{fill:var(--accbg,#e6eef9);stroke:var(--acc,#1d4f91);stroke-width:2}
+@media (prefers-reduced-motion: no-preference){
+.b01-d .b01-g{animation:b01-yan 9s infinite both}
+.b01-d .b01-g2{animation-delay:3s}.b01-d .b01-g3{animation-delay:6s}
+.b01-d .b01-g rect.b01-k{animation:b01-cer 9s infinite both}
+.b01-d .b01-g2 rect.b01-k{animation-delay:3s}.b01-d .b01-g3 rect.b01-k{animation-delay:6s}
+@keyframes b01-yan{0%{opacity:.5}6%{opacity:1}30%{opacity:1}38%{opacity:.5}100%{opacity:.5}}
+@keyframes b01-cer{0%{fill:var(--yuzey,#ffffff);stroke:var(--line,#e1e5eb)}6%{fill:var(--accbg,#e6eef9);stroke:var(--acc,#1d4f91)}30%{fill:var(--accbg,#e6eef9);stroke:var(--acc,#1d4f91)}38%{fill:var(--yuzey,#ffffff);stroke:var(--line,#e1e5eb)}100%{fill:var(--yuzey,#ffffff);stroke:var(--line,#e1e5eb)}}
+}
+</style>
+<defs><marker id="b01-ok1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--soft,#5b6472)"/></marker></defs>
+<g class="b01-d">
+<g fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.6"><path d="M200 120H228" marker-end="url(#b01-ok1)"/><path d="M410 120H438" marker-end="url(#b01-ok1)"/><path d="M530 162V205H110V162" marker-end="url(#b01-ok1)"/></g>
+<text x="320" y="232" text-anchor="middle" font-size="13" fill="var(--soft,#5b6472)">tekrarla, sonuç yetene kadar</text>
+<g class="b01-g b01-g1"><rect class="b01-k" x="20" y="78" width="180" height="84" rx="12" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)"/><text x="38" y="106" font-size="13" font-weight="700" fill="var(--acc,#1d4f91)">1</text><text x="38" y="128" font-size="16" font-weight="700" fill="var(--fg,#17202c)">Bağlam topla</text><text x="38" y="148" font-size="13" fill="var(--soft,#5b6472)">oku, ara, anla</text></g>
+<g class="b01-g b01-g2"><rect class="b01-k" x="230" y="78" width="180" height="84" rx="12" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)"/><text x="248" y="106" font-size="13" font-weight="700" fill="var(--acc,#1d4f91)">2</text><text x="248" y="128" font-size="16" font-weight="700" fill="var(--fg,#17202c)">Harekete geç</text><text x="248" y="148" font-size="13" fill="var(--soft,#5b6472)">düzenle, çalıştır</text></g>
+<g class="b01-g b01-g3"><rect class="b01-k" x="440" y="78" width="180" height="84" rx="12" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)"/><text x="458" y="106" font-size="13" font-weight="700" fill="var(--acc,#1d4f91)">3</text><text x="458" y="128" font-size="16" font-weight="700" fill="var(--fg,#17202c)">Sonucu doğrula</text><text x="458" y="148" font-size="13" fill="var(--soft,#5b6472)">test, ekran, diff</text></g>
+<g><path d="M320 40V72" fill="none" stroke="var(--ile,#6a4a9c)" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#b01-ok1)"/><rect x="200" y="8" width="240" height="32" rx="16" fill="var(--ilebg,#f0eaf8)" stroke="var(--ile,#6a4a9c)" stroke-dasharray="4 3"/><text x="320" y="29" text-anchor="middle" font-size="13" fill="var(--fg,#17202c)">sen her an araya girebilirsin</text></g>
+</g>
+</svg>

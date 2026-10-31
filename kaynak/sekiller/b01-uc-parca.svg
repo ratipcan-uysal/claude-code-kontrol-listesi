@@ -1,0 +1,21 @@
+<svg viewBox="0 0 640 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Harness, modeli ve araçları sarar: model karar verir, araçlar iş yapar, aralarında istek ve sonuç gidip gelir" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" fill="var(--fg,#17202c)">
+<defs><marker id="b01-ok2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--soft,#5b6472)"/></marker></defs>
+<rect x="6" y="6" width="628" height="268" rx="18" fill="var(--ilebg,#f0eaf8)" fill-opacity=".45" stroke="var(--ile,#6a4a9c)" stroke-width="2"/>
+<text x="28" y="38" font-size="17" font-weight="700" fill="var(--ile,#6a4a9c)">Harness</text>
+<text x="28" y="60" font-size="13" fill="var(--soft,#5b6472)">modeli saran düzen: izin, bağlam, hook</text>
+<rect x="30" y="92" width="236" height="156" rx="12" fill="var(--yuzey,#ffffff)" stroke="var(--acc,#1d4f91)" stroke-width="1.8"/>
+<text x="50" y="122" font-size="16" font-weight="700" fill="var(--fg,#17202c)">Model</text>
+<text x="50" y="146" font-size="13" fill="var(--soft,#5b6472)">karar verir</text>
+<text x="50" y="170" font-size="13" fill="var(--fg,#17202c)">ne okuyacak</text>
+<text x="50" y="190" font-size="13" fill="var(--fg,#17202c)">hangi komut</text>
+<text x="50" y="210" font-size="13" fill="var(--fg,#17202c)">ne zaman duracak</text>
+<rect x="374" y="92" width="236" height="156" rx="12" fill="var(--yuzey,#ffffff)" stroke="var(--acc,#1d4f91)" stroke-width="1.8"/>
+<text x="394" y="122" font-size="16" font-weight="700" fill="var(--fg,#17202c)">Araçlar</text>
+<text x="394" y="146" font-size="13" fill="var(--soft,#5b6472)">iş yapar</text>
+<text x="394" y="170" font-size="13" fill="var(--fg,#17202c)">dosya oku, düzenle</text>
+<text x="394" y="190" font-size="13" fill="var(--fg,#17202c)">arama, kabuk, web</text>
+<text x="394" y="210" font-size="13" fill="var(--fg,#17202c)">alt ajan başlat</text>
+<g fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.6"><path d="M270 150H368" marker-end="url(#b01-ok2)"/><path d="M370 206H272" marker-end="url(#b01-ok2)"/></g>
+<text x="319" y="140" text-anchor="middle" font-size="13" fill="var(--soft,#5b6472)">istek</text>
+<text x="319" y="228" text-anchor="middle" font-size="13" fill="var(--soft,#5b6472)">sonuç</text>
+</svg>

@@ -20,9 +20,56 @@ Test araçları tek bir testi çalıştırmak için bir filtre kabul eder. Filtr
 
 **Gerçek vaka D02.** Test komutuna süitin okunur adı filtre olarak verildi, eşleşen test olmadı ve çıktı "başarılı" dedi. Rapora "test geçiyor" diye girmek üzereydi. Aynı gün iki benzer yeşil daha çıktı: hiçbir dosya bulamadığı için geçen bir lint ve penceresi dar olduğu için körleşen bir lint (lint, kod stilini ve basit hataları denetleyen araçtır). Üçünün ortak yanı, durum satırının doğru, kapsamın boş olmasıdır. Ayrıntısı [Gerçek deneyimlerden on ders](../ekler/deneyimler.md) sayfasında D02. [12.1](../README.md#12-dogrulama)
 
+Aynı durum küçük bir deneme klasöründe, filtre hiçbir testle eşleşmeyecek şekilde verilerek denendi:
+
+**Gerçek çıktı, kısaltılmış**
+
+```text
+$ python3 -m unittest -k yok_boyle_test -v test_toplam
+----------------------------------------------------------------------
+Ran 0 tests in 0.000s
+
+NO TESTS RAN
+$ echo $?
+5
+```
+
+- **`Ran 0 tests` satırı:** Asıl bilgi bu sayı. Kapsam boş.
+- **`NO TESTS RAN` ve çıkış kodu 5:** Python'un `unittest` aracı boş koşuyu açıkça işaretliyor ve sıfırdan farklı kodla çıkıyor. Her araç bu kadar açık davranmaz, bu yüzden sayıyı kendin okumak zorundasın.
+
 ## Yeni kontrolü hatayı geri koyarak sınamak
 
 Claude yeni bir test, lint kuralı ya da doğrulama betiği yazdıysa onun çalıştığını göstermek için bir tek yol var: kontrolün yakalaması gereken hatayı kasten geri koy ve kontrolün düştüğünü gör. Düşmüyorsa kontrol hiçbir şeye bakmıyor demektir. Sonra hatayı çıkar ve kontrolün yeşile döndüğünü gör. Bu üç adımlık döngü (yeşil, kasten kır, kırmızı, düzelt, yeşil) bir kontrolün gerçekten çalıştığının tek kanıtıdır. [12.2](../README.md#12-dogrulama)
+
+_Şekil: Kontrolü sınama döngüsü. Üçüncü adımda kırmızı görmezsen kontrol hiçbir şeye bakmıyor demektir. ([web sürümünde](04-kanitla-teslim.html#sekil-b04-kasten-kir))_
+
+Aynı döngü, bir `+` işaretinin `-` yapıldığı küçük bir fonksiyonla:
+
+**Gerçek çıktı, kısaltılmış**
+
+```text
+$ python3 -m unittest -v test_toplam
+test_iki_sayi (test_toplam.ToplamTesti.test_iki_sayi) ... ok
+Ran 1 test in 0.000s
+OK
+
+$ sed -i '' 's/a + b/a - b/' toplam.py
+$ python3 -m unittest test_toplam
+FAIL: test_iki_sayi (test_toplam.ToplamTesti.test_iki_sayi)
+AssertionError: -1 != 5
+Ran 1 test in 0.001s
+FAILED (failures=1)
+
+$ sed -i '' 's/a - b/a + b/' toplam.py
+$ python3 -m unittest -v test_toplam
+test_iki_sayi (test_toplam.ToplamTesti.test_iki_sayi) ... ok
+Ran 1 test in 0.000s
+OK
+```
+
+- **İlk `OK` ve `Ran 1 test`:** Kontrol yeşil ve sayı 1. Başlangıç noktası bu.
+- **`sed` satırı ve `FAILED (failures=1)`:** Hata kasten konuldu ve test düştü. `AssertionError: -1 != 5` satırı testin tam olarak neye baktığını da söylüyor: iki sayının toplamına.
+- **Son `OK`:** Hata geri alındı, sayı yine 1 ve koşu yeşil. Üç koşu birlikte kontrolün işe yaradığını gösterir.
 
 **Gerçek vaka D08 (yan örnek).** Ağır komutları reddeden bir hook (araç çalışmadan önce devreye giren betik, ayrıntısı [Bölüm 8: Hook ile garanti: olay, çıkış kodu, sınama](08-hook-ile-garanti.md)) 16 vakalık bir testle sınandı ve sıfır yanlış verdi. Test gerçekten bakıyor mu diye hafif komut istisnası kasten bozuldu ve test iki yanlış verdi. Düşen test, testin işe yaradığını gösterdi. Ayrıntısı D08.
 
@@ -70,6 +117,22 @@ Teslimin üç ayrı aşaması var ve her birini kendi kanıtıyla adlandır:
 **Kurgu senaryo: yeşil ama boş.** Ayşe, Claude'a bir hata düzelttirir ve yeni bir test yazdırır. Claude "yeni test geçiyor" der. Ayşe testi çalıştırır, yeşil görür, commit'ler. Haftalar sonra aynı hata geri gelir. Test dosyasının adı yanlış desenle başladığı için hiç keşfedilmemiş, hiç koşmamıştır. Hatayı geri koyup testin düştüğünü görmüş olsaydı sorun o gün çıkardı.
 
 **Kurgu senaryo: raporun fazlası.** Emre bir alt ajana "tüm modülleri güncelle" der. Rapor altı modülü sayar. `git diff --stat` dördünü gösterir. İki modül hiç değişmemiştir ve rapor iki satırı niyetle değil beklentiyle yazmıştır.
+
+**Kurgu, şematik**
+
+```text
+# alt ajanın raporu
+güncellenen modüller: auth, siparis, kdv, fatura, stok, rapor (6)
+
+$ git diff --stat
+ auth.py    | 14 ++++++++------
+ siparis.py |  9 +++++----
+ kdv.py     |  7 ++++---
+ fatura.py  | 11 +++++------
+ 4 files changed, 22 insertions(+), 19 deletions(-)
+```
+
+Rapor altı modül sayıyor, `git diff --stat` dört dosya gösteriyor. Raporda adı geçip diff'te olmayan iki ad `stok` ve `rapor`. Bu iki isim ajana geri sorulacak soru listesidir.
 
 ## Alıştırma: kasten bozulan testin gerçekten düştüğünü göster
 

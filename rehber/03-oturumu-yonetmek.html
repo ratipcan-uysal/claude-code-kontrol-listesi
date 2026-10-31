@@ -103,7 +103,7 @@ main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
 @media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
 .sekil{margin:22px 0;max-width:100%}
 .sekil-kap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--yuzey);padding:14px}
-.sekil-kap svg{display:block;width:100%;height:auto;min-width:min(520px,100%)}
+.sekil-kap svg{display:block;width:100%;height:auto;min-width:560px}
 .sekil figcaption,.term figcaption{font-size:13px;color:var(--soft);margin-top:8px}
 .term{margin:18px 0;max-width:100%}
 .term figcaption{margin:0 0 6px;font-family:var(--f-kod);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
@@ -120,6 +120,33 @@ ul.ekler span{display:block;color:var(--soft);font-size:14px}
 <h2 id="zihinsel-model-oturum-bir-calisma-masasidir">Zihinsel model: oturum, bir çalışma masasıdır</h2>
 <p>Bir oturumun bağlam penceresi küçük bir çalışma masasına benzer. Üzerinde konuşma, okunan dosyalar ve komut çıktıları durur. Masa doldukça önemli kâğıtlar altta kalır. Yeni bir iş için masayı boşaltmak, aynı masada üç işi birden yürütmekten hem ucuz hem güvenlidir. Belge bunu doğrudan söyler: <code>/clear</code> ilgisiz görevler arasında maliyetsizdir ve sonraki görev bir öncekinin geçmişine ödeme yapmaz.</p>
 <p>Oturumları yönetmek beş soruya iner. Bu iş için yeni masa mı açayım? Masayı bir yere not alıp mı bırakayım? Aynı masaya mı döneyim? Masayı kopyalayıp başka bir yol mu deneyim? Yaptığım son şeyi geri mi alayım? <a href="01-zihinsel-model.html">Bölüm 1: Zihinsel model: döngü, bağlam ve harness</a> bölümündeki zihinsel modeli hatırla: Claude'un bildiği, pencerede olandır. Bu bölümdeki her komut pencerenin içeriğini değiştirir.</p>
+<figure class="sekil" id="sekil-b03-oturum-dallanmasi"><div class="sekil-kap"><svg viewBox="0 0 640 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Oturum komutları bir zaman çizgisinde: ana oturum, /fork ile arka plana kopya, /branch ile kopyaya geçiş, /rewind ile geri sarma, /clear ile boş pencere, --continue ile ertesi gün aynı oturuma dönüş" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" fill="var(--fg,#17202c)">
+<defs><marker id="b03-ok" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--soft,#5b6472)"/></marker></defs>
+<text x="30" y="124" font-size="13" font-weight="700" fill="var(--acc,#1d4f91)">bu oturum</text>
+<path d="M30 150H476" fill="none" stroke="var(--acc,#1d4f91)" stroke-width="3"/>
+<g fill="var(--acc,#1d4f91)"><circle cx="60" cy="150" r="6"/><circle cx="140" cy="150" r="6"/><circle cx="220" cy="150" r="6"/><circle cx="380" cy="150" r="6"/><circle cx="460" cy="150" r="6"/></g>
+<circle cx="300" cy="150" r="10" fill="var(--yuzey,#ffffff)" stroke="var(--acc,#1d4f91)" stroke-width="3"/>
+<text x="290" y="178" text-anchor="end" font-size="13" fill="var(--soft,#5b6472)">dallanma noktası</text>
+<path d="M300 140C300 110 326 72 360 72H480" fill="none" stroke="var(--ile,#6a4a9c)" stroke-width="2.5" stroke-dasharray="6 4"/>
+<text x="330" y="34" font-size="13" font-weight="700" fill="var(--fg,#17202c)">/fork</text>
+<text x="330" y="52" font-size="13" fill="var(--soft,#5b6472)">kopya arka planda koşar, sen yerinde kalırsın</text>
+<path d="M300 160C300 205 326 250 360 250H480" fill="none" stroke="var(--ok,#1f7a4d)" stroke-width="2.5"/>
+<text x="330" y="282" font-size="13" font-weight="700" fill="var(--fg,#17202c)">/branch</text>
+<text x="330" y="300" font-size="13" fill="var(--soft,#5b6472)">kopyaya geçersin, eskisine /resume ile dönersin</text>
+<path d="M458 142C446 112 396 112 382 142" fill="none" stroke="var(--fg,#17202c)" stroke-width="2" marker-end="url(#b03-ok)"/>
+<text x="420" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="var(--fg,#17202c)">/rewind</text>
+<path d="M140 158C140 200 96 214 84 240" fill="none" stroke="var(--soft,#5b6472)" stroke-width="2" stroke-dasharray="3 4" marker-end="url(#b03-ok)"/>
+<circle cx="76" cy="254" r="11" fill="var(--yuzey,#ffffff)" stroke="var(--soft,#5b6472)" stroke-width="2" stroke-dasharray="3 3"/>
+<text x="30" y="290" font-size="13" font-weight="700" fill="var(--fg,#17202c)">/clear</text>
+<text x="30" y="308" font-size="13" fill="var(--soft,#5b6472)">boş pencere,</text>
+<text x="30" y="326" font-size="13" fill="var(--soft,#5b6472)">eskisi /resume'da kalır</text>
+<path d="M504 150H588" fill="none" stroke="var(--acc,#1d4f91)" stroke-width="3" stroke-dasharray="3 6"/>
+<line x1="490" y1="138" x2="490" y2="162" stroke="var(--soft,#5b6472)" stroke-width="2"/>
+<circle cx="600" cy="150" r="8" fill="var(--yuzey,#ffffff)" stroke="var(--acc,#1d4f91)" stroke-width="3"/>
+<text x="548" y="132" text-anchor="middle" font-size="13" fill="var(--soft,#5b6472)">ertesi gün</text>
+<text x="590" y="184" text-anchor="middle" font-size="13" font-weight="700" fill="var(--fg,#17202c)">--continue</text>
+<text x="590" y="202" text-anchor="middle" font-size="13" fill="var(--soft,#5b6472)">aynı pencere</text>
+</svg></div><figcaption>Bir oturumun zaman çizgisi. Her komut çizgiyi başka bir yöne çeker: /fork arka plana, /branch yeni bir kola, /rewind geriye, /clear boş bir pencereye, --continue ertesi güne.</figcaption></figure>
 <h2 id="konu-basina-oturum">Konu başına oturum</h2>
 <p>Bir oturum tek bir tutarlı işe ait olsun. Önceki işin dosyaları ve kararları pencerede kalırsa yeni işi de etkiler. Yeni bir konuya geçince <code>/clear</code> yaz. Belge ayrıca <code>/clear oauth-gecisi</code> gibi bir adla önceki konuşmayı etiketleyebileceğini söyler, böylece sonra <code>/resume</code> listesinde bulursun. <a href="../index.html#m-baglam-1-k">2.1</a> <a href="../index.html#m-baglam-3-k">2.3</a></p>
 <p>Belgenin bir başka uyarısı: Claude'u iki kez düzelttin ve hâlâ yanlış yapıyorsa üçüncü düzeltmeyi yazma. <code>/clear</code> yap ve öğrendiklerinle daha iyi bir prompt yaz. Kirli bağlamda yapılan üçüncü düzeltme genellikle ilk ikisinin üstüne eklenen bir karmaşa olur.</p>
@@ -129,8 +156,42 @@ ul.ekler span{display:block;color:var(--soft);font-size:14px}
 <h2 id="compact-ne-kaybolur">/compact: ne kaybolur</h2>
 <p><code>/compact</code> konuşmayı özetleyip sürdürür. Belgeye göre sıkıştırmadan sonra şu şeyler diskten geri gelir: proje kökündeki CLAUDE.md, kapsamsız kurallar, otomatik bellek ve plan modunda yazılan plan. Çağırdığın skill'lerin gövdesi de geri gelir (skill başına 5.000, toplam 25.000 token, eskiler düşer). Son okunan ya da düzenlenen dosyalardan en çok beşi yeniden okunur ve 5.000 token'dan büyük dosya yalnız yol olarak döner.</p>
 <p>Şunlar özetin insafına kalır: sohbette verdiğin talimatlar, <code>paths</code> alanıyla yüklenen kurallar ve alt dizin CLAUDE.md dosyaları (bunlar ilgili dosyaya yeniden dokunulunca geri yüklenir), hook'ların eklediği bağlam ve araç çıktılarının ayrıntısı. Bu yüzden <code>/compact</code> kullanırken neyin korunacağını yaz: <code>/compact API değişikliklerini ve test komutlarını koru</code>. Önemli bir talimat sohbetteyse önce dosyaya taşı. <a href="../index.html#m-baglam-6-k">2.6</a></p>
+<figure class="sekil" id="sekil-b03-compact-ne-doner"><div class="sekil-kap"><svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="/compact sonrası: bazı şeyler diskten geri gelir, bazıları özetin insafına kalır" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" fill="var(--fg,#17202c)">
+<defs><marker id="b03-ok2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--soft,#5b6472)"/></marker></defs>
+<rect x="8" y="8" width="296" height="284" rx="12" fill="var(--accbg,#e6eef9)" fill-opacity=".5" stroke="var(--acc,#1d4f91)" stroke-width="1.8"/>
+<text x="26" y="38" font-size="15" font-weight="700" fill="var(--fg,#17202c)">Diskten geri gelir</text>
+<g font-size="13" fill="var(--fg,#17202c)">
+<rect x="24" y="54" width="264" height="30" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--acc,#1d4f91)"/><text x="36" y="74">proje kökündeki CLAUDE.md</text>
+<rect x="24" y="92" width="264" height="30" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--acc,#1d4f91)"/><text x="36" y="112">kapsamsız kurallar</text>
+<rect x="24" y="130" width="264" height="30" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--acc,#1d4f91)"/><text x="36" y="150">otomatik bellek</text>
+<rect x="24" y="168" width="264" height="30" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--acc,#1d4f91)"/><text x="36" y="188">plan modunda yazılan plan</text>
+<rect x="24" y="206" width="264" height="30" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--acc,#1d4f91)"/><text x="36" y="226">çağrılan skill'lerin gövdesi</text>
+<text x="26" y="264" fill="var(--soft,#5b6472)">son beş dosya da yeniden okunur</text>
+</g>
+<rect x="336" y="8" width="296" height="284" rx="12" fill="var(--kod,#eef1f5)" fill-opacity=".6" stroke="var(--soft,#5b6472)" stroke-width="1.8" stroke-dasharray="6 4"/>
+<text x="354" y="38" font-size="15" font-weight="700" fill="var(--fg,#17202c)">Özetin insafına kalır</text>
+<g font-size="13" fill="var(--fg,#17202c)">
+<rect x="352" y="54" width="264" height="30" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)"/><text x="364" y="74">sohbette verdiğin talimatlar</text>
+<rect x="352" y="92" width="264" height="30" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)"/><text x="364" y="112">paths ile yüklenen kurallar</text>
+<rect x="352" y="130" width="264" height="30" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)"/><text x="364" y="150">alt dizin CLAUDE.md'leri</text>
+<rect x="352" y="168" width="264" height="30" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)"/><text x="364" y="188">hook'ların eklediği bağlam</text>
+<rect x="352" y="206" width="264" height="30" rx="6" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)"/><text x="364" y="226">araç çıktılarının ayrıntısı</text>
+<text x="354" y="264" fill="var(--soft,#5b6472)">önemli olanı önce dosyaya taşı</text>
+</g>
+</svg></div><figcaption>/compact sonrası pencerede ne kalır. Soldakiler diskten yeniden eklenir, sağdakiler yalnız özetin ne tuttuğuna bağlıdır.</figcaption></figure>
 <h2 id="resume-ve-continue">/resume ve --continue</h2>
 <p>Aynı konuşmaya dönmenin iki yolu var. <code>claude --continue</code> bu dizindeki son oturumu açar. Orada oturum yoksa belge bunu açıkça yazar: "No conversation found to continue" der ve çıkar. <code>/resume</code> (ya da <code>claude --resume</code>) bir seçici açar ve <code>/rename</code> ile ad verdiysen adla bulursun. Geçmişe dönmek yeni bir masa değil, eski masaya dönmektir: o gün pencerede ne varsa geri gelir, düne ait eski bilgi de dahil. <a href="../index.html#m-baglam-7-k">2.7</a></p>
+<p>Bu seçenekleri yerel sürümün yardım çıktısında da görebilirsin:</p>
+<figure class="term"><figcaption>Gerçek çıktı, kısaltılmış</figcaption><pre>$ claude --help
+  -c, --continue         Continue the most recent conversation in
+                         the current directory
+  -r, --resume [value]   Resume a conversation by session ID, or
+                         open interactive picker with optional
+                         search term
+  --fork-session         When resuming, create a new session ID
+                         instead of reusing the original (use
+                         with --resume or --continue)</pre></figure>
+<ul><li><b><code>--continue</code> satırı:</b> "most recent conversation in the current directory", yani bu dizindeki en son konuşma. Başka bir dizinde açarsan o dizinin son oturumu gelir.</li><li><b><code>--resume</code> satırı:</b> Oturum kimliği verirsen doğrudan açar, vermezsen seçici açar. Seçiciye bir arama kelimesi de verebilirsin.</li><li><b><code>--fork-session</code> satırı:</b> Eski oturumu açarken yeni bir kimlik verir. İlk oturumun geçmişi olduğu gibi kalır.</li></ul>
 <h2 id="branch-ile-fork-farki">/branch ile /fork farkı</h2>
 <p>İkisi de konuşmayı kopyalar ama kopyanın nerede yaşadığı farklıdır.</p>
 <div class="tablo"><table><thead><tr><th>Komut</th><th>Ne yapar</th><th>Sen nerede kalırsın</th></tr></thead><tbody><tr><td data-e="Komut"><code>/branch [ad]</code></td><td data-e="Ne yapar">Konuşmayı bu noktadan dallar</td><td data-e="Sen nerede kalırsın">Dalın içine geçersin, orijinale <code>/resume</code> ile dönersin</td></tr><tr><td data-e="Komut"><code>/fork [prompt]</code></td><td data-e="Ne yapar">Kopyayı arka plan oturumunda sürdürür</td><td data-e="Sen nerede kalırsın">Bulunduğun oturumda kalırsın</td></tr></tbody></table></div>
@@ -147,7 +208,16 @@ ul.ekler span{display:block;color:var(--soft);font-size:14px}
 <h2 id="hata-bicimleri">Hata biçimleri</h2>
 <p><b>Gerçek vaka: oturumlar arası ortak olan şey sandığından fazlaydı.</b> Birden çok oturum aynı depoda çalışırken stage edilen dosyalar, başka bir oturumun commit'iyle başka bir mesajın altına girdi. Oturum yönetimi yalnız konuşmayla ilgili değil, ortak kaynaklarla da ilgilidir. Ayrıntısı <a href="../ekler/deneyimler.html">Gerçek deneyimlerden on ders</a> sayfasında D06. Stage ile commit'i tek adımda yapmak bu sorunu önler.</p>
 <p><b>Gerçek vaka: geçici dizin devir dosyası için kötü yerdi.</b> Birden çok gün sürecek bir işin kaynakları oturumun geçici çalışma dizinindeydi ve dizin toptan silindi. Devir dosyasını proje dizinine yaz. Ayrıntısı D09.</p>
-<p><b>Kurgu senaryo: rewind'ın görmediği dosya.</b> Defne, Claude'a bir betik çalıştırtır. Betik <code>rapor.csv</code> dosyasını yeniden üretir ve eski hâlini ezer. Sonuç yanlıştır, Defne <code>/rewind</code> yapar. Kod düzenlemeleri geri döner, <code>rapor.csv</code> yerinde kalır, çünkü yalnız Bash değiştirmiştir. Dosya Git'te olsaydı <code>git restore rapor.csv</code> bir saniyede çözerdi.</p>
+<p><b>Kurgu senaryo: rewind'ın görmediği dosya.</b> Defne, Claude'a bir betik çalıştırtır. Betik <code>rapor.csv</code> dosyasını yeniden üretir ve eski hâlini ezer. Sonuç yanlıştır, Defne <code>/rewind</code> yapar. Kod düzenlemeleri geri döner, <code>rapor.csv</code> yerinde kalır, çünkü yalnız Bash değiştirmiştir. Dosya Git'te olsaydı <code>git restore rapor.csv</code> bir saniyede çözerdi. Aynı durum geçici bir deneme deposunda şöyle görünür:</p>
+<figure class="term"><figcaption>Gerçek çıktı, geçici deneme deposunda</figcaption><pre>$ printf &#x27;ay,tutar\n1,999\n&#x27; &gt; rapor.csv
+$ git status --short
+ M rapor.csv
+$ git restore rapor.csv
+$ git status --short
+$ cat rapor.csv
+ay,tutar
+1,100</pre></figure>
+<ul><li><b><code>M rapor.csv</code> satırı:</b> Git dosyanın değiştiğini görüyor. Bu değişikliği Claude'un düzenleme aracı değil Bash yaptıysa <code>/rewind</code> bunu bilmez, Git bilir.</li><li><b><code>git restore</code> sonrası boş çıktı:</b> Değişen dosya kalmadı. <code>cat</code> ilk commit'teki değeri, 100'ü gösteriyor.</li></ul>
 <h2 id="alistirma-iki-yolu-dallayip-birini-sec">Alıştırma: iki yolu dallayıp birini seç</h2>
 <p>Herhangi bir git deposunda yap. Kendi çalışma dalında kal.</p>
 <p>1. Küçük bir iş seç ve iki makul yolu olduğundan emin ol, ör. bir listeyi önce sıralamak mı yoksa önce filtrelemek mi. Claude'a işi anlat ve "henüz kod yazma, yaklaşımı konuşalım" de. Konuşma bu noktaya gelince iki yol da açık kalır. 2. <code>/branch yol-a</code> yaz. Bu dalda birinci yolu uygulat, sonucu <code>git diff --stat</code> ile kaydet, sonra <code>git restore .</code> ile dosyaları temizle. 3. <code>/resume</code> ile ilk konuşmaya, yani dallanma noktasına dön. <code>/branch yol-b</code> yaz ve ikinci yolu uygulat. Sonucu yine <code>git diff --stat</code> ile kaydet. 4. İki diff'i yan yana oku. Hangisi daha küçük, hangisi daha okunur, hangisinin testi var? Birini seç. Seçmediğin yolun diff'i artık bir kayıttan ibaret, onu zaten geri almıştın. 5. Seçtiğin yolu seçtiğin dalda yeniden uygulat, commit'le ve bir devir dosyası yaz: ne seçtin, neden, öteki yolda ne gördün.</p>

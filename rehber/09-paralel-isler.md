@@ -30,6 +30,30 @@ Claude Code'da paralel çalışmanın üç yolu var. Farkları bağlam, dosya si
 
 **Ignore edilmiş dosyalar gelmez.** Worktree'ye yalnız git'in izlediği dosyalar gelir. `.env` gibi dosyaları otomatik taşımak için proje köküne `.worktreeinclude` yazarsın. Dosya `.gitignore` sözdizimini kullanır ve yalnız hem eşleşen hem ignore edilmiş dosyalar kopyalanır. Bağımlılıkları ise worktree'de yeniden kurman gerekir. Ayrıntı [Dosya konumları](../ekler/dosyalar.md) sayfasında.
 
+Aynı yapıyı geçici bir deneme deposunda `git worktree add` ile kurdum. `claude --worktree` de `.claude/worktrees/` altında bu biçimde bir klasör açar. Depoda `.gitignore` içinde `.env` var:
+
+**Gerçek çıktı, kısaltılmış**
+
+```text
+$ git worktree list
+~/deneme                          0d039b0 [main]
+~/deneme/.claude/worktrees/is-bir 0d039b0 [is-bir]
+~/deneme/.claude/worktrees/is-iki 0d039b0 [is-iki]
+$ ls -A                              # ana kopya
+.claude  .env  .git  .gitignore  README.md
+$ ls -A .claude/worktrees/is-bir     # worktree
+.git  .gitignore  README.md
+$ git rev-parse --git-path index     # ana kopya
+.git/index
+$ git rev-parse --git-path index     # worktree
+~/deneme/.git/worktrees/is-bir/index
+```
+
+- **2. ile 4. satır:** tek depodan açılmış üç çalışma klasörü ve her birinin kendi dalı. Üçü aynı commit'ten başlamıştır.
+- **6. ve 8. satır:** `.env` yalnız ana kopyada var. Worktree'ye yalnız git'in izlediği dosyalar geldi, ignore edilen gelmedi.
+- **10. ve 12. satır:** index dosyasının yeri. Worktree'nin index'i `.git/worktrees/` altında kendi dosyası, ana kopyanınki `.git/index`. Stage işlemleri birbirine karışmaz.
+- Çıktıda görünmeyen ama önemli olan: port, tarayıcı, pano ve işlemci bu üç klasör için de aynı makinede ortaktır.
+
 Etkileşimli bir worktree oturumundan çıkarken Claude Code temiz worktree'yi siler, iş içerene sorar. `-p` ile koşan oturumlarda çıkış sorusu yoktur, yani temizlik de yoktur. Bu worktree'leri `git worktree remove` ile kendin kaldırırsın.
 
 ## Paylaşılan kaynaklar
@@ -43,6 +67,8 @@ Worktree yalnız dosya ve index çakışmasını çözer. Makinedeki geri kalan 
 - **Simülatör ve cihaz.** Tek simülatörü iki oturum sürerse ekrandaki durum her ikisine de yabancı olur.
 
 Bu liste kapalı değil. Bir şey makinede tek bir örnek olarak duruyorsa, iki paralel iş için çakışma noktasıdır.
+
+_Şekil: Worktree'ler dosya ve index'i ayırır. Altta kalan şeyler makinede tek örnek olduğu için çakışma noktası olarak durur ([web sürümünde](09-paralel-isler.html#sekil-b09-worktree-ve-ortak))_
 
 ## Makine yükü ve ajan sayısı
 

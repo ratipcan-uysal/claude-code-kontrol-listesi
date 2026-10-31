@@ -103,7 +103,7 @@ main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
 @media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
 .sekil{margin:22px 0;max-width:100%}
 .sekil-kap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--yuzey);padding:14px}
-.sekil-kap svg{display:block;width:100%;height:auto;min-width:min(520px,100%)}
+.sekil-kap svg{display:block;width:100%;height:auto;min-width:560px}
 .sekil figcaption,.term figcaption{font-size:13px;color:var(--soft);margin-top:8px}
 .term{margin:18px 0;max-width:100%}
 .term figcaption{margin:0 0 6px;font-family:var(--f-kod);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
@@ -120,6 +120,24 @@ ul.ekler span{display:block;color:var(--soft);font-size:14px}
 <h2 id="zihinsel-model-is-vermek-bitis-cizgisini-cizmektir">Zihinsel model: iş vermek, bitiş çizgisini çizmektir</h2>
 <p>Claude Code'a verdiğin istek bir talimat olduğu kadar bir sözleşmedir. İsteğin "ne yapılacak" kısmı genellikle belli olur. Eksik kalan kısım "ne zaman bitti sayılacak" ve "neye dokunulmayacak" sorularıdır. Bu iki boşluğu sen doldurmazsan Claude kendi tahminiyle doldurur ve tahmin çoğu zaman makul görünür ama senin aklındakiyle aynı çıkmaz.</p>
 <p>Belgenin en çok vurguladığı alışkanlık da budur: Claude'a işin sonucunu kendi kendine kontrol edebileceği bir yol ver. Testler, beklenen çıktı, ekran görüntüsü ya da bir komutun çıkış kodu bu yolu sağlar. Böyle bir ölçüt yoksa tek doğrulayıcı sen kalırsın ve her parçada Claude seni bekler. Ölçüt varsa Claude denemeyi, ölçmeyi ve düzeltmeyi kendi döngüsünde yapar.</p>
+<figure class="sekil" id="sekil-b02-olcut-dongusu"><div class="sekil-kap"><svg viewBox="0 0 640 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ölçüt yoksa her parçayı sen kontrol edersin ve Claude seni bekler. Ölçüt varsa Claude komutu koşturur, düzeltir ve kendi döngüsünde ilerler" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" fill="var(--fg,#17202c)">
+<defs><marker id="b02-ok" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--soft,#5b6472)"/></marker></defs>
+<text x="20" y="26" font-size="15" font-weight="700" fill="var(--fg,#17202c)">Ölçüt yok</text>
+<text x="118" y="26" font-size="13" fill="var(--soft,#5b6472)">tek doğrulayıcı sensin</text>
+<rect x="20" y="40" width="170" height="52" rx="10" fill="var(--yuzey,#ffffff)" stroke="var(--soft,#5b6472)" stroke-width="1.6"/><text x="105" y="72" text-anchor="middle" font-size="14" fill="var(--fg,#17202c)">Claude değiştirir</text>
+<rect x="235" y="40" width="170" height="52" rx="10" fill="var(--ilebg,#f0eaf8)" stroke="var(--ile,#6a4a9c)" stroke-width="1.6" stroke-dasharray="5 4"/><text x="320" y="72" text-anchor="middle" font-size="14" fill="var(--fg,#17202c)">Sen gözle bakarsın</text>
+<rect x="450" y="40" width="170" height="52" rx="10" fill="var(--yuzey,#ffffff)" stroke="var(--soft,#5b6472)" stroke-width="1.6"/><text x="535" y="72" text-anchor="middle" font-size="14" fill="var(--fg,#17202c)">Claude seni bekler</text>
+<g fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.6"><path d="M192 66H231" marker-end="url(#b02-ok)"/><path d="M407 66H446" marker-end="url(#b02-ok)"/></g>
+<text x="320" y="118" text-anchor="middle" font-size="13" fill="var(--soft,#5b6472)">her parçada aynı bekleme tekrarlanır</text>
+<line x1="20" y1="140" x2="620" y2="140" stroke="var(--line,#e1e5eb)" stroke-width="1.5"/>
+<text x="20" y="168" font-size="15" font-weight="700" fill="var(--fg,#17202c)">Ölçüt var</text>
+<text x="118" y="168" font-size="13" fill="var(--soft,#5b6472)">Claude kendi döngüsünde ölçer</text>
+<rect x="20" y="182" width="170" height="52" rx="10" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.8"/><text x="105" y="214" text-anchor="middle" font-size="14" fill="var(--fg,#17202c)">Claude değiştirir</text>
+<rect x="235" y="182" width="170" height="52" rx="10" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.8"/><text x="320" y="214" text-anchor="middle" font-size="14" fill="var(--fg,#17202c)">Komutu koşturur</text>
+<rect x="450" y="182" width="170" height="52" rx="10" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.8"/><text x="535" y="214" text-anchor="middle" font-size="14" fill="var(--fg,#17202c)">Düzeltir ya da bitirir</text>
+<g fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.6"><path d="M192 208H231" marker-end="url(#b02-ok)"/><path d="M407 208H446" marker-end="url(#b02-ok)"/><path d="M535 236V258H105V238" marker-end="url(#b02-ok)"/></g>
+<text x="320" y="279" text-anchor="middle" font-size="13" fill="var(--soft,#5b6472)">sen yalnız kanıtı okursun</text>
+</svg></div><figcaption>Ölçüt yoksa her parçada sen devredesin. Ölçüt varsa Claude komutu kendisi koşturur ve sen yalnız kanıtı okursun.</figcaption></figure>
 <p>İyi bir iş isteği beş parçadan oluşur:</p>
 <div class="tablo"><table><thead><tr><th>Parça</th><th>Cevapladığı soru</th><th>Eksikse ne olur</th></tr></thead><tbody><tr><td data-e="Parça">Hedef</td><td data-e="Cevapladığı soru">Ne değişecek?</td><td data-e="Eksikse ne olur">Claude başka bir şeyi çözer</td></tr><tr><td data-e="Parça">Bitiş ölçütü</td><td data-e="Cevapladığı soru">Hangi kanıtla biter?</td><td data-e="Eksikse ne olur">İş hep "bitti gibi" görünür</td></tr><tr><td data-e="Parça">Kısıt</td><td data-e="Cevapladığı soru">Neye dokunma?</td><td data-e="Eksikse ne olur">Çalışan kısmı bozarsın</td></tr><tr><td data-e="Parça">Örnek</td><td data-e="Cevapladığı soru">Çıktı nasıl görünür?</td><td data-e="Eksikse ne olur">Biçim tutmaz</td></tr><tr><td data-e="Parça">Okur ve yer</td><td data-e="Cevapladığı soru">Kim, nerede kullanacak?</td><td data-e="Eksikse ne olur">Ton ve ayrıntı seviyesi şaşar</td></tr></tbody></table></div>
 <h2 id="bitis-olcutu-ve-dogrulanabilir-kabul-olcutu">Bitiş ölçütü ve doğrulanabilir kabul ölçütü</h2>
@@ -132,7 +150,17 @@ ul.ekler span{display:block;color:var(--soft);font-size:14px}
 <p>Çıktının biçimini anlatmaktansa göstermek daha kısadır ve yanlış anlaşılmaz. Bir örnek "buna benzesin" der. Karşı örnek "buna benzemesin" der ve çoğu zaman daha çok bilgi taşır, çünkü Claude'un kolay yolunu keser.</p>
 <p>Kurgu senaryo: Sibel haftalık durum özeti istiyor. Bir önceki haftanın özetini örnek olarak yapıştırıyor ve altına bir karşı örnek ekliyor: "Şu özet fazla uzundu, her satırın başında 'bu hafta' yazıyordu, bunu tekrarlama." İlk denemede format tutuyor. Karşı örnek olmasaydı Claude örneğin uzunluğunu ve sözcüklerini kopyalayacaktı. <a href="../index.html#m-gorev-5-k">3.5</a></p>
 <h2 id="plan-modu-ne-zaman">Plan modu ne zaman</h2>
-<p>Plan modu Claude'a dosyaları okutur ama düzenletmez. Sen planı onaylayınca uygulama başlar. Belgeye göre <code>Shift+Tab</code> ile durum çubuğunda <code>plan mode on</code> yazana kadar geçilir ya da <code>claude --permission-mode plan</code> ile başlanır. Bu iş akışı önerisi değil, belgelenmiş bir mod. Ne zaman kullanacağın ise senin kararın:</p>
+<p>Plan modu Claude'a dosyaları okutur ama düzenletmez. Sen planı onaylayınca uygulama başlar. Belgeye göre <code>Shift+Tab</code> ile durum çubuğunda <code>plan mode on</code> yazana kadar geçilir ya da <code>claude --permission-mode plan</code> ile başlanır. Bu iş akışı önerisi değil, belgelenmiş bir mod. Ne zaman kullanacağın ise senin kararın.</p>
+<p>Moda başlangıçta girmek için <code>--permission-mode</code> bayrağı var. Yerel sürümün yardım çıktısında şöyle görünür:</p>
+<figure class="term"><figcaption>Gerçek çıktı, kısaltılmış</figcaption><pre>$ claude --version
+2.1.284 (Claude Code)
+$ claude --help
+  --permission-mode &lt;mode&gt;   Permission mode to use for the session
+                             (choices: &quot;acceptEdits&quot;, &quot;auto&quot;,
+                             &quot;bypassPermissions&quot;, &quot;manual&quot;,
+                             &quot;dontAsk&quot;, &quot;plan&quot;)</pre></figure>
+<ul><li><b>1. ve 2. satır:</b> Bu makinedeki sürüm. Belge senin sürümünden yeni olabilir, bayrak yoksa önce bunu kontrol et.</li><li><b><code>--permission-mode</code> satırı:</b> Oturum açılırken mod seçilir. Plan modu için <code>claude --permission-mode plan</code> yazılır.</li><li><b>choices listesi:</b> <code>plan</code> altı moddan yalnız biri. <code>bypassPermissions</code> da listede, onun sınırları <a href="06-izin-ve-guvenlik.html">Bölüm 6: İzin ve güvenlik: mod, kural, sandbox</a> bölümünde.</li></ul>
+<p>Plan modunun ne zaman işe yaradığına gelince:</p>
 <ul><li>Hedef belirsizse, birden çok dosyaya dokunuyorsa ya da yaklaşımı sen de bilmiyorsan önce plan iste.</li><li>Değişiklik bir cümleyle diff olarak anlatılabiliyorsa, ör. bir yazım hatası ya da tek satırlık düzeltme, plan modu zaman kaybıdır.</li><li>Gereksinimleri kendin de net bilmiyorsan belgenin önerisi: Claude'dan seni röportaj yapıp bir <code>SPEC.md</code> yazmasını iste, sonra temiz bir oturumda o dosyadan inşa et. <a href="../index.html#m-gorev-3-k">3.3</a></li></ul>
 <h2 id="i-yi-yi-olcute-cevirmek">"İyi"yi ölçüte çevirmek</h2>
 <p>"En iyi", "kaliteli", "profesyonel" gibi sözcükler Claude'a yön vermez, çünkü iyinin ne olduğunu senin kafanda kalan kıstaslar belirler. Sözcüğü bir ölçüte çevir. "Kaliteli bir README" yerine "kurulum üç komutta bitsin, ilk örnek çalışsın, bir ekran görüntüsü olsun" yaz. "İyi performans" yerine bir süre, bir bellek sınırı ya da bir kıyas komutu yaz. <a href="../index.html#m-prompt-1-k">4.1</a></p>
@@ -144,6 +172,16 @@ ul.ekler span{display:block;color:var(--soft);font-size:14px}
 <p><b>Gerçek vaka: ölçüt yoktu, yeşil yanıltıcıydı.</b> Sıfır test koşan bir komut "başarılı" dedi (D02, <a href="../ekler/deneyimler.html">Gerçek deneyimlerden on ders</a>). İstekte yalnız "testler geçsin" yazıyorsa bu yeşil kabul edilir. "En az şu kadar test koşsun ve geçsin" yazıyorsa sıfır hemen göze çarpar. Vakanın ayrıntısı <a href="04-kanitla-teslim.html">Bölüm 4: Kanıtla teslim: iddiayı sayıya çevir</a> bölümünde.</p>
 <p><b>Gerçek vaka: olgu, eski rapordan geldi.</b> İsteğin içine yapıştırdığın her olgu ölçütün bir parçası olur, yanlış olgu yanlış ölçüt doğurur. Eski bir raporun cümlesinin oturuma girip öneriyi nasıl bozduğunu <a href="01-zihinsel-model.html">Bölüm 1: Zihinsel model: döngü, bağlam ve harness</a> bölümünde gördün (D10).</p>
 <p><b>Kurgu senaryo: kısıtsız düzeltme.</b> Kaan bir sipariş toplamı hatasını düzelttirir. Claude hatayı düzeltir, ayrıca yakındaki üç fonksiyonun adını "daha okunur" olacak şekilde değiştirir. Diff 40 satıra çıkar, Kaan dört fonksiyonun hangisinin gerçekten gerektiğini ayıklayamaz ve hepsini geri alır. "Yalnız <code>toplam.py</code>, başka dosya ve ad değişikliği yok" kısıtı bunu önlerdi.</p>
+<figure class="term"><figcaption>Kurgu, şematik</figcaption><pre>$ git diff --stat    # kısıtsız istek
+ toplam.py   |  6 ++++--
+ siparis.py  | 12 +++++++-----
+ kdv.py      | 11 ++++++-----
+ yardimci.py | 11 +++++------
+ 4 files changed, 22 insertions(+), 18 deletions(-)</pre></figure>
+<figure class="term"><figcaption>Kurgu, şematik</figcaption><pre>$ git diff --stat    # &quot;yalnız toplam.py&quot; kısıtıyla
+ toplam.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)</pre></figure>
+<p>İlk panelde son satır 4 dosya ve 40 değişen satır söylüyor, hatayı düzelttiren tek dosya ise ilki. İkinci panelde aynı hata tek dosyada, üç satırlık bir diff'le kapanıyor. Kaan'ın okuyacağı şey bu ikincisi.</p>
 <h2 id="alistirma-ayni-is-iki-istek">Alıştırma: aynı iş, iki istek</h2>
 <p>Herhangi bir git deposunda yap. Küçük bir iş seç, ör. bir fonksiyona giriş doğrulaması eklemek ya da bir betiğe <code>--yardim</code> seçeneği koymak.</p>
 <p>1. İlk isteği zayıf yaz, tek cümle: "X'e doğrulama ekle". İş bitince çıktıyı ve <code>git diff --stat</code> satırını kaydet. Sonra <code>git restore .</code> ile değişikliği geri al. 2. Aynı işi bu sefer güçlü isteyle ver. İsteğe şunlar girsin: bitiş ölçütü (hangi komut, hangi çıktı), iki kabul ölçütü, bir kısıt (dokunulacak dosya, korunacak davranış), biçim için bir örnek ve bir karşı örnek. 3. İkisini karşılaştır: diff kaç dosyaya ve kaç satıra değdi? Claude kaç kez durup sana soru sordu? Test ya da komut kanıtı sundu mu? 4. Büyük bir iş seçtiysen ikinci denemeyi plan modunda başlat ve planı onaylamadan önce kısıtlarına uyup uymadığına bak.</p>

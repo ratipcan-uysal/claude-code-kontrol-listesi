@@ -4,6 +4,8 @@ Claude Code'a verdiğin istek bir talimat olduğu kadar bir sözleşmedir. İste
 
 Belgenin en çok vurguladığı alışkanlık da budur: Claude'a işin sonucunu kendi kendine kontrol edebileceği bir yol ver. Testler, beklenen çıktı, ekran görüntüsü ya da bir komutun çıkış kodu bu yolu sağlar. Böyle bir ölçüt yoksa tek doğrulayıcı sen kalırsın ve her parçada Claude seni bekler. Ölçüt varsa Claude denemeyi, ölçmeyi ve düzeltmeyi kendi döngüsünde yapar.
 
+{{sekil:b02-olcut-dongusu|Ölçüt yoksa her parçada sen devredesin. Ölçüt varsa Claude komutu kendisi koşturur ve sen yalnız kanıtı okursun.}}
+
 İyi bir iş isteği beş parçadan oluşur:
 
 | Parça | Cevapladığı soru | Eksikse ne olur |
@@ -34,7 +36,25 @@ Kurgu senaryo: Sibel haftalık durum özeti istiyor. Bir önceki haftanın özet
 
 ## Plan modu ne zaman
 
-Plan modu Claude'a dosyaları okutur ama düzenletmez. Sen planı onaylayınca uygulama başlar. Belgeye göre `Shift+Tab` ile durum çubuğunda `plan mode on` yazana kadar geçilir ya da `claude --permission-mode plan` ile başlanır. Bu iş akışı önerisi değil, belgelenmiş bir mod. Ne zaman kullanacağın ise senin kararın:
+Plan modu Claude'a dosyaları okutur ama düzenletmez. Sen planı onaylayınca uygulama başlar. Belgeye göre `Shift+Tab` ile durum çubuğunda `plan mode on` yazana kadar geçilir ya da `claude --permission-mode plan` ile başlanır. Bu iş akışı önerisi değil, belgelenmiş bir mod. Ne zaman kullanacağın ise senin kararın.
+
+Moda başlangıçta girmek için `--permission-mode` bayrağı var. Yerel sürümün yardım çıktısında şöyle görünür:
+
+```terminal Gerçek çıktı, kısaltılmış
+$ claude --version
+2.1.284 (Claude Code)
+$ claude --help
+  --permission-mode <mode>   Permission mode to use for the session
+                             (choices: "acceptEdits", "auto",
+                             "bypassPermissions", "manual",
+                             "dontAsk", "plan")
+```
+
+- **1. ve 2. satır:** Bu makinedeki sürüm. Belge senin sürümünden yeni olabilir, bayrak yoksa önce bunu kontrol et.
+- **`--permission-mode` satırı:** Oturum açılırken mod seçilir. Plan modu için `claude --permission-mode plan` yazılır.
+- **choices listesi:** `plan` altı moddan yalnız biri. `bypassPermissions` da listede, onun sınırları {{bolum:6}} bölümünde.
+
+Plan modunun ne zaman işe yaradığına gelince:
 
 - Hedef belirsizse, birden çok dosyaya dokunuyorsa ya da yaklaşımı sen de bilmiyorsan önce plan iste.
 - Değişiklik bir cümleyle diff olarak anlatılabiliyorsa, ör. bir yazım hatası ya da tek satırlık düzeltme, plan modu zaman kaybıdır.
@@ -64,6 +84,23 @@ Aynı bilgi bir mühendise yazılan commit mesajında, bir yöneticiye giden öz
 **Gerçek vaka: olgu, eski rapordan geldi.** İsteğin içine yapıştırdığın her olgu ölçütün bir parçası olur, yanlış olgu yanlış ölçüt doğurur. Eski bir raporun cümlesinin oturuma girip öneriyi nasıl bozduğunu {{bolum:1}} bölümünde gördün (D10).
 
 **Kurgu senaryo: kısıtsız düzeltme.** Kaan bir sipariş toplamı hatasını düzelttirir. Claude hatayı düzeltir, ayrıca yakındaki üç fonksiyonun adını "daha okunur" olacak şekilde değiştirir. Diff 40 satıra çıkar, Kaan dört fonksiyonun hangisinin gerçekten gerektiğini ayıklayamaz ve hepsini geri alır. "Yalnız `toplam.py`, başka dosya ve ad değişikliği yok" kısıtı bunu önlerdi.
+
+```terminal Kurgu, şematik
+$ git diff --stat    # kısıtsız istek
+ toplam.py   |  6 ++++--
+ siparis.py  | 12 +++++++-----
+ kdv.py      | 11 ++++++-----
+ yardimci.py | 11 +++++------
+ 4 files changed, 22 insertions(+), 18 deletions(-)
+```
+
+```terminal Kurgu, şematik
+$ git diff --stat    # "yalnız toplam.py" kısıtıyla
+ toplam.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+```
+
+İlk panelde son satır 4 dosya ve 40 değişen satır söylüyor, hatayı düzelttiren tek dosya ise ilki. İkinci panelde aynı hata tek dosyada, üç satırlık bir diff'le kapanıyor. Kaan'ın okuyacağı şey bu ikincisi.
 
 ## Alıştırma: aynı iş, iki istek
 

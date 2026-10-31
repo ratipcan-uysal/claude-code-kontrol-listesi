@@ -10,6 +10,8 @@ Proje, işi thread'lere bölen tek bir konuşmadır. Her thread repoyu temiz klo
 
 Proje, tek ve uzun süren bir konuşmadır. Belgeye göre Claude burada koordinatör gibi davranır: gelen işi alır, hangisinin thread olacağına karar verir, her thread'in ne yaptığını takip eder. Thread'ler işçidir. Her biri kendi bağlam penceresi olan ayrı bir oturumdur. Çoğu zaman bir bulut oturumudur, kendi dalında çalışır ve iş gerektirirse pull request açar. Koordinatör thread'lerin raporunu görür, attıkları her adımı görmez.
 
+_Şekil: Sen koordinatörle konuşursun, işi thread'ler bulutta yapar. Connector yalnız thread'lerde vardır, proje konuşmasında yoktur. ([web sürümünde](14-projects.html#sekil-b14-projects-mimari))_
+
 Ana fikir: **thread'ler senin makinende değil, temiz bir bulut ortamında doğar.** Her cloud thread şunlarla başlar:
 
 - Projenin repoları ve dosyaları, proje talimatı ve proje belleği.
@@ -51,6 +53,8 @@ Network secret Pro, Max, Team ve Enterprise'ta var, yalnız Anthropic-hosted ort
 **Kurulum betiği.** Yeni cloud oturumu başlarken Claude Code'dan önce çalışır, root olarak, Ubuntu 24.04'te. Sıfırdan farklı çıkarsa oturum başlamaz. Yaklaşık beş dakika altında biterse Anthropic dosya sistemini önbelleğe alır, sonraki oturumlar betiği atlar. Önbellek yaklaşık yedi gün yaşar, betiği ya da izinli host'ları değiştirince yeniden kurulur. Önbellek dosya sistemi görüntüsüdür: yüklü paketler kalır, arka planda çalışan süreç, başlatılmış veritabanı kalmaz. Betik çalışırken ortam değişkenleri henüz ayarlı değildir.
 
 **Connector ve plugin.** Thread'ler MCP araçlarını claude.ai hesabındaki connector'lardan alır. Her thread hepsini kullanabilir, proje başına kurulum yok. Proje konuşmasının kendisinde connector yoktur, connector isteyen işi thread'e görev olarak ver. Plugin'ler **Project settings > Plugins** altından eklenir. Reponun `.claude/settings.json` dosyasında açık plugin'ler bulut thread'ine yüklenmez. Skill'ler için de aynı: repoda commit'lenen skill yüklenmez, hesabında açtığın skill'ler yüklenir.
+
+_Şekil: Thread'e gelenler ve gelmeyenler yan yana. Soldakiler temiz ortamda başlangıçta hazırdır, sağdakileri talimata yazarak ya da yerelde koşarak sağlarsın. ([web sürümünde](14-projects.html#sekil-b14-thread-ne-yukler))_
 
 ## Karar kuralları
 

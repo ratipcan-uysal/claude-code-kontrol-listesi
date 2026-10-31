@@ -73,9 +73,31 @@ Ayrılmadan önce dört şeye bak. Biri eksikse gece boşa gider. [13.2](../READ
 - **Yük.** `uptime` makinenin sakin olduğunu gösteriyor mu?
 - **Uyku ve şarj.** Makine prizde mi, uyku engelleniyor mu? `pmset -g` bunu gösterir (macOS).
 
+Üç komut bu makinede şöyle çıktı:
+
+**Gerçek çıktı, kısaltılmış**
+
+```text
+$ df -h .
+ Size    Used   Avail Capacity  Mounted on
+460Gi   417Gi    13Gi    97%    /System/Volumes/Data
+$ uptime
+11:24  up 3 days, 14:47, 2 users, load averages: 3.35 4.06 3.82
+$ pmset -g batt
+Now drawing from 'Battery Power'
+ -InternalBattery-0   7%; discharging; 0:24 remaining present: true
+```
+
+- **2. ve 3. satır:** disk yüzde 97 dolu, 13 GB boş. Bir gece koşumu log ve çıktı yazacaksa bu yetmeyebilir.
+- **5. satır:** yük ortalaması 3,35, 4,06 ve 3,82. Son bir dakika ile on beş dakika birbirine yakın, fırlama yok, makine sakin.
+- **7. ve 8. satır:** makine bataryada ve yüzde 7. Bu çıktıyı gören biri koşumu başlatmadan önce prize takar, yoksa D05'teki gibi gece boşa gider.
+- Çıktıdan ağ kimliği ve cihaz adı çıkarıldı, yalnız boyut ve yüzde sütunları bırakıldı.
+
 ## Tekrar başlatılabilir adımlar
 
 Uyku ya da çökme işi baştan başlatmamalı. Ara çıktıyı diske yaz, her adımın başında "bu adım bitti mi" diye bak. Kaynağı geçici dizinde tutma, proje dizinine ya da kalıcı bir yola koy. [13.3](../README.md#13-gozetimsiz)
+
+_Şekil: Gece koşumunun üç evresi. Akşam ön koşullar, gece tekrar başlatılabilir adımlar, sabah kanıt okuma ([web sürümünde](10-gozetimsiz-is.html#sekil-b10-gece-kosumu))_
 
 ## Karar kuralları
 
@@ -119,6 +141,31 @@ Gerçek bir iş deposunda değil, bu iş için açtığın bir deneme deposunda 
 5. Sabah üç şeye bak: `exit-code.txt`, `sonuc.json` içinde `is_error` ve `subtype`, `work/sonuc.json` dosyası.
 
 **Bitti sayılması için:** `exit-code.txt` içinde 0, `sonuc.json` içinde `is_error: false`, beklenen çıktı dosyası var ve içeriği görev tarifine uyuyor, log'un son satırı işin bittiğini gösteriyor. Bunlardan biri eksikse iş bitmiş sayılmaz, yalnız sessiz kalmıştır.
+
+Sabah bakacağın yerlerin sağlıklı bir koşumdaki hali şöyle görünür:
+
+**Şematik örnek**
+
+```text
+$ cat work/runs/exit-code.txt
+0
+$ jq '{is_error, subtype}' work/runs/sonuc.json
+{
+  "is_error": false,
+  "subtype": "success"
+}
+$ ls work/sonuc.json
+work/sonuc.json
+$ tail -n 1 work/runs/hata.log
+adım 12/12 tamam
+```
+
+- **2. satır:** çıkış kodu dosyası 0 diyor. Tek başına yetmez, çünkü iş içindeki hata çıkış kodunu bozmayabilir.
+- **5. ve 6. satır:** `is_error` false ve `subtype` success. Tur ya da bütçe sınırı dolmuş bir koşum burada başka bir tür gösterirdi.
+- **9. satır:** beklenen çıktı dosyası yerinde. İçeriğini görev tarifiyle ayrıca karşılaştır.
+- **11. satır:** log'un son satırı işin sonuna geldiğini söylüyor. Satır metni örnektir, kendi log'unda kendi bitiş ifaden olsun.
+
+Bu panel gerçek bir koşumdan alınmadı. Yapıyı göstermek için kuruldu: dört kontrol birlikte okunur.
 
 ## Bağlantılar
 

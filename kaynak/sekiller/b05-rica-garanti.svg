@@ -1,0 +1,19 @@
+<svg viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Üç katman: Claude'un karar verdiği rica katmanları, Claude Code'un uyguladığı garanti katmanları ve işletim sisteminin sınır çizdiği sandbox. Sağa gidildikçe kural daha kesin" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" fill="var(--fg,#17202c)">
+<defs><marker id="b05-ok" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--soft,#5b6472)"/></marker></defs>
+<rect x="8" y="124" width="196" height="186" rx="12" fill="var(--yuzey,#ffffff)" stroke="var(--soft,#5b6472)" stroke-width="1.8" stroke-dasharray="6 4"/>
+<text x="24" y="152" font-size="16" font-weight="700" fill="var(--fg,#17202c)">Rica</text>
+<text x="24" y="172" font-size="13" fill="var(--soft,#5b6472)">Claude karar verir,</text><text x="24" y="190" font-size="13" fill="var(--soft,#5b6472)">çoğu zaman tutar</text>
+<g font-size="13" fill="var(--fg,#17202c)"><text x="24" y="220">CLAUDE.md</text><text x="24" y="242">.claude/rules/</text><text x="24" y="264">skill</text><text x="24" y="286">alt ajan</text></g>
+<rect x="222" y="74" width="196" height="236" rx="12" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="2"/>
+<text x="238" y="102" font-size="16" font-weight="700" fill="var(--fg,#17202c)">Garanti</text>
+<text x="238" y="122" font-size="13" fill="var(--soft,#5b6472)">Claude Code uygular,</text><text x="238" y="140" font-size="13" fill="var(--soft,#5b6472)">her seferinde tutar</text>
+<g font-size="13" fill="var(--fg,#17202c)"><text x="238" y="170">hook (command, http)</text><text x="238" y="192">deny kuralı</text><text x="238" y="214">yönetilen ayar</text></g>
+<text x="238" y="250" font-size="13" fill="var(--soft,#5b6472)">deny komutun metnini</text><text x="238" y="268" font-size="13" fill="var(--soft,#5b6472)">eşler, niyetini değil</text>
+<rect x="436" y="24" width="196" height="286" rx="12" fill="var(--ilebg,#f0eaf8)" stroke="var(--ile,#6a4a9c)" stroke-width="2"/>
+<text x="452" y="52" font-size="16" font-weight="700" fill="var(--fg,#17202c)">Sınır</text>
+<text x="452" y="72" font-size="13" fill="var(--soft,#5b6472)">işletim sistemi,</text><text x="452" y="90" font-size="13" fill="var(--soft,#5b6472)">komut ne yaparsa yapsın</text>
+<g font-size="13" fill="var(--fg,#17202c)"><text x="452" y="120">sandbox</text></g>
+<text x="452" y="156" font-size="13" fill="var(--soft,#5b6472)">yalnız kabuk</text><text x="452" y="174" font-size="13" fill="var(--soft,#5b6472)">komutlarını sarar</text>
+<g fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.6"><path d="M206 220H218" marker-end="url(#b05-ok)"/><path d="M420 170H432" marker-end="url(#b05-ok)"/></g>
+<text x="320" y="16" text-anchor="middle" font-size="13" fill="var(--soft,#5b6472)">sağa gidildikçe kural daha kesin</text>
+</svg>

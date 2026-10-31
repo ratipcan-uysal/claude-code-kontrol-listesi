@@ -24,6 +24,8 @@ Sahnedeki özel hareketler bu anlara adla bağlanır. Olayı "vurgu anından 0,1
 
 Bunu Claude'a kural olarak ver: sahne kodunda saniye değeri yazmak yasak. Kitin talimat dosyasında da bu satır var.
 
+{{sekil:b16-tek-zaman-cizelgesi|Plan olayları adlandırır. Sahne, ses ve kontrol aynı adlı olaylardan okur. Oynatma çizgisi soldan sağa ilerler.}}
+
 ## Render'dan önce ölçüm
 
 Kit videoyu kodlamadan, sahneyi kare kare çizerek ölçer. Anlatıdaki kontroller:
@@ -39,11 +41,30 @@ Kit videoyu kodlamadan, sahneyi kare kare çizerek ölçer. Anlatıdaki kontroll
 
 Render'dan sonra kit MP4'te ses seviyesini de ölçer. Hedef -14 LUFS civarı, tepe -1 dBTP altı. Tek komut hepsini sırayla koşar ve ölçüm kalırsa render yapmaz.
 
+Alıştırmanın 3. adımında göreceğin çıktı aşağıdaki gibi olur. Gerçek bir koşum değil, biçimi gösterir.
+
+```terminal Şematik örnek
+$ node olc.js plan.json
+okuma süresi   sahne 2: 7 kelime, 1,2 sn (en az 2,0 sn)   KALDI
+ilk kare       geçti
+metin sabit    geçti
+sonuç: KALDI   çıkış kodu 1, render yapılmadı
+$ node olc.js plan.json    # süre düzeltildikten sonra
+okuma süresi   sahne 2: 7 kelime, 2,4 sn (en az 2,0 sn)   GEÇTİ
+sonuç: GEÇTİ   çıkış kodu 0
+```
+
+- 1. satır: ölçüm neye baktığını, ölçtüğü değeri ve eşiği birlikte yazar. Yalnız "kaldı" yazan bir kontrol neyi düzelteceğini söylemez.
+- 4. satır: çıkış kodu sıfırdan farklı olduğu için sonraki adım (render) başlamaz.
+- Son iki satır: aynı ölçümün önce düşmesi ve sonra geçmesi bölümün aradığı kanıttır. Yalnız geçen bir ölçüm hiçbir şeye bakmıyor olabilir.
+
 Güvenli alan kontrolünün inceliği şurada: sahne, çizdiği her şeyin sınırını bildirir ve kontrol bunları kamera yakınlaşması ve sarsıntı dahil, gerçekte ekrana düştükleri yerde tartar.
 
 ## Kare tablosu: ajanın gözü
 
 Ölçüm sayıyı verir, ama "bu kare çirkin mi, iki öğe üst üste mi bindi" sorusunu sayı cevaplamaz. Bunun için kit her sahne ve her adlı olay için tek bir kare üretir ve hepsini altı sütunlu tek bir PNG'ye dizer. Her karenin altında zaman etiketi vardır, üstüne güvenli alanlar yarı saydam kırmızıyla bindirilir. Ajan bu tek görüntüyü açar ve her karede şuna bakar: tek odak noktası var mı, giren ve çıkan öğe çakışıyor mu, metin telefon genişliğinde okunur mu, kaynak yazısı arayüz bölgesinin dışında mı.
+
+{{sekil:b16-kare-tablosu-sema|Kare tablosunun şeması. Gerçek bir tablo değil, yalnız düzeni gösteriyor.}}
 
 Aynı fikir açık kaynak claude-motion projesinde de var. README'sine göre orada da ajanlar videoyu izleyemez ama kareye bakar, her vuruş için zaman damgalı bir kare tablosu çıkar, tek bir zaman çizelgesi sahneyi, sesi ve incelemeyi besler ve hareket kuralları sayılarla yazılır. Proje MIT lisanslı. Bunları yalnız o README'ye dayanarak aktarıyorum, projeyi çalıştırmadım.
 

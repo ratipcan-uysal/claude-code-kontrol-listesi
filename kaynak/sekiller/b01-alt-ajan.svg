@@ -1,0 +1,18 @@
+<svg viewBox="0 0 640 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Alt ajan ayrı bir bağlam penceresinde çalışır: ana oturumdan devir mesajı alır, geriye özet döndürür" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" fill="var(--fg,#17202c)">
+<defs><marker id="b01-ok3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--soft,#5b6472)"/></marker></defs>
+<rect x="6" y="8" width="270" height="176" rx="12" fill="var(--yuzey,#ffffff)" stroke="var(--acc,#1d4f91)" stroke-width="1.8"/>
+<text x="24" y="38" font-size="16" font-weight="700" fill="var(--fg,#17202c)">Ana oturum</text>
+<text x="24" y="68" font-size="13" fill="var(--fg,#17202c)">konuşma geçmişi</text>
+<text x="24" y="92" font-size="13" fill="var(--fg,#17202c)">okunmuş dosyalar</text>
+<text x="24" y="116" font-size="13" fill="var(--fg,#17202c)">çağrılmış skill'ler</text>
+<text x="24" y="150" font-size="13" fill="var(--soft,#5b6472)">alt ajan bunların hiçbirini görmez</text>
+<rect x="386" y="36" width="248" height="120" rx="12" fill="var(--ilebg,#f0eaf8)" fill-opacity=".5" stroke="var(--ile,#6a4a9c)" stroke-width="1.8" stroke-dasharray="5 4"/>
+<text x="404" y="66" font-size="16" font-weight="700" fill="var(--fg,#17202c)">Alt ajan</text>
+<text x="404" y="92" font-size="13" fill="var(--fg,#17202c)">kendi bağlam penceresi</text>
+<text x="404" y="114" font-size="13" fill="var(--fg,#17202c)">devir mesajından başlar</text>
+<text x="404" y="136" font-size="13" fill="var(--soft,#5b6472)">geniş aramayı burada yapar</text>
+<g fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.6"><path d="M280 76H382" marker-end="url(#b01-ok3)"/><path d="M382 120H280" marker-end="url(#b01-ok3)"/></g>
+<text x="331" y="66" text-anchor="middle" font-size="13" fill="var(--soft,#5b6472)">devir mesajı</text>
+<text x="331" y="144" text-anchor="middle" font-size="13" fill="var(--soft,#5b6472)">özet</text>
+<text x="320" y="214" text-anchor="middle" font-size="13" fill="var(--soft,#5b6472)">istisna: fork, ana konuşmanın kopyasıyla başlar</text>
+</svg>

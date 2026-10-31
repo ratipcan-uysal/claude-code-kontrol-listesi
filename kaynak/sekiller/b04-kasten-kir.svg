@@ -1,0 +1,27 @@
+<svg viewBox="0 0 640 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Yeni bir kontrolü sınamak: yeşil gör, hatayı kasten geri koy, kontrolün düştüğünü gör, hatayı çıkar, yeşile döndüğünü gör" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" fill="var(--fg,#17202c)">
+<defs><marker id="b04-ok" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--soft,#5b6472)"/></marker></defs>
+<g fill="none" stroke="var(--soft,#5b6472)" stroke-width="1.6"><path d="M117 100H133" marker-end="url(#b04-ok)"/><path d="M247 100H263" marker-end="url(#b04-ok)"/><path d="M377 100H393" marker-end="url(#b04-ok)"/><path d="M507 100H523" marker-end="url(#b04-ok)"/></g>
+<rect x="4" y="46" width="112" height="108" rx="10" fill="var(--yuzey,#ffffff)" stroke="var(--ok,#1f7a4d)" stroke-width="2"/>
+<text x="16" y="34" font-size="13" font-weight="700" fill="var(--ok,#1f7a4d)">1 · geçti</text>
+<text x="16" y="76" font-size="14" font-weight="700" fill="var(--fg,#17202c)">Yeşil</text>
+<text x="16" y="100" font-size="13" fill="var(--soft,#5b6472)">sayıya bak:</text><text x="16" y="120" font-size="13" fill="var(--soft,#5b6472)">1 test koştu</text>
+<rect x="134" y="46" width="112" height="108" rx="10" fill="var(--ilebg,#f0eaf8)" stroke="var(--ile,#6a4a9c)" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="146" y="34" font-size="13" font-weight="700" fill="var(--ile,#6a4a9c)">2 · kasten kır</text>
+<text x="146" y="76" font-size="14" font-weight="700" fill="var(--fg,#17202c)">Hatayı koy</text>
+<text x="146" y="100" font-size="13" fill="var(--soft,#5b6472)">bir + işaretini</text><text x="146" y="120" font-size="13" fill="var(--soft,#5b6472)">eksiye çevir</text>
+<rect x="264" y="46" width="112" height="108" rx="10" fill="var(--yuzey,#ffffff)" stroke="var(--ile,#6a4a9c)" stroke-width="2"/>
+<text x="276" y="34" font-size="13" font-weight="700" fill="var(--ile,#6a4a9c)">3 · düştü</text>
+<text x="276" y="76" font-size="14" font-weight="700" fill="var(--fg,#17202c)">Kırmızı</text>
+<text x="276" y="100" font-size="13" fill="var(--soft,#5b6472)">kontrol hatayı</text><text x="276" y="120" font-size="13" fill="var(--soft,#5b6472)">yakaladı</text>
+<rect x="394" y="46" width="112" height="108" rx="10" fill="var(--yuzey,#ffffff)" stroke="var(--soft,#5b6472)" stroke-width="2"/>
+<text x="406" y="34" font-size="13" font-weight="700" fill="var(--soft,#5b6472)">4 · geri al</text>
+<text x="406" y="76" font-size="14" font-weight="700" fill="var(--fg,#17202c)">Hatayı çıkar</text>
+<text x="406" y="100" font-size="13" fill="var(--soft,#5b6472)">git restore</text><text x="406" y="120" font-size="13" fill="var(--soft,#5b6472)">ya da elle</text>
+<rect x="524" y="46" width="112" height="108" rx="10" fill="var(--yuzey,#ffffff)" stroke="var(--ok,#1f7a4d)" stroke-width="2"/>
+<text x="536" y="34" font-size="13" font-weight="700" fill="var(--ok,#1f7a4d)">5 · geçti</text>
+<text x="536" y="76" font-size="14" font-weight="700" fill="var(--fg,#17202c)">Yeşil</text>
+<text x="536" y="100" font-size="13" fill="var(--soft,#5b6472)">sayı yine 1,</text><text x="536" y="120" font-size="13" fill="var(--soft,#5b6472)">koşu temiz</text>
+<path d="M322 164V192" fill="none" stroke="var(--ile,#6a4a9c)" stroke-width="1.8" marker-end="url(#b04-ok)"/>
+<rect x="80" y="196" width="484" height="40" rx="10" fill="var(--ilebg,#f0eaf8)" fill-opacity=".6" stroke="var(--ile,#6a4a9c)" stroke-dasharray="4 3"/>
+<text x="322" y="221" text-anchor="middle" font-size="13" fill="var(--fg,#17202c)">3. adımda düşmediyse: kontrol hiçbir şeye bakmıyor</text>
+</svg>

@@ -1,5 +1,7 @@
 # 31 Ekim 2026: tasarım ve hareketli görüntü
 
+- Rehbere görseller: 16 bölüme 24 şekil (tema renklerine uyan SVG, bölüm başına en çok bir amaçlı animasyon, hareketi azaltma tercihinde durur) ve 23 terminal paneli. Paneller etiketli: "Gerçek çıktı" bu makinede çalıştırılan komutun çıktısıdır, gerçek çıktı alınamayanlar "Şematik örnek" ya da "Kurgu, şematik". Kişisel veri çıkarıldı.
+- Dar ekranda şekiller küçülmek yerine kendi kutusunda yatay kayıyor. PDF 123 sayfa.
 - Rehbere iki bölüm: 15 "Arayüz tasarımı: Claude Design ve tahtalar", 16 "Hareketli görüntü: ajan videoyu izleyemez". Bölüm 16 yazarın kendi motion kitinin mantığından ve tarihli derslerinden yazıldı.
 - Tasarım bölümüne dört madde, 125'ten 129'a: 16.6 tasarım sistemini Claude Design'a aktarmak, 16.7 kare tablosu, 16.8 tek zaman çizelgesi, 16.9 render'dan önce ölçüm.
 - Ayrı claude.ai/design sitesi 14 Aralık 2026'da kapanıyor, 16.6 ve bölüm 15 bunu not ediyor.

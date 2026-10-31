@@ -1,0 +1,21 @@
+<svg viewBox="0 0 640 338" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dersin yazılacağı katman kapsama göre seçilir: kullanıcı dosyası en geniş, proje dosyası ortada, yerel dosya en dar; tarihli ölçüm ayrı kanıt dosyasına gider">
+<rect x="10" y="10" width="420" height="270" rx="16" fill="var(--yuzey,#ffffff)" stroke="var(--line,#e1e5eb)" stroke-width="1.8"/>
+<text x="28" y="36" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--fg,#17202c)" text-anchor="start">Her projede doğru</text>
+<text x="28" y="55" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">~/.claude/CLAUDE.md: makine ve araç gerçeği</text>
+<rect x="30" y="70" width="380" height="198" rx="14" fill="var(--accbg,#e6eef9)" stroke="var(--acc,#1d4f91)" stroke-width="1.5"/>
+<text x="48" y="95" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--acc,#1d4f91)" text-anchor="start">Yalnız bu koda ait</text>
+<text x="48" y="114" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">proje CLAUDE.md: mimari, kıyas kuralı</text>
+<rect x="50" y="130" width="340" height="124" rx="12" fill="var(--yuzey,#ffffff)" stroke="var(--acc,#1d4f91)" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="68" y="156" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--fg,#17202c)" text-anchor="start">Bu depo ile bu makinenin kesişimi</text>
+<text x="68" y="176" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">CLAUDE.local.md, gitignore'a eklenir</text>
+<text x="68" y="196" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">yerel yol, sanal ortam konumu</text>
+<text x="68" y="236" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">En dar kapsam: yalnız burada geçerli</text>
+<rect x="450" y="70" width="180" height="128" rx="14" fill="var(--ilebg,#f0eaf8)" stroke="var(--ile,#6a4a9c)" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="466" y="96" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="600" fill="var(--ile,#6a4a9c)" text-anchor="start">Tarihli ölçüm</text>
+<text x="466" y="118" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--fg,#17202c)" text-anchor="start">Ayrı kanıt dosyası</text>
+<text x="466" y="140" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">Kural kısa kalır,</text>
+<text x="466" y="158" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">ölçümün gövdesi</text>
+<text x="466" y="176" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">burada durur.</text>
+<text x="10" y="306" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">Kapsam dışa doğru genişler. Yanlış katman sessiz bir kayıptır:</text>
+<text x="10" y="326" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="400" fill="var(--soft,#5b6472)" text-anchor="start">makine gerçeğini proje dosyasına yazarsan diğer projeler onu görmez.</text>
+</svg>
