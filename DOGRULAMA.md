@@ -1,5 +1,17 @@
 # Doğrulama kaydı
 
+## 31 Ekim 2026: tasarım, hareketli görüntü ve rehber görselleri
+
+| Kontrol | Durum | Kanıt ve sınır |
+|---|---|---|
+| İçerik yapısı | PASS | 15 test. 20 bölüm, 129 madde. Rehber 16 bölüm, 24 şekil, 23 terminal paneli. Eksik şekil dosyası ve etiketsiz panel derlemeyi durduruyor |
+| Terminal panelleri | PASS | 14 panel bu makinede çalıştırılan komutların gerçek çıktısı, 9 panel şematik ya da kurgu olarak etiketli. Kişisel veri çıkarıldı |
+| Sayfa işlevleri | PASS | 78 tarayıcı kontrolü yerelde (Node sunucusu) ve herkese açık adreste |
+| Görsel inceleme | PASS | Her bölümün şekilleri 1280 ve 390 px, açık ve koyu temada ajanlarca, bölüm 5 ayrıca elle incelendi. Animasyonların hareketli hali izlenmedi |
+| GitHub CI | PASS | [İçerik kontrolü](https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/actions/runs/41186345388), commit `dd7210a` |
+| Canlı yayın | PASS | [Pages](https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/actions/runs/41186344494). 25 dosya anonim HTTP 200 ve yerel dosyalarla SHA-256 düzeyinde aynı: [kanıt](dogrulama/canli-yayin.json) |
+| PDF | PASS | 123 A4 sayfa |
+
 ## 30 Ekim 2026: Opus 5.5 ve Projects eklemeleri
 
 | Kontrol | Durum | Kanıt ve sınır |

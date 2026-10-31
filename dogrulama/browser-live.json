@@ -3,7 +3,7 @@
   "base": "https://ratipcan-uysal.github.io/claude-code-kontrol-listesi",
   "results": [
     {
-      "name": "125 madde",
+      "name": "129 madde",
       "status": "PASS"
     },
     {
@@ -23,11 +23,11 @@
       "status": "PASS"
     },
     {
-      "name": "İleri filtre 100",
+      "name": "İleri filtre 104",
       "status": "PASS"
     },
     {
-      "name": "Yapılmamış filtre 124",
+      "name": "Yapılmamış filtre 128",
       "status": "PASS"
     },
     {
@@ -284,6 +284,22 @@
     },
     {
       "name": "Rehber yatay taşma 14-projects.html 320",
+      "status": "PASS"
+    },
+    {
+      "name": "Rehber yatay taşma 15-claude-design.html 1440",
+      "status": "PASS"
+    },
+    {
+      "name": "Rehber yatay taşma 15-claude-design.html 320",
+      "status": "PASS"
+    },
+    {
+      "name": "Rehber yatay taşma 16-hareketli-goruntu.html 1440",
+      "status": "PASS"
+    },
+    {
+      "name": "Rehber yatay taşma 16-hareketli-goruntu.html 320",
       "status": "PASS"
     },
     {
