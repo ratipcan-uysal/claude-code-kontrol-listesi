@@ -69,6 +69,14 @@ class Tests(unittest.TestCase):
   self.assertIn('<th>A</th>',h);self.assertIn('<td data-e="B">y</td>',h);self.assertIn('<pre>&lt;a&gt;</pre>',h)
  def test_md_satir_keeps_angle_brackets_in_code(self):
   self.assertEqual(yap.md_satir('Yol: <code>~/.claude/skills/&lt;ad&gt;/SKILL.md</code>'),'Yol: `~/.claude/skills/<ad>/SKILL.md`')
+ def test_sekil_and_terminal(self):
+  import copy
+  r=copy.deepcopy(yap.REHBER);r[0]['md']+='\n\n{{sekil:olmayan-sekil|X}}\n'
+  with self.assertRaisesRegex(ValueError,'Şekil dosyası yok'):yap.validate_rehber(r)
+  r=copy.deepcopy(yap.REHBER);r[0]['md']+='\n\n```terminal\nx\n```\n'
+  with self.assertRaisesRegex(ValueError,'etiketi yok'):yap.validate_rehber(r)
+  h=yap.md_html('```terminal Gerçek çıktı\n$ ls\n```')
+  self.assertIn('<figure class="term"><figcaption>Gerçek çıktı</figcaption>',h)
  def test_pdf_contains_each_item(self):
   pdf=yap.pdf()
   for i,(_,_,_,ms) in enumerate(yap.BOLUMLER,1):

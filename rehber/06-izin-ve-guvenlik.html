@@ -10,6 +10,7 @@
 <style>
 /* Düzen: tek sütun okuma alanı, üstte yapışkan ilerleme ve süzgeç çubuğu, geniş ekranda solda bölüm dizini */
 :root{
+ --term-bg:#10161e;--term-fg:#dbe3ec;
  --bg:#f6f7f9;--yuzey:#ffffff;--fg:#17202c;--soft:#5b6472;--line:#e1e5eb;--kod:#eef1f5;
  --acc:#1d4f91;--accbg:#e6eef9;--ile:#6a4a9c;--ilebg:#f0eaf8;--ok:#1f7a4d;
  --f-baslik:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
@@ -100,6 +101,13 @@ main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
 .tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
 .tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
 @media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
+.sekil{margin:22px 0;max-width:100%}
+.sekil-kap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--yuzey);padding:14px}
+.sekil-kap svg{display:block;width:100%;height:auto;min-width:min(520px,100%)}
+.sekil figcaption,.term figcaption{font-size:13px;color:var(--soft);margin-top:8px}
+.term{margin:18px 0;max-width:100%}
+.term figcaption{margin:0 0 6px;font-family:var(--f-kod);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+.ek .term pre{background:var(--term-bg);color:var(--term-fg);border-color:var(--term-bg);margin:0}
 ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
 ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
 ul.ekler a{font-weight:600}

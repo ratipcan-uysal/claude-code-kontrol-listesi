@@ -72,8 +72,15 @@ def baslik_id(t):
     t = t.lower().translate(str.maketrans("çğıöşüâî", "cgiosuai"))
     return re.sub(r"[^a-z0-9]+", "-", t).strip("-")
 
+SEKIL = re.compile(r"\{\{sekil:([a-z0-9-]+)\|([^}]+)\}\}")
+SEKIL_DIZIN = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sekiller")
+
+def sekil_html(ad, baslik):
+    svg = open(os.path.join(SEKIL_DIZIN, ad + ".svg"), encoding="utf-8").read().strip()
+    return f'<figure class="sekil" id="sekil-{ad}"><div class="sekil-kap">{svg}</div><figcaption>{satir_ici(baslik)}</figcaption></figure>'
+
 def md_html(md, onek_id=""):
-    o, par, liste, tablo, kod = [], [], [], [], None
+    o, par, liste, tablo, kod, kod_etiket = [], [], [], [], None, ""
     def bosalt():
         if par: o.append("<p>" + satir_ici(" ".join(par)) + "</p>"); par.clear()
         if liste: o.append("<ul>" + "".join(f"<li>{satir_ici(x)}</li>" for x in liste) + "</ul>"); liste.clear()
@@ -85,9 +92,19 @@ def md_html(md, onek_id=""):
             tablo.clear()
     for l in md.strip("\n").split("\n"):
         if kod is not None:
-            if l.startswith("```"): o.append(f"<pre>{esc(chr(10).join(kod))}</pre>"); kod = None
+            if l.startswith("```"):
+                if kod_etiket:
+                    o.append(f'<figure class="term"><figcaption>{satir_ici(kod_etiket)}</figcaption><pre>{esc(chr(10).join(kod))}</pre></figure>')
+                else:
+                    o.append(f"<pre>{esc(chr(10).join(kod))}</pre>")
+                kod = None
             else: kod.append(l)
-        elif l.startswith("```"): bosalt(); kod = []
+        elif l.startswith("```"):
+            bosalt(); kod = []
+            m = re.match(r"```terminal\s+(.+)", l)
+            kod_etiket = m.group(1).strip() if m else ""
+        elif SEKIL.fullmatch(l.strip()):
+            bosalt(); m = SEKIL.fullmatch(l.strip()); o.append(sekil_html(m.group(1), m.group(2)))
         elif l.startswith("#"):
             bosalt(); n = len(l) - len(l.lstrip("#")); t = l[n:].strip()
             o.append(f'<h{n} id="{onek_id}{baslik_id(t)}">{satir_ici(t)}</h{n}>')
@@ -111,7 +128,7 @@ def ilk10_satirlari():
 # ---------- PDF ----------
 PCSS = """
 @page{size:A4;margin:16mm 16mm 18mm 16mm}
-:root{--ink:#18202b;--soft:#5a6270;--line:#e2e5ea;--acc:#1d4f91;--accbg:#e8eff9;--ile:#6a4a9c;--ilebg:#f1ebf8;--kod:#f4f6f9}
+:root{--term-bg:#10161e;--term-fg:#dbe3ec;--ink:#18202b;--soft:#5a6270;--line:#e2e5ea;--acc:#1d4f91;--accbg:#e8eff9;--ile:#6a4a9c;--ilebg:#f1ebf8;--kod:#f4f6f9}
 body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;color:var(--ink);font-size:9.6pt;line-height:1.42;margin:0;background:#fff}
 code{font-family:Menlo,monospace;font-size:8.2pt;background:var(--kod);padding:0 .8mm;border-radius:1mm}
 pre{font-family:Menlo,monospace;font-size:7.8pt;line-height:1.38;background:var(--kod);border-left:2px solid #c9d3e2;padding:2mm 3mm;margin:1.2mm 0 0;white-space:pre-wrap;break-inside:avoid}
@@ -188,6 +205,7 @@ def pdf():
 WCSS = """
 /* Düzen: tek sütun okuma alanı, üstte yapışkan ilerleme ve süzgeç çubuğu, geniş ekranda solda bölüm dizini */
 :root{
+ --term-bg:#10161e;--term-fg:#dbe3ec;
  --bg:#f6f7f9;--yuzey:#ffffff;--fg:#17202c;--soft:#5b6472;--line:#e1e5eb;--kod:#eef1f5;
  --acc:#1d4f91;--accbg:#e6eef9;--ile:#6a4a9c;--ilebg:#f0eaf8;--ok:#1f7a4d;
  --f-baslik:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
@@ -274,6 +292,11 @@ pre{overflow-wrap:anywhere}
 .ek h2{margin-top:5mm}.ek h3{font-size:10.5pt;margin:4mm 0 1mm}.ek p{margin:0 0 2mm;max-width:172mm}
 .ek table{font-size:8.6pt;margin:1mm 0 4mm}.ek td,.ek th{vertical-align:top}.ek tr{break-inside:avoid}.ek ul{margin:0 0 2mm;padding-left:5mm}
 """
+PCSS += """
+.sekil{margin:3mm 0;break-inside:avoid}.sekil-kap{border:1px solid var(--line);border-radius:2mm;padding:2mm}.sekil-kap svg{width:100%;height:auto}
+.sekil figcaption,.term figcaption{font-size:8pt;color:var(--soft);margin-top:1mm}.term{margin:2mm 0;break-inside:avoid}
+.term pre{background:var(--term-bg);color:var(--term-fg);border-left:0}
+"""
 SAYFA = "https://ratipcan-uysal.github.io/claude-code-kontrol-listesi/"
 
 WJS = open(os.path.join(os.path.dirname(__file__), 'app.js'), encoding='utf-8').read()
@@ -291,6 +314,13 @@ main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
 .tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
 .tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
 @media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
+.sekil{margin:22px 0;max-width:100%}
+.sekil-kap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--yuzey);padding:14px}
+.sekil-kap svg{display:block;width:100%;height:auto;min-width:min(520px,100%)}
+.sekil figcaption,.term figcaption{font-size:13px;color:var(--soft);margin-top:8px}
+.term{margin:18px 0;max-width:100%}
+.term figcaption{margin:0 0 6px;font-family:var(--f-kod);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+.ek .term pre{background:var(--term-bg);color:var(--term-fg);border-color:var(--term-bg);margin:0}
 ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
 ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
 ul.ekler a{font-weight:600}
@@ -328,6 +358,12 @@ def validate_rehber(rehber=REHBER):
         for tur, ad in IC.findall(b["md"]):
             if (tur == "ek" and ad not in {e["ad"] for e in EKLER}) or (tur == "bolum" and ad not in nolar):
                 raise ValueError(f"Geçersiz rehber bağlantısı: {tur}:{ad} ({b['ad']})")
+    for b in rehber:
+        for ad, _ in SEKIL.findall(b["md"]):
+            if not os.path.exists(os.path.join(SEKIL_DIZIN, ad + ".svg")):
+                raise ValueError(f"Şekil dosyası yok: {ad}.svg ({b['ad']})")
+        if re.search(r"^```terminal\s*$", b["md"], re.M):
+            raise ValueError(f"Terminal panelinin etiketi yok, ör. ```terminal Gerçek çıktı ({b['ad']})")
     validate_ekler(rehber)
 
 def ic_bag(md, uzanti):
@@ -353,12 +389,16 @@ def bolum_html(b):
                  f'<p class="surum">{SEVIYELER[b["seviye"]]} · Bölüm {b["no"]}</p><h1>{b["baslik"]}</h1><p class="giris">{esc(b["ozet"])}</p><p class="surum">Belge kontrolü: {REHBER_TARIH}</p>\n'
                  + md_html(ref_html(ic_bag(b["md"], "html"))), alt)
 
+def md_sade(md, sayfa):
+    md = SEKIL.sub(lambda m: f"_Şekil: {m.group(2)} ([web sürümünde]({sayfa}#sekil-{m.group(1)}))_", md)
+    return re.sub(r"^```terminal\s+(.+)$", lambda m: f"**{m.group(1).strip()}**\n\n```text", md, flags=re.M)
+
 def bolum_md(b):
     once, sonra = komsu(b)
     alt = " · ".join(x for x in [f'[← Bölüm {once["no"]}]({once["ad"]}.md)' if once else "", "[İçindekiler](README.md)",
                                  f'[Bölüm {sonra["no"]} →]({sonra["ad"]}.md)' if sonra else ""] if x)
     return (f'# {b["no"]}. {b["baslik"]}\n\n_{SEVIYELER[b["seviye"]]} · Belge kontrolü: {REHBER_TARIH}_\n\n{b["ozet"]}\n\n'
-            f'{ref_md(ic_bag(b["md"], "md")).strip()}\n\n---\n\n{alt}\n')
+            f'{md_sade(ref_md(ic_bag(b["md"], "md")), b["ad"] + ".html").strip()}\n\n---\n\n{alt}\n')
 
 def rehber_listesi():
     for s, ad in SEVIYELER.items():
