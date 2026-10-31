@@ -1,3 +1,9 @@
+# 31 Ekim 2026: tasarım ve hareketli görüntü
+
+- Rehbere iki bölüm: 15 "Arayüz tasarımı: Claude Design ve tahtalar", 16 "Hareketli görüntü: ajan videoyu izleyemez". Bölüm 16 yazarın kendi motion kitinin mantığından ve tarihli derslerinden yazıldı.
+- Tasarım bölümüne dört madde, 125'ten 129'a: 16.6 tasarım sistemini Claude Design'a aktarmak, 16.7 kare tablosu, 16.8 tek zaman çizelgesi, 16.9 render'dan önce ölçüm.
+- Ayrı claude.ai/design sitesi 14 Aralık 2026'da kapanıyor, 16.6 ve bölüm 15 bunu not ediyor.
+
 # 30 Ekim 2026: Projects
 
 Dayanak resmî belge: [Projects](https://code.claude.com/docs/en/claude-projects) ve [bulut ortamları](https://code.claude.com/docs/en/cloud-environments). Konu seçimi bir topluluk yazısından geldi, iddialar belgeyle karşılaştırıldı. Yazıdaki günlük thread sınırı (200) belgeyle çelişiyordu, belgede 500. Belgede olmayan sayılar eklenmedi.

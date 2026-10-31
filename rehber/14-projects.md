@@ -93,4 +93,4 @@ Kontrol listesinin Projects bölümü: [20.1](../README.md#20-projects) [20.2](.
 
 ---
 
-[← Bölüm 13](13-bitirme-projesi.md) · [İçindekiler](README.md)
+[← Bölüm 13](13-bitirme-projesi.md) · [İçindekiler](README.md) · [Bölüm 15 →](15-claude-design.md)

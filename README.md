@@ -1,6 +1,6 @@
 # Claude Code'u iyi kullanmanın kontrol listesi
 
-20 bölüm, 125 madde. Her maddede neden, nasıl, kopyalanabilir örnek ve doğrulama.
+20 bölüm, 129 madde. Her maddede neden, nasıl, kopyalanabilir örnek ve doğrulama.
 
 - **Web sürümü** (işaretlenebilir, süzgeçli): https://ratipcan-uysal.github.io/claude-code-kontrol-listesi/
 - **PDF:** [claude-code-kontrol-listesi.pdf](claude-code-kontrol-listesi.pdf)
@@ -13,7 +13,7 @@ Bu liste tekrar işi azaltmak, kapsamı belirlemek ve sonucu kanıtla teslim alm
 
 **Neden** gerekçeyi, **nasıl** uygulama yolunu, **doğrula** beklenen kanıtı gösterir. Başlangıç onlusu ve temel/ileri etiketleri editoryal öneridir; ölçülmüş getiri sıralaması değildir.
 
-**Temel** 25, **ileri** 100 madde vardır. Teknik davranışların yanında resmî kaynak bağlantısı bulunur; bağlantısız maddeler iş akışı önerisidir. Örnekler kendi projenin araçlarına ve yetkisine uyarlanmalıdır.
+**Temel** 25, **ileri** 104 madde vardır. Teknik davranışların yanında resmî kaynak bağlantısı bulunur; bağlantısız maddeler iş akışı önerisidir. Örnekler kendi projenin araçlarına ve yetkisine uyarlanmalıdır.
 
 Kaynaklar 21 Ekim 2026'da kontrol edildi, yeni altı madde ve ekler 29 Ekim 2026'da. Yerel CLI 2.1.284 için yalnız sürüm ve yardım çıktısı alındı; listelenen bütün Claude özellikleri canlı çalıştırılmadı. CLI, Desktop, bulut ve sağlayıcı farklarını ilgili belgede kontrol et.
 
@@ -49,7 +49,7 @@ Bir kutuyu işaretlemek kişisel ilerleme kaydıdır; otomatik doğrulama veya g
 13. [Gözetimsiz koşum](#13-gozetimsiz) (7)
 14. [Rutinler ve zamanlama](#14-rutin) (7)
 15. [Git ve yayın](#15-git) (4)
-16. [Tasarım ve arayüz](#16-tasarim) (5)
+16. [Tasarım ve arayüz](#16-tasarim) (9)
 17. [Mobil ve simülatör](#17-mobil) (5)
 18. [Bilgi birikimi](#18-bilgi) (4)
 19. [Bakım ritmi](#19-bakim) (6)
@@ -1106,6 +1106,26 @@ Tasarımda en pahalı döngü "beğenmedim, tekrar dene". Onu kısaltan şey ara
 
   - **Doğrula:** Yeni sürüm listedeki kalıpların hiçbirini içermiyor. Listen her turda uzadı, aynı istemediğin kalıp ikinci kez gelmedi.
   - **Dayanak:** [Opus 5.5 rehberi](https://claude.dev/blog/getting-the-most-out-of-opus-5-5/)
+- [ ] **16.6 React tasarım sistemin varsa onu Claude Design'a aktar.** `İleri`
+  - **Neden:** Claude tasarım sistemini kendi seçimlerinden üstün tutar, senin prompt'unu da ikisinden üstün. Gerçek bileşenleri bilen Claude, onları taklit eden bir tasarım yerine kullanılabilir bir tasarım çizer.
+  - **Nasıl:** Önce `/design-login` ile claude.ai hesabınla yetki ver, sonra `/design-sync` ile repodaki React tasarım sistemini aktar. İlk senkron her bileşeni doğrular, büyük repoda birkaç saat sürebilir. Sonuç kaynak kadar iyidir: dağınık bileşenler tasarıma dağınık yansır. Yalnız Anthropic API'de çalışır. Ayrı claude.ai/design sitesi 14 Aralık 2026'da kapanıyor, oradaki tasarım sistemlerini Claude'a taşı.
+  - **Doğrula:** Yeni bir tasarım isteğinde çıkan tahtalarda kendi bileşenlerinin adları geçiyor. Tasarım sistemin kapanacak sitede değil, Claude'da duruyor.
+  - **Dayanak:** [Komutlar](https://code.claude.com/docs/en/commands) · [Artifact](https://code.claude.com/docs/en/artifacts)
+- [ ] **16.7 Videoyu kare tablosuyla gözden geçirt.** `İleri`
+  - **Neden:** Ajan videoyu izleyemez, ama kareye bakabilir. Render alınmış bir videonun "bitti" sayılması, kimsenin bakmadığı anlamına gelebilir.
+  - **Nasıl:** Her sahne ve her adlı olay için zaman damgalı bir kareyi tek bir görüntüde topla, güvenli alanı üstüne çiz. Claude "bitti" demeden önce bu tabloya bakıp çakışma, taşma ve okunurluk için bir liste üzerinden geçsin, bulduğunu düzeltsin.
+  - **Doğrula:** Her render'ın yanında bir kare tablosu var. Tabloya bakılarak bulunan sorunlar ya da sorun bulunmadığı kayıtlı.
+  - **Dayanak:** İş akışı önerisi
+- [ ] **16.8 Görüntüyü ve sesi tek zaman çizelgesine bağla.** `İleri`
+  - **Neden:** Zamanları sahne kodunda ve ses dosyasında ayrı ayrı elle yazarsan bir sahneyi uzatınca ses kayar ve bunu ancak izleyerek fark edersin.
+  - **Nasıl:** Zaman planını metinden hesaplat ve tek bir dosyada adlı olaylar olarak tut. Sahne, ses ve kontroller zamanı o dosyadan okusun. Elle sayı yazma.
+  - **Doğrula:** Bir sahneyi uzattığında sesin vuruşları ve kontroller de kendiliğinden kaydı. Ses dalgasının görüntüsünde her vuruş bir olay çizgisinin üstünde.
+  - **Dayanak:** İş akışı önerisi
+- [ ] **16.9 Render'dan önce ölç, kontrol düşmeden render alma.** `İleri`
+  - **Neden:** Render pahalıdır ve sonucu izlenmeden onaylanırsa hata yayına gider. Güvenli alan, okunma süresi ve ses yüksekliği gibi şeyler sayıyla ölçülebilir.
+  - **Nasıl:** Render'dan önce koşan kontroller yaz: metin ve çizimler güvenli alanda mı, her cümle okunacak kadar ekranda kalıyor mu, ses hedef yüksekliğe yakın mı ve kırpılıyor mu. Hepsi geçmeden render alma. Yeni kontrolü hatayı geri koyarak sına.
+  - **Doğrula:** Kontrollerden biri bilerek bozulunca render duruyor. Düzeltince geçiyor ve video ancak ondan sonra çıkıyor.
+  - **Dayanak:** İş akışı önerisi
 
 <a id="17-mobil"></a>
 ## 17. Mobil ve simülatör

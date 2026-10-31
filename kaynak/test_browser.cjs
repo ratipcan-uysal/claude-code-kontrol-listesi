@@ -4,13 +4,13 @@ const fs=require('fs'), path=require('path'), assert=require('assert');
 const check=(name,ok)=>{results.push({name,status:ok?'PASS':'FAIL'});assert(ok,name);};
 try{
  const context=await browser.newContext({viewport:{width:1440,height:1000},permissions:['clipboard-read','clipboard-write']});const p=await context.newPage();p.on('pageerror',e=>errors.push(e.message));await p.goto(base);await p.evaluate(()=>localStorage.clear());await p.reload();
- check('125 madde',await p.locator('.madde').count()===125);
+ check('129 madde',await p.locator('.madde').count()===129);
  await p.locator('#m-talimat-1').check();await p.reload();check('İşaret kalıcılığı',await p.locator('#m-talimat-1').isChecked());
- await p.locator('#sifirla').click();check('Temizleme ilk tık filtreyi bozmuyor',await p.locator('.madde:visible').count()===125);
- await p.locator('#sifirla').click();check('Temizleme ikinci tık',!(await p.locator('#m-talimat-1').isChecked())&&await p.locator('.madde:visible').count()===125);
+ await p.locator('#sifirla').click();check('Temizleme ilk tık filtreyi bozmuyor',await p.locator('.madde:visible').count()===129);
+ await p.locator('#sifirla').click();check('Temizleme ikinci tık',!(await p.locator('#m-talimat-1').isChecked())&&await p.locator('.madde:visible').count()===129);
  await p.locator('[data-suz="temel"]').click();check('Temel filtre 25',await p.locator('.madde:visible').count()===25);
- await p.locator('[data-suz="ileri"]').click();check('İleri filtre 100',await p.locator('.madde:visible').count()===100);
- await p.locator('[data-suz="hepsi"]').click();await p.locator('#m-talimat-1').check();await p.locator('[data-suz="acik"]').click();check('Yapılmamış filtre 124',await p.locator('.madde:visible').count()===124);
+ await p.locator('[data-suz="ileri"]').click();check('İleri filtre 104',await p.locator('.madde:visible').count()===104);
+ await p.locator('[data-suz="hepsi"]').click();await p.locator('#m-talimat-1').check();await p.locator('[data-suz="acik"]').click();check('Yapılmamış filtre 128',await p.locator('.madde:visible').count()===128);
  await p.locator('[data-suz="hepsi"]').click();await p.locator('#ara').fill('OTOMATIK');check('Türkçe arama',await p.locator('#m-talimat-7-k').isVisible());
  await p.locator('#ara').fill('zzzz-bulunmaz');check('Boş sonuç',await p.locator('.madde:visible').count()===0);
  await p.evaluate(()=>location.hash='#m-model-3-k');await p.waitForTimeout(100);check('Hash gizli hedefi açar',await p.locator('#m-model-3-k').isVisible()&&await p.locator('#ara').inputValue()==='');
@@ -22,7 +22,7 @@ try{
  p.once('dialog',d=>d.dismiss());await importData({...payload,checked:{'m-talimat-2':1}});check('İçe aktarma iptal korur',await p.locator('#m-talimat-1').isChecked());
  p.once('dialog',d=>d.accept());await importData({...payload,checked:{'m-talimat-2':1}});check('İçe aktarma onayı',await p.locator('#m-talimat-2').isChecked()&&!(await p.locator('#m-talimat-1').isChecked()));
  for(const [name,data] of [['null',null],['bozuk JSON','{'],['yabancı kimlik',{...payload,checked:{'m-foreign':1}}],['geçersiz değer',{...payload,checked:{'m-talimat-1':'yes'}}],['büyük dosya','x'.repeat(100001)]]){await importData(data);check('Hatalı içe aktarım korunur: '+name,await p.locator('#m-talimat-2').isChecked()&&(await p.locator('#bildirim').textContent()).includes('Mevcut işaretler korundu'));}
- await p.evaluate(()=>{localStorage.setItem('cc-kontrol-v2','[]');location.hash='';});await p.reload();check('Bozuk yerel kayıt dayanıklılığı',await p.locator('.madde:visible').count()===125);await p.locator('#m-talimat-1').check();check('Bozuk kayıt sonrası işaret',await p.locator('#m-talimat-1').isChecked());
+ await p.evaluate(()=>{localStorage.setItem('cc-kontrol-v2','[]');location.hash='';});await p.reload();check('Bozuk yerel kayıt dayanıklılığı',await p.locator('.madde:visible').count()===129);await p.locator('#m-talimat-1').check();check('Bozuk kayıt sonrası işaret',await p.locator('#m-talimat-1').isChecked());
  await p.locator('#tema').click();check('Açık tema',await p.locator('html').getAttribute('data-theme')==='light');await p.evaluate(()=>window.scrollTo(0,0));await p.screenshot({path:path.join(out,'desktop-light.png')});
  await p.locator('#tema').click();await p.reload();check('Koyu tema kalıcılığı',await p.locator('html').getAttribute('data-theme')==='dark');await p.screenshot({path:path.join(out,'desktop-dark.png')});
  await p.locator('#ara').focus();await p.keyboard.press('Tab');check('Klavye sırası',await p.evaluate(()=>document.activeElement.id)==='tema');

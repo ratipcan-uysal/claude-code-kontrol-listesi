@@ -44,6 +44,8 @@ Alıştırmalar herhangi bir git deposunda yapılabilir. Silme, yeniden yazma ya
 - [12. Sistemi iyileştirmek: hatayı katmana yazmak](12-sistemi-iyilestirmek.md): Her başarısızlığın adresi bağlam, model kararı ya da harness'tir ve ders doğru katmana yazılır. Üçüncü tekrar kural olur, bakım ritmi ve önce ve sonra karşılaştırması sistemi sağlıklı tutar.
 - [13. Bitirme projesi: her adımda kanıt](13-bitirme-projesi.md): Kendi seçtiğin küçük ve gerçek bir işi plan, uygulama, doğrulama ve teslim aşamalarından geçirirsin. Her aşamada önceki bölümlerin becerisini kullanır ve bir kanıt dosyası bırakırsın.
 - [14. Projects: koordinatör ve thread'ler](14-projects.md): Proje, işi thread'lere bölen tek bir konuşmadır. Her thread repoyu temiz klonlayan bir bulut oturumudur ve makinendeki hook, izin ve skill'leri değil, proje talimatını, belleğini, connector'larını ve ortamını alır.
+- [15. Arayüz tasarımı: Claude Design ve tahtalar](15-claude-design.md): Model yön verilmezse varsayılan stile döner, bu yüzden tasarımı tarif etmek yerine karşılaştırılabilir yönler çizdirip seçersin. Claude Design, tasarım skill'leri ve tasarım sistemi arasında seçim, yönlendirme ve ekran görüntüsüyle doğrulama.
+- [16. Hareketli görüntü: ajan videoyu izleyemez](16-hareketli-goruntu.md): Ajan videoyu izleyemez ama kareye bakabilir ve sayıyı ölçebilir. Zaman planı metinden hesaplanır, kontroller render'dan önce koşar, kare tablosu ve olaya bağlı ses aynı plandan beslenir.
 
 ---
 

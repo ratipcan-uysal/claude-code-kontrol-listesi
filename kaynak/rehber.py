@@ -58,6 +58,10 @@ REHBER = [
       ozet="Kendi seçtiğin küçük ve gerçek bir işi plan, uygulama, doğrulama ve teslim aşamalarından geçirirsin. Her aşamada önceki bölümlerin becerisini kullanır ve bir kanıt dosyası bırakırsın."),
  dict(no=14, ad="14-projects", seviye="uzman", baslik="Projects: koordinatör ve thread'ler",
       ozet="Proje, işi thread'lere bölen tek bir konuşmadır. Her thread repoyu temiz klonlayan bir bulut oturumudur ve makinendeki hook, izin ve skill'leri değil, proje talimatını, belleğini, connector'larını ve ortamını alır."),
+ dict(no=15, ad="15-claude-design", seviye="uzman", baslik="Arayüz tasarımı: Claude Design ve tahtalar",
+      ozet="Model yön verilmezse varsayılan stile döner, bu yüzden tasarımı tarif etmek yerine karşılaştırılabilir yönler çizdirip seçersin. Claude Design, tasarım skill'leri ve tasarım sistemi arasında seçim, yönlendirme ve ekran görüntüsüyle doğrulama."),
+ dict(no=16, ad="16-hareketli-goruntu", seviye="uzman", baslik="Hareketli görüntü: ajan videoyu izleyemez",
+      ozet="Ajan videoyu izleyemez ama kareye bakabilir ve sayıyı ölçebilir. Zaman planı metinden hesaplanır, kontroller render'dan önce koşar, kare tablosu ve olaya bağlı ses aynı plandan beslenir."),
 ]
 REHBER.sort(key=lambda b: b["no"])
 

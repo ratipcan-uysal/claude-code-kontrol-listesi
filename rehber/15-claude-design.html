@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Model yön verilmezse varsayılan stile döner, bu yüzden tasarımı tarif etmek yerine karşılaştırılabilir yönler çizdirip seçersin. Claude Design, tasarım skill&#x27;leri ve tasarım sistemi arasında seçim, yönlendirme ve ekran görüntüsüyle doğrulama.">
+<title>Arayüz tasarımı: Claude Design ve tahtalar · Claude Code kontrol listesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Düzen: tek sütun okuma alanı, üstte yapışkan ilerleme ve süzgeç çubuğu, geniş ekranda solda bölüm dizini */
+:root{
+ --bg:#f6f7f9;--yuzey:#ffffff;--fg:#17202c;--soft:#5b6472;--line:#e1e5eb;--kod:#eef1f5;
+ --acc:#1d4f91;--accbg:#e6eef9;--ile:#6a4a9c;--ilebg:#f0eaf8;--ok:#1f7a4d;
+ --f-baslik:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+ --f-govde:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+ --f-kod:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161d;--yuzey:#171e27;--fg:#e6eaf0;--soft:#9aa4b2;--line:#273140;--kod:#1d2631;--acc:#8fb4ec;--accbg:#1c2a40;--ile:#c3a8ec;--ilebg:#2a2238;--ok:#6fcf9b;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-govde);font-size:15px;line-height:1.55;margin:0}
+.sar{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:grid;grid-template-columns:1fr;gap:32px}
+@media (min-width:980px){.sar{grid-template-columns:230px minmax(0,1fr)}}
+nav.dizin{display:none}
+@media (min-width:980px){nav.dizin{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + 96px);align-self:start;max-height:calc(100vh - 120px);overflow:auto;font-size:13px}}
+nav.dizin a{display:flex;justify-content:space-between;gap:8px;color:var(--soft);text-decoration:none;padding:4px 8px;border-radius:6px}
+nav.dizin a:hover,nav.dizin a:focus-visible{background:var(--accbg);color:var(--fg);outline:none}
+nav.dizin small{font-variant-numeric:tabular-nums}
+main{min-width:0}
+header.ust h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+header.ust p{color:var(--soft);max-width:65ch;margin:0 0 6px}
+.surum{font-family:var(--f-kod);font-size:12px;color:var(--soft)}
+.cubuk{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0;margin:20px 0 8px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.ilerleme{flex:1 1 220px;min-width:0}
+.ilerleme .etiket{font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
+.ilerleme .yol{height:6px;background:var(--line);border-radius:3px;margin-top:5px;overflow:hidden}
+.ilerleme .dolu{height:100%;width:0;background:var(--ok);transition:width .25s}
+.suzgec{display:flex;flex-wrap:wrap;gap:6px}
+.suzgec button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--yuzey);color:var(--fg);padding:5px 11px;border-radius:999px;cursor:pointer}
+.suzgec button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.suzgec button:focus-visible,.kopya:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+h2{font-family:var(--f-baslik);font-size:24px;letter-spacing:-.01em;margin:44px 0 6px;text-wrap:balance;scroll-margin-top:90px}
+h2 .no{color:var(--acc);margin-right:10px;font-variant-numeric:tabular-nums}
+.giris{color:var(--soft);max-width:68ch;margin:0 0 10px}
+details.okuma{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:8px}
+details.okuma summary{cursor:pointer;font-weight:600}
+details.okuma p{max-width:68ch}
+.sayilar{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.sayilar div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
+.sayilar b{display:block;font-family:var(--f-baslik);font-size:18px}
+.sayilar span{color:var(--soft);font-size:13px}
+.ilk10{list-style:none;padding:0;margin:8px 0 0;counter-reset:s;display:grid;gap:8px}
+.ilk10 li{counter-increment:s;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px;background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.ilk10 li::before{content:counter(s);font-family:var(--f-baslik);font-size:24px;font-weight:700;color:var(--acc);line-height:1}
+.ilk10 a{color:var(--fg);font-weight:600;text-decoration:none}.ilk10 a:hover{text-decoration:underline}
+.ilk10 .n{color:var(--soft);font-size:14px}
+.madde{display:grid;grid-template-columns:28px minmax(0,1fr);gap:4px 10px;padding:16px 0;border-top:1px solid var(--line)}
+.madde[hidden]{display:none}
+.madde input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--ok);cursor:pointer}
+.madde.yapildi .bas{color:var(--soft);text-decoration:line-through;text-decoration-color:var(--line)}
+.bas{font-weight:600;font-size:16px;cursor:pointer}
+.no2{font-variant-numeric:tabular-nums;color:var(--soft);font-weight:500;margin-right:6px}
+.et{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:4px;margin-left:8px;vertical-align:2px}
+.temel{color:var(--acc);background:var(--accbg)}.ileri{color:var(--ile);background:var(--ilebg)}
+dl{display:grid;grid-template-columns:76px minmax(0,1fr);gap:4px 10px;margin:8px 0 0;font-size:14.5px}
+dt{color:var(--soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
+dd{margin:0;min-width:0}
+code{font-family:var(--f-kod);font-size:.88em;background:var(--kod);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.ornek{position:relative;margin-top:8px}
+.ornek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:0;overflow-x:auto;white-space:pre}
+.kopya{position:absolute;top:6px;right:6px;font:inherit;font-size:12px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:2px 9px;cursor:pointer}
+.bos-durum{color:var(--soft);padding:12px 0}
+footer{color:var(--soft);font-size:13px;margin-top:48px;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.ilerleme .dolu{transition:none}}
+
+a{color:var(--acc)}
+.madde,section.bolum{scroll-margin-top:var(--kaydirma,170px)}
+.kaynak{font-size:12px;color:var(--soft);margin:8px 0 0}
+.araclar{margin:14px 0}.araclar label{font-weight:600;font-size:13px;display:block}
+#ara{width:100%;font:inherit;color:var(--fg);background:var(--yuzey);border:1px solid var(--line);border-radius:8px;padding:10px;margin:5px 0}
+.islemler{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.islemler button,.islemler a{font:inherit;font-size:12px;padding:7px 9px;background:var(--yuzey);color:var(--fg);border:1px solid var(--line);border-radius:6px;cursor:pointer;text-decoration:none}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+#arama-sonuc,#bildirim{font-size:13px;color:var(--soft)}
+.ornek pre{padding-top:40px;white-space:pre-wrap;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+@media(max-width:480px){dl{grid-template-columns:1fr;gap:3px}dt{margin-top:7px}.sar{padding-inline:12px}.madde{gap:4px 6px}.cubuk{position:static}.et{margin-left:4px}nav.dizin{position:static}}
+@media print{.cubuk,.araclar,.dizin,.kopya,.ilk10,details.okuma{display:none!important}.sar{display:block;padding:0}body{background:white;color:#17202c}.madde{break-inside:avoid}.ornek pre{padding:10px}a{color:#1d4f91}}
+
+main.ek{max-width:900px;margin:0 auto;padding:28px 16px 64px}
+.ek .ust-bag{font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:18px}
+.ek h1{font-family:var(--f-baslik);font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+.ek h2{scroll-margin-top:16px}.ek h3{font-size:17px;margin:26px 0 4px}
+.ek p,.ek li{max-width:72ch}
+.ek pre{font-family:var(--f-kod);font-size:13px;line-height:1.5;background:var(--kod);border:1px solid var(--line);border-radius:8px;padding:12px 14px;white-space:pre;overflow-x:auto;overflow-wrap:normal}
+.tablo{overflow-x:auto;margin:10px 0 18px;border:1px solid var(--line);border-radius:8px}
+.tablo table{border-collapse:collapse;width:100%;font-size:14px;background:var(--yuzey)}
+.tablo th,.tablo td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tablo th{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
+.tablo td:first-child code{overflow-wrap:normal;white-space:nowrap}
+@media(max-width:600px){.tablo{border:0;overflow:visible}.tablo table{background:none}.tablo thead{display:none}.tablo tr{display:block;background:var(--yuzey);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;padding:4px 0}.tablo td{display:block;border:0;padding:4px 12px}.tablo td::before{content:attr(data-e);display:block;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}.tablo td code,.tablo td:first-child code{white-space:normal;overflow-wrap:anywhere}}
+ul.ekler{display:grid;gap:8px;padding:0;list-style:none;margin:8px 0 0}
+ul.ekler li{background:var(--yuzey);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+ul.ekler a{font-weight:600}
+ul.ekler span{display:block;color:var(--soft);font-size:14px}
+</style>
+<script>try{var t=localStorage.getItem("cc-kontrol-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main class="ek"><nav class="ust-bag" aria-label="Gezinme"><a href="../index.html">← Kontrol listesi</a><a href="index.html">Rehber içindekiler</a><a href="../index.html#ekler">Ekler</a></nav><p class="surum">Uzman · Bölüm 15</p><h1>Arayüz tasarımı: Claude Design ve tahtalar</h1><p class="giris">Model yön verilmezse varsayılan stile döner, bu yüzden tasarımı tarif etmek yerine karşılaştırılabilir yönler çizdirip seçersin. Claude Design, tasarım skill&#x27;leri ve tasarım sistemi arasında seçim, yönlendirme ve ekran görüntüsüyle doğrulama.</p><p class="surum">Belge kontrolü: 29 Ekim 2026</p>
+<h2 id="zihinsel-model-tarif-etme-karsilastir">Zihinsel model: tarif etme, karşılaştır</h2>
+<p>Tasarımda Claude'a bir ekranı sözle tarif edersin, o da onu çizer. Sorun şurada: sözle tarif edilen tasarım senin kafanda bir şey, modelin elinde başka bir şey olur. Yön vermezsen model birkaç varsayılan stile döner. Anthropic'in Opus 5.5 rehberi bunu açıkça yazar ve "jenerik görünmesin" gibi genel bir talimatın çoğunlukla bir varsayılanı ötekiyle değiştirdiğini söyler. Rehberin önerisi istemediğin kalıpları adıyla saymaktır.</p>
+<p>Bu yüzden tasarım işinde üç alışkanlık edin:</p>
+<ul><li><b>Anlatma, çizdir.</b> Bir yönü paragrafla tarif etmek yerine karşılaştırılabilir 2-3 yönü görsel olarak iste ve görsele bakarak seç. <a href="../index.html#m-tasarim-2-k">16.2</a></li><li><b>Kalıpları adla.</b> Sevmediğin şeyleri tek tek yaz. Claude'un yerine ne seçtiğine bak, o da sevmediğin bir şeyse listeye ekle. <a href="../index.html#m-tasarim-5-k">16.5</a></li><li><b>Tasarım dilini bir kez yaz.</b> Renk, tipografi ve boşluk kuralları bir dosyada ya da bir design system'de dursun. Her turda sohbetle yeniden anlatırsan kayar. <a href="../index.html#m-tasarim-4-k">16.4</a></li></ul>
+<p>Bunlar sonucun nasıl iyileşeceğini söyler. Önce hangi aracı seçeceğine karar vermen gerekir.</p>
+<h2 id="hangi-arac-ne-ise-yarar">Hangi araç ne işe yarar</h2>
+<p>Belgede tasarımla ilgili birkaç ayrı parça var. Karıştırılmaları kolay.</p>
+<div class="tablo"><table><thead><tr><th>Araç</th><th>Ne üretir</th><th>Ne zaman</th></tr></thead><tbody><tr><td data-e="Araç">Claude Design</td><td data-e="Ne üretir">Düzenlenebilir bir tuval: sohbetin yanında canlı tasarım, satır içi yorum, tuvalde doğrudan düzenleme</td><td data-e="Ne zaman">Ekranı, akışı ya da prototipi görsel olarak keşfedeceksen</td></tr><tr><td data-e="Araç"><code>/design</code> skill'i</td><td data-e="Ne üretir">Claude Code içinden aynı iş: tek tuval üzerinde artboard'lar, Claude Design artifact'i olarak yayınlanır</td><td data-e="Ne zaman">Terminalden çıkmadan UI seçenekleri çizdirmek istediğinde</td></tr><tr><td data-e="Araç">Artifact (genel)</td><td data-e="Ne üretir">Oturumun ürettiği canlı bir sayfa</td><td data-e="Ne zaman">Seçenekleri yan yana göstermek, bir değişikliği bağlamıyla paylaşmak</td></tr><tr><td data-e="Araç"><code>/slides</code></td><td data-e="Ne üretir">Claude Slides sunumu</td><td data-e="Ne zaman">Sunum gerekiyorsa. Arayüz tasarımı için değil</td></tr><tr><td data-e="Araç"><code>/dataviz</code></td><td data-e="Ne üretir">Grafik ve pano için tasarım rehberi</td><td data-e="Ne zaman">Veri görselleştirirken: grafik biçimi, renk, erişilebilirlik</td></tr><tr><td data-e="Araç"><code>/design-sync</code></td><td data-e="Ne üretir">Repondaki React design system'ini Claude Design'a yükler</td><td data-e="Ne zaman">Tasarımların gerçek bileşenlerinle çıkmasını istediğinde</td></tr></tbody></table></div>
+<p><code>/design</code> belgeye göre ekranlar, akışlar, açılış sayfaları ve posterler için çalışır. Artboard'ları masaüstü tarayıcıda düzenlersin, düzenlemeler kendiliğinden kaydolur ve her artboard'ı PNG ya da PDF olarak dışa aktarırsın. Seçtiğin artboard'ı uygulatmak için Claude'a hangisini istediğini söylersin. Yetenek, belgede Pro, Max, Team ve Enterprise için araştırma önizlemesi olarak duyuruldu. Komut sayfası <code>v2.1.265</code> ve üstünü, artifact'lerin açık olduğu bir oturumu ve hesapta Design şablonunun açık olmasını şart koşar. Kurum şablonu kapattıysa <code>/design</code> tasarım çizmez. Amazon Bedrock, Google Cloud ve Microsoft Foundry üzerinde artifact yoktur, komut da yoktur. Duyuru sayfası daha düşük bir sürüm (<code>v2.1.234</code>) yazar. Güvenilir olan komut sayfasıdır, o yüzden yerel sürümünü <code>claude --version</code> ile bak. <a href="../ekler/komutlar.html">Komutlar ve kısayollar</a> sayfasında komutların kısa hâli var.</p>
+<p><code>/design consent</code> Claude'a Claude Design erişimi verir, <code>/design revoke</code> geri alır. Claude senden <code>/design consent</code> yazmanı isterse bunu Claude Code komut satırına kendin yaz.</p>
+<p>Bir şey daha: standalone Claude Design sitesi (claude.ai/design) 14 Aralık 2026'da kapanıyor. Claude Design artık Claude'un içinde, bir artifact şablonu olarak yaşıyor. Eski sitede kalan design system'leri taşımak sana düşer.</p>
+<h2 id="karar-kurallari">Karar kuralları</h2>
+<p><b>Keşif için Claude Design ya da <code>/design</code>, kod için Claude Code.</b> Yön arıyorsan tuval ve artboard'lar doğru yerdir. Sonra seçileni kod olarak uygulatırsın. Support belgesi Claude Design'dan Claude Code'a devri de anlatır: tasarımı yerel kodlama agent'ına ya da web üzerindeki Claude Code'a gönderirsin. Claude Code ekran görüntüsünden değil var olan işten devam eder.</p>
+<p><b>Tasarım dilini yaz, her seferinde anlatma.</b> Artifact belgesi bunun en basit yolunu verir: renk, tipografi ve boşluk değerlerini projenin CLAUDE.md dosyasına ya da bir tema dosyasına yaz. Öncelik sırası da açık: senin prompt'un, sonra design system'in, sonra Claude'un kendi seçimleri. Gerçek bileşenler gerekiyorsa <code>/design-sync</code> kullan. Bu skill repondaki React design system'ini dönüştürüp yükler. İlk senkron, büyük bir repoda birkaç saat sürebilir. Support belgesi senkronun kaynak kadar iyi olacağını da söyler: dağınık bir kod tabanı çıktıda görünür. <a href="../index.html#m-tasarim-4-k">16.4</a></p>
+<p><b>Referansın hangi yönünü istediğini söyle.</b> "Bunun gibi yap" demek renk mi, düzen mi, ton mu olduğunu bırakır. Screenshot yükle ve şunu yaz: "Bundan yalnız bilgi hiyerarşisini al, rengini ve tipografisini alma." Kaynaklı ilham araştırması ayrı bir adım olarak <a href="../index.html#m-tasarim-1-k">16.1</a> maddesinde.</p>
+<p><b>Gerçek içerikle çizdir.</b> Placeholder metinle her tasarım iyi görünür. Gerçek başlığı, gerçek rakamı, gerçek listeyi ver. Uç durumları da iste: iki satıra taşan uzun Türkçe başlık, boş durum, hata durumu, 390 piksel genişlik. Support belgesi de duyarlılığı erken düşünmeyi öneriyor.</p>
+<p><b>Bir yön yetmez.</b> Support belgesi "2-3 alternatif düzen göster" ve "başka bir yaklaşımı dene" demeyi örnekler. Yeni yönü denemeden önce eldekini kaydet: belgeye göre Claude Design'da henüz sürüm geçmişi yok. "Şu ana kadar olanı kaydet ve tamamen farklı bir yaklaşım dene" demek bu yüzden işe yarar.</p>
+<p><b>Doğru kanalı seç.</b> Support belgesi şunu söyler: yapısal değişiklik ve yeni bölüm için sohbet, tek bileşenlik düzeltme için satır içi yorum, hızlı görsel ince ayar için tuvalde doğrudan düzenleme. Yorumların bazen kaybolduğu bilinen bir sorun, o zaman geri bildirimi sohbete yapıştır.</p>
+<p><b>Beğenmediğinde yönü değiştir.</b> Aynı yönü rötuşlamak aynı fikrin varyasyonunu üretir. "Bu yönden çık, kart dizisi yerine tek odak alanı dene" gibi neyin çalışmadığını ve ne yapılacağını söyle. <a href="../index.html#m-tasarim-3-k">16.3</a></p>
+<h2 id="dogrulama">Doğrulama</h2>
+<p>Tasarımı gözle sınamak zorundasın, çünkü metin raporu "güzel oldu" diyebilir. Bak:</p>
+<ul><li>Ekran görüntüsüyle, tam ekran ve alt alanlar dahil. Sayfanın altını kimsenin açmadığı bir yer sayma.</li><li>Dar ekranda (390 piksel) ve koyu temada.</li><li>Önce/sonra yan yana. Değişikliği hatırlamaya çalışma. <a href="../index.html#m-dogrulama-5-k">12.5</a></li><li>Uzun metinle ve boş veriyle.</li><li>Koda aktarırken. Tasarım ile uygulanmış sayfa aynı değildir. Aktarıldıktan sonra kodu çalıştırıp aynı ekran görüntüsünü al ve tasarımın yanına koy. Bu belgede yazılı bir adım değil, iş akışı önerisi.</li></ul>
+<p>Support belgesi Claude'a kontrast oranlarını, bilgi hiyerarşisini ve erişilebilirliği inceletmeyi de öneriyor. Bunu gözle bakmanın yerine değil, yanına koy.</p>
+<h2 id="hata-bicimleri">Hata biçimleri</h2>
+<p><b>Yazarın tasarım oturumlarından: alt alanlar atlandı.</b> Yazar tasarım önerisini anlatılmış değil çizilmiş ister. Yine de çizilen ekranlarda alt alanların eksik olduğunu 7 kez yazmak zorunda kaldı ("alttaki alanları atlamışsın"). Bu yüzden kural oldu: her yön tam ekran ve alt alanlar dahil gösterilir.</p>
+<p><b>Yazarın tasarım oturumlarından: aynı yönün rötuşu.</b> "Beğenmedim" geldiğinde aynı yönü düzeltmeye devam etmek 25 kez tekrarlanan bir döngü oldu. Kural: beğenilmeyen yön rötuşlanmaz, farklı bir yön önerilir.</p>
+<p>Bu iki sayı yazarın kendi oturumlarından. Resmî bir ölçüm değil, ama yönün değişmesi gerektiğini söyleyen belgedeki tavsiyeyle örtüşüyor.</p>
+<p><b>Kurgu senaryo: jenerik görünmesin.</b> Pelin bir alışkanlık uygulamasının ana ekranını ister ve "modern ve jenerik olmayan" yazar. Claude krem arka plan ve italik vurgulu başlık getirir. Pelin "daha az krem" der, Claude bu kez koyu mor bir gradient seçer. İkisi de yeni bir varsayılandır. Pelin sonunda sevmediği kalıpları tek tek yazar: krem zemin, italik vurgu, gradient, hap biçimli düğme. Dördüncü istekte Claude yalnız renkleri değil, ekranın düzenini de değiştirir.</p>
+<h2 id="alistirma-uc-yon-bir-secim">Alıştırma: üç yön, bir seçim</h2>
+<p>Bunu bir kod değiştirmeyen ekran üzerinde yap. Gerçek bir ekranını al (ör. bir ayarlar ekranı) ve gerçek içeriğini hazırla.</p>
+<p>1. <code>/design</code> ile (ya da Claude Design'da) aynı ekran için üç farklı yön iste. Her yön tam ekran ve alt alanlar dahil olsun. Prompt'a gerçek başlıkları ve en az bir uzun Türkçe başlığı koy. 2. Üç yönün görüntüsünü kaydet. Birini seç. 3. Seçmediğin iki yönde ve seçtiğinde sevmediğin her kalıbı adıyla bir <b>red listesi</b>ne yaz (arka plan, vurgu biçimi, düğme biçimi, etiketler). 4. Listeyi prompt'a koy ve seçilen yönü yeniden iste. Claude'un yerine seçtiği şeye bak, sevmediysen listeye ekle. 5. Sonucu 390 piksel genişlikte ve gerçek içerikle aç. Boş durumu da iste. 6. Eski ve yeni hâli yan yana koy.</p>
+<p><b>Bitti sayılması için:</b> üç yönün görüntüsü, yazılı red listesi, son tasarımın önce/sonra görüntüsü ve 390 piksel görüntüsü. Eksik biri varsa alıştırma bitmedi.</p>
+<h2 id="baglantilar">Bağlantılar</h2>
+<p>Kontrol listesi: <a href="../index.html#m-tasarim-1-k">16.1</a> <a href="../index.html#m-tasarim-2-k">16.2</a> <a href="../index.html#m-tasarim-3-k">16.3</a> <a href="../index.html#m-tasarim-4-k">16.4</a> <a href="../index.html#m-tasarim-5-k">16.5</a> <a href="../index.html#m-dogrulama-5-k">12.5</a>. İş tarifi için <a href="02-is-vermek.html">Bölüm 2: İş vermek: bitiş çizgisini çizmek</a>. Hareketli görüntü almak için <a href="16-hareketli-goruntu.html">Bölüm 16: Hareketli görüntü: ajan videoyu izleyemez</a>. Ekler: <a href="../ekler/ipuclari.html">İpuçları ve püf noktaları</a>, <a href="../ekler/komutlar.html">Komutlar ve kısayollar</a>.</p>
+<p>Kontrol listesindeki karşılığı: <a href="../index.html#m-tasarim-6-k">16.6</a>.</p>
+<footer><a href="14-projects.html">← Bölüm 14: Projects: koordinatör ve thread'ler</a> · <a href="16-hareketli-goruntu.html">Bölüm 16: Hareketli görüntü: ajan videoyu izleyemez →</a> · <a href="https://github.com/ratipcan-uysal/claude-code-kontrol-listesi/blob/main/rehber/15-claude-design.md">Markdown sürümü</a></footer></main>
+</body>
+</html>
